@@ -10,7 +10,7 @@ library(car)
 library(lme4)
 library(polr)
 
-visual <- read_csv(file.choose())
+visual <- read_csv('validation-images.csv')
 
 # move ranking so it's one column the position the other is the horse
 
