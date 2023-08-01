@@ -19,10 +19,11 @@ The organisation is as follows:
 * stimuli: stimuli for experiment 1.
   * visual stimuli: files associated with the visual stimuli used in experiment 1.
     * /experimental-images: four .jpg files used in experiment 1.
-    * /validation: eight .jpg files used for validation & one .csv with validation data & .R script for data analysis.
+    * /validation: eight .jpg files used for validation & one .csv with validation data (validation-images.csv) & .R script for data analysis (validation-images.R).
   * horse descriptions: files associated with the horse descriptions used in experiment 1.
-    * /experimental-descriptions: .md file with the descriptions used in experiment 1.
-    * /validation: .md file with the different descriptions explored for experiment 1 & two .csv files with validation data & .R script for data analysis.
+    * experimental-descriptions.md: .md file with the different descriptions explored for experiment 1.
+    * data-validation-attheraces.csv, data-validation-butterworth1.csv, and data-validation-butterworth2.csv: validation data for all the iterations of descriptions explored.
+    * validation.R: R script to analyse the validation data.
   * auditory stimuli: file associated with the auditory stimuli used in experiment 1.
     * /experimental-audio: 16 .mp3 files used in experiment 1.
     * /validation: two .csv files with validation data & .R script for data analysis.
