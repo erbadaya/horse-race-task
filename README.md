@@ -23,7 +23,7 @@ The organisation is as follows:
   * horse descriptions: files associated with the horse descriptions used in experiment 1.
     * experimental-descriptions.md: .md file with the different descriptions explored for experiment 1.
     * data-validation-attheraces.csv, data-validation-butterworth1.csv, and data-validation-butterworth2.csv: validation data for all the iterations of descriptions explored.
-    * validation.R: R script to analyse the validation data.
+    * validation-attheraces.R, validation-butterworth1.R, validation-butterworth2.R: R scripts to analyse the validation data.
   * auditory stimuli: file associated with the auditory stimuli used in experiment 1.
     * /experimental-audio: 16 .mp3 files used in experiment 1.
     * /validation: two .csv files with validation data & .R script for data analysis.
