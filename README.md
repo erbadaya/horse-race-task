@@ -11,6 +11,7 @@ The organisation is as follows:
   * figures
 * data: pre-processed data (i.e., anonymised data) in .csv. 
   * data-description-exp1.md: data dictionary.
+  * combinations-latin-square-design.csv: all combinations of horse description, speaker, and manner of delivery, resulting in 24 lists.
 * experimental-script: scripts used to run the experiment in Testable (.csv format).
   * bet-code.csv: .csv file for experiment 1.
   * variables-description-experiment.md: dictionary for bet-code.csv
