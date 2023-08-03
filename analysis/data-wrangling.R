@@ -68,7 +68,7 @@ dexp1 <- dexp1 %>%
 
 # separate into bets & questionnaire
 
-dexp1bet <- dexp1 %>% filter(trial_status == 'bet' | trial_status == "finalbet")
+dexp1bet <- dexp1 %>% filter(trial_status == 'bet' | trial_status == "finalbet" | trial_status == "finalbet_error")
 dexp1quest <- dexp1 %>% filter(trial_type == 'form') %>%
   filter(trial_status %in% c('dimension_solidarity_nonnative', 'dimension_solidarity_native',
                              'dimension_status_nonnative', 'dimension_status_native',
@@ -87,8 +87,13 @@ dexp1bet <- select(dexp1bet, -c('correct', 'question'))
 
 # nb participants are given the chance to modify their bets in the fifth trial, once they have heard all horses descriptions
 # in final-bet, order of responses is apocalypse | blackblade | firewalker | silversky
+# if in final-bet they had bet more than 200 (which they shouldn't), they are sent to the same window so they can fix it
+# therefore, we first need to check whether participants did this or not
 
-dexp1bet_final <- dexp1bet %>% filter(trial_status == 'finalbet') %>% select(-c("description")) %>%
+dexp1bet <- dexp1bet %>% group_by(ppt) %>% mutate(error = ifelse(trial_status == 'finalbet_error', 1, NA)) %>% fill(error, .direction = 'updown') %>% 
+  mutate(response = case_when(error == 1 & trial_status == "finalbet" ~ NA, TRUE ~ response)) %>% ungroup() %>% drop_na(response)
+
+dexp1bet_final <- dexp1bet %>% filter(trial_status == 'finalbet' | trial_status == 'finalbet_error') %>% select(-c("description")) %>%
   separate_wider_delim(response, delim = "|", names = c("apocalypse","blackblade","firewalker","silversky"), too_few = "align_start") %>%
   pivot_longer(c("apocalypse","blackblade","firewalker","silversky"), names_to = "description", values_to = "response") %>%
   mutate(response_final = response) %>% select(c(ppt, description, response_final))
@@ -105,9 +110,6 @@ dexp1bet <- dexp1bet %>%
   mutate(change = ifelse(response_bet == response_final, 'same', 'diff')) %>%
   mutate(money = ifelse(change == 'same', response_final, response_final))
   
-
-# likewise, if in final-bet they had bet more than 200 (which they shouldn't), they are sent to the same window so they can fix it
-# therefore, we first need to check whether participants did this or not
 
 # LANGUAGE ATTITUDES QUESTIONNAIRE
 
