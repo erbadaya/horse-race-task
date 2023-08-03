@@ -64,11 +64,11 @@ dexp1 <- dexp1 %>%
       expertise_betting < 3 ~ "YES",
       TRUE ~ "NO",
     )
-  )
+  ) %>% ungroup()
 
 # separate into bets & questionnaire
 
-dexp1bet <- dexp1 %>% filter(trial_status == 'bet')
+dexp1bet <- dexp1 %>% filter(trial_status == 'bet' | trial_status == "finalbet")
 dexp1quest <- dexp1 %>% filter(trial_type == 'form') %>%
   filter(trial_status %in% c('dimension_solidarity_nonnative', 'dimension_solidarity_native',
                              'dimension_status_nonnative', 'dimension_status_native',
@@ -85,6 +85,29 @@ dexp1checks <- dexp1 %>% filter(trial_type == 'form') %>%
 
 dexp1bet <- select(dexp1bet, -c('correct', 'question'))
 
+# nb participants are given the chance to modify their bets in the fifth trial, once they have heard all horses descriptions
+# in final-bet, order of responses is apocalypse | blackblade | firewalker | silversky
+
+dexp1bet_final <- dexp1bet %>% filter(trial_status == 'finalbet') %>% select(-c("description")) %>%
+  separate_wider_delim(response, delim = "|", names = c("apocalypse","blackblade","firewalker","silversky"), too_few = "align_start") %>%
+  pivot_longer(c("apocalypse","blackblade","firewalker","silversky"), names_to = "description", values_to = "response") %>%
+  mutate(response_final = response) %>% select(c(ppt, description, response_final))
+
+dexp1bet <- dexp1bet %>% filter(trial_status == 'bet') %>% mutate(response_bet = response) %>% select(-c(response))
+
+dexp1bet <- left_join(dexp1bet, dexp1bet_final)
+
+# check whether they bet the same the last time and in their first bet, and keep always the last bet if there is a mismatch
+# technically we asked them to re-write their bets in final bet even if they wanted to bet the same, so we could just use 'finalbet'
+
+
+dexp1bet <- dexp1bet %>%
+  mutate(change = ifelse(response_bet == response_final, 'same', 'diff')) %>%
+  mutate(money = ifelse(change == 'same', response_final, response_final))
+  
+
+# likewise, if in final-bet they had bet more than 200 (which they shouldn't), they are sent to the same window so they can fix it
+# therefore, we first need to check whether participants did this or not
 
 # LANGUAGE ATTITUDES QUESTIONNAIRE
 
