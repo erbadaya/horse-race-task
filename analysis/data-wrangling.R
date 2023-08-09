@@ -8,12 +8,13 @@ library(tidyverse)
 library(lme4)
 library(wesanderson)
 library(stringr) 
+library(here)
 
 # load data
 # to run only once
 # merges all individual .csv files & anonymises data
 
-temp <- list.files(pattern = "*.csv")
+temp <- list.files(pattern = "./data/*.csv")
 ppt_id <- length(temp)
 dexp1 <- data.frame()
 
@@ -25,7 +26,9 @@ for(i in 1:ppt_id){
 }
 
 rm(FILE, i, ppt_id, temp)
-write.csv(dexp1, "horse_race_exp1_rawdata.csv")
+write.csv(dexp1, "./data/horse_race_exp1_rawdata.csv")
+
+dexp1 <- read_csv("./data/horse_race_exp1_rawdata.csv")
 
 # rename variables and keep only those that are relevant
 
