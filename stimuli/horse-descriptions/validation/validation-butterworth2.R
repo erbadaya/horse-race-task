@@ -6,7 +6,7 @@ library(psych)
 # import data
 # all saved in the same csv file
 
-pilot_materials_ug <- read_csv('data-validation-butterworth2.csv')
+dval_descriptions <- read_csv('./stimuli/horse-descriptions/validation/data-validation-butterworth2.csv')
 
 # Information about variables
 # ID: Prolific ID
@@ -19,14 +19,14 @@ pilot_materials_ug <- read_csv('data-validation-butterworth2.csv')
 # H1: Is there a difference in the likelihood of each horse to win individually depending on the description?
 # H2: Is there a difference in rankings attributable to horses' description?
 
-# H1 to answer = score_winning ~ horse (lm), random intercept by participant, add betting behaviour + expertise to control for confounds (i.e., a max model and without these two variables)
-# H2 to answer = position ~ horse (ordinal regression), random intercept by participant, add betting behaviour + expertise to control for confounds (i.e., a max model and without these two variables)
+# H1 to answer = score_winning ~ horse (lm), 
+# H2 to answer = position ~ horse (ordinal regression)
 
 # Data wrangling
 
 # we to change columns to rows for horses and their position
 
-pilot_materials_ug_rank <- pilot_materials_ug %>% pivot_longer(c(SS_Position, FW_Position, BB_Position, A_Position),
+dval_descriptions_rank <- dval_descriptions %>% pivot_longer(c(SS_Position, FW_Position, BB_Position, A_Position),
                                                     names_to = "Horse", values_to = "Position") %>%
   mutate(
     Horse = case_when(Horse == "SS_Position" ~ "Silver Sky",
@@ -39,7 +39,7 @@ pilot_materials_ug_rank <- pilot_materials_ug %>% pivot_longer(c(SS_Position, FW
 
 # we also want a column for score and another one for horse
 
-pilot_materials_ug_score <- pilot_materials_ug %>% pivot_longer(c(SS_independent, FW_independent, BB_independent, A_independent),
+dval_descriptions_score <- dval_descriptions %>% pivot_longer(c(SS_independent, FW_independent, BB_independent, A_independent),
                                                     names_to = "Horse", values_to = "Score_winning") %>%
   mutate(
     Horse = case_when(Horse == "SS_independent" ~ "Silver Sky",
@@ -51,11 +51,11 @@ pilot_materials_ug_score <- pilot_materials_ug %>% pivot_longer(c(SS_independent
 
 # merge
 
-pilot_materials_ug <- left_join(pilot_materials_ug_rank, pilot_materials_ug_score)
+dval_descriptions <- left_join(dval_descriptions_rank, dval_descriptions_score)
 
 # wrang data
 
-pilot_materials_ug <- pilot_materials_ug %>%
+dval_descriptions <- dval_descriptions %>%
   mutate(
     Position = as.factor(Position),
     Horse = as.factor(Horse),
@@ -73,37 +73,30 @@ pilot_materials_ug <- pilot_materials_ug %>%
 
 # summary statistics
 
-table(pilot_materials_ug$Score_winning, pilot_materials_ug$Horse)
+table(dval_descriptions$Score_winning, dval_descriptions$Horse)
 
 
 # let's see how many people are into betting
 
-pilot_materials_ug  %>%
+dval_descriptions  %>%
   filter(!duplicated(ID)) %>%
   count(Bet)
 
-pilot_materials_ug  %>%
+dval_descriptions  %>%
   filter(!duplicated(ID)) %>%
   count(Expertise)
 
-psych::describeBy(pilot_materials_ug$Score_winning, pilot_materials_ug$Horse)
+psych::describeBy(dval_descriptions$Score_winning, dval_descriptions$Horse)
 
 
-# H1
+# Individual likelihood of winning
 
-score_model <- lmer(Score_winning ~ Horse +
-       (1 | ID),
-     data = pilot_materials_ug_score)
+summary(aov(Score_winning ~ Horse, data = dval_descriptions_score))
 
-summary(score_model)
 
-anova(score_model)
+# Ranking data
 
-summary(aov(Score_winning ~ Horse,
-      data = pilot_materials_ug_score))
-# H2
-
-model_rank <- polr(as.factor(Position) ~ Horse, data = pilot_materials_ug_rank)
+model_rank <- polr(as.factor(Position) ~ Horse, data = dval_descriptions_rank)
 summary(model_rank)
 
 newdata <- data.frame(Horse = rep(c("Silver Sky", "Fire Walker", "Black Blade", "Apocalypse"), 1)

@@ -10,7 +10,7 @@ library(car)
 library(lme4)
 library(polr)
 
-visual <- read_csv('validation-images.csv')
+visual <- read_csv('./stimuli/visual-stimuli/validation/validation-images.csv')
 
 # move ranking so it's one column the position the other is the horse
 
@@ -20,7 +20,11 @@ visual_pos <- visual %>%
 visual_rank <- visual %>%
   pivot_longer(c(10:17), names_to = "Horse", values_to = "Rank")
 
-summary(lmer(Position ~ Horse + (1|ID), data = visual_pos))
+# Individual likelihood to win a race
+
+summary(aov(Position ~ Horse, data = visual_pos))
+
+# Ranking data 
 
 visual_rank <- visual_rank %>%
   mutate(
