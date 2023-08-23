@@ -8,7 +8,7 @@ library(lme4)
 # basically, load in all files and then merge into one
 # run only once!
 # and delete all the individual .csvs (they are not anonymised)
-# temp <- list.files(pattern = "./stimuli/auditory-stimuli/validation/*.csv")
+# temp <- list.files(path = './stimuli/auditory-stimuli/validation/', pattern =  "*.csv")
 # 
 # # put all the dfs in one and do some work
 # # create an additional df for metainformation
