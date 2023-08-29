@@ -141,14 +141,20 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
         const end_trial = () => {
              // kill any remaining setTimeout handlers
              this.jsPsych.pluginAPI.clearAllTimeouts();
-             // stop the audio file if it is playing
+             // if this is uncommented then no audio is played
+            //  // stop the audio file if it is playing
+            //   // remove end event listeners if they exist
+            //   if (context !== null) {
+            //     this.audio.stop();
+            //     }
+            //     else {
+            //     this.audio.pause();
+            //     }
              this.audio.removeEventListener("ended", end_trial);
              this.audio.removeEventListener("ended", enable_buttons);
             display_element  
                 .querySelector("#jspsych-survey-html-form")
                 .addEventListener("submit", (event) => {
-                    // don't submit form
-                    event.preventDefault();
                     // measure response time
                     var endTime = performance.now();
                     var response_time = Math.round(endTime - startTime);
@@ -170,15 +176,6 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
                     });
       };
       function after_response(choice) {
-        // measure rt
-        var endTime = performance.now();
-        var rt = Math.round(endTime - startTime);
-        if (context !== null) {
-            endTime = context.currentTime;
-            rt = Math.round((endTime - startTime) * 1000);
-        }
-        response.button = parseInt(choice);
-        response.rt = rt;
         // disable all the buttons after a response
         disable_buttons();
         if (trial.response_ends_trial) {
@@ -251,16 +248,6 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
             returnArray[formArray[i]["name"]] = formArray[i]["value"];
         }
         return returnArray;
-    }
-    // function to handle responses by the subject
-    function after_response(info) {
-        // only record the first response
-        if (response.key == null) {
-            response = info;
-        }
-        if (trial.response_ends_trial) {
-            end_trial();
-        }
     }
     return new Promise((resolve) => {
         trial_complete = resolve;
