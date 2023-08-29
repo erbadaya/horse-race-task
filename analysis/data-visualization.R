@@ -8,6 +8,7 @@ library(gt)
 library(gtsummary)
 library(webshot2)
 library(plotrix)
+library(MetBrewer) # for colors
 
 # Descriptive statistics
 
