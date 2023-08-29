@@ -39,7 +39,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
           button_label: {
               type: jspsych.ParameterType.HTML_STRING,
               pretty_name: "Button HTML",
-              default: '<button class="jspsych-btn">Continue</button>',
+              default: '<button class="jspsych-btn"> Continue </button>',
               array: true
           },
           /** If true, then the trial will end as soon as the audio file finishes playing. */
@@ -103,7 +103,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
                 this.audio.addEventListener("ended", enable_buttons);
             }
             var html = "";
-            var buttons = trial.button_html
+            var buttons = trial.button_label
             // show text for user imput
             if (trial.preamble !== null) {
                 html +='<div id="jspsych-audio-survey-input-response-preamble" class="jspsych-survey-html-form-preamble">' +trial.preamble + "</div>";
@@ -113,7 +113,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
             html += trial.html;
             html += "</form>";
             // add submit button
-            html +='<div class="jspsych-audio-button-response-button">' + trial.button_html +'</div>';
+            html +='<div class="jspsych-audio-button-response-button">' + trial.button_label +'</div>';
             
             display_element.innerHTML = html;
             if (trial.response_allowed_while_playing) {
