@@ -72,6 +72,11 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
           let trial_complete;
           // setup stimulus
           var context = this.jsPsych.pluginAPI.audioContext();
+          // store response
+          var response = {
+            rt: null,
+            button: null,
+        };
           // record webaudio context start time
           var startTime;
           // load audio file
@@ -164,7 +169,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
                         question_data = objectifyForm(question_data);
                     }
                     // save data
-                    var response = {
+                    var trial_data = {
                         rt: response_time,
                         response: question_data,
                         button: null
