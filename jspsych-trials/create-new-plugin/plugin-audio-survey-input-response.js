@@ -94,8 +94,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
           });
 
           const enable_buttons = () => {
-            console.log("calma")
-            var btns = document.querySelectorAll(".horses-button");
+            var btns = document.querySelectorAll(".bet-button");
             var btn_el = btns[0];
                 if (btn_el) {
                     btn_el.disabled = false;
@@ -118,7 +117,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
             // add form HTML / input elements
             html += trial.html;
             // add submit button
-            html += '<input type="submit" id="jspsych-survey-html-form-next" class="jspsych-btn jspsych-survey-html-form horses-button" disabled value="' +
+            html += '<input type="submit" id="jspsych-survey-html-form-next" class="jspsych-btn jspsych-survey-html-form bet-button" disabled value="' +
               trial.button_label +
               '"></input>';
             html += "</form>";
@@ -142,15 +141,6 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
         const end_trial = () => {
              // kill any remaining setTimeout handlers
              this.jsPsych.pluginAPI.clearAllTimeouts();
-             // if this is uncommented then no audio is played
-            //  // stop the audio file if it is playing
-            //   // remove end event listeners if they exist
-            //   if (context !== null) {
-            //     this.audio.stop();
-            //     }
-            //     else {
-            //     this.audio.pause();
-            //     }
              this.audio.removeEventListener("ended", end_trial);
              display_element  
                 .querySelector("#jspsych-survey-html-form")

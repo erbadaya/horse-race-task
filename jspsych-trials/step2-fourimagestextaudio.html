@@ -23,7 +23,30 @@
     });
 
     var timeline = [];
-    var descriptions = ["critical_apocalypse_native_disfluent.mp3", "critical_firewalker_nonnative_disfluent.mp3"];
+    
+    // we will use this to randomly put the pictures given the group
+    var horses = ['apocalypse', 'firewalker', 'blackblade', 'silversky']
+
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex > 0) {
+
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
+    }
+
+    shuffle(horses)
+    console.log(horses)
 
     // need this for the time being until we include all consent forms etc.
     var before_audio = {
@@ -42,15 +65,20 @@
         type: jsPsychAudioSurveyInputResponse,
         stimulus: "critical_apocalypse_native_disfluent.mp3",
         html: `
-            <div class="picture-row">
-            <img src="apocalypse.jpg"/>
-            <figcaption> Apocalypse: <input name="first" type="number" required max="100"/> </figcaption>
-            <img src="firewalker.jpg"/>
-            <p> <input name="second" type="number" required max="100"/></p>
-            <img src="blackblade.jpg"/>
-            <p> <input name="third" type="number" required max="100"/></p>
-            <img src="silversky.jpg"/>
-            <p> <input name="forth" type="number" required max="100"/></p></div>`,
+            <div class="row">
+              <div class='column'>
+                <img src="`+ horses[0] +`.jpg"/>
+                <figcaption> Apocalypse: <input name="`+ horses[0] +`" type="number" required max="100"/> </figcaption>
+                <img src="`+ horses[1] +`.jpg"/>
+                <p> <input name="`+ horses[1] +`" type="number" required max="100"/></p>
+              </div>
+              <div class='column'>
+                <img src="`+ horses[2] +`.jpg"/>
+                <p> <input name="`+ horses[2] +`" type="number" required max="100"/></p>
+                <img src="`+ horses[3] +`.jpg"/>
+                <p> <input name="`+ horses[3] +`" type="number" required max="100"/></p>
+              </div>
+            </div>`,
         response_allowed_while_playing: false
     }
 
