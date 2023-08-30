@@ -45,8 +45,7 @@
         return array;
     }
 
-    shuffle(horses)
-    console.log(horses)
+    shuffle(horses);
 
     // need this for the time being until we include all consent forms etc.
     var before_audio = {
@@ -68,15 +67,15 @@
             <div class="row">
               <div class='column'>
                 <img src="`+ horses[0] +`.jpg"/>
-                <figcaption> Apocalypse: <input name="`+ horses[0] +`" type="number" required max="100"/> </figcaption>
+                <figcaption> Apocalypse: <input name="`+ horses[0] +`" type="number" required max="100" step=".01" min="0" id="bet"/> </figcaption>
                 <img src="`+ horses[1] +`.jpg"/>
-                <p> <input name="`+ horses[1] +`" type="number" required max="100"/></p>
+                <p> <input name="`+ horses[1] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
               </div>
               <div class='column'>
                 <img src="`+ horses[2] +`.jpg"/>
-                <p> <input name="`+ horses[2] +`" type="number" required max="100"/></p>
+                <p> <input name="`+ horses[2] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
                 <img src="`+ horses[3] +`.jpg"/>
-                <p> <input name="`+ horses[3] +`" type="number" required max="100"/></p>
+                <p> <input name="`+ horses[3] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
               </div>
             </div>`,
         response_allowed_while_playing: false
