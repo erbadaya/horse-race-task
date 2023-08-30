@@ -41,13 +41,16 @@
     var bet = {
         type: jsPsychAudioSurveyInputResponse,
         stimulus: "critical_apocalypse_native_disfluent.mp3",
-        preamble: `<div class="image-gallery">
+        html: `
+            <div class="picture-row">
             <img src="apocalypse.jpg"/>
+            <figcaption> Apocalypse: <input name="first" type="number" required max="100"/> </figcaption>
             <img src="firewalker.jpg"/>
+            <p> <input name="second" type="number" required max="100"/></p>
             <img src="blackblade.jpg"/>
-            <div class="clear"></div>
-            </div>`,
-        html: `<p> Place your bets on <input name="first" type="text" />, <input name="second" type="text" /></p>`,
+            <p> <input name="third" type="number" required max="100"/></p>
+            <img src="silversky.jpg"/>
+            <p> <input name="forth" type="number" required max="100"/></p></div>`,
         response_allowed_while_playing: false
     }
 
