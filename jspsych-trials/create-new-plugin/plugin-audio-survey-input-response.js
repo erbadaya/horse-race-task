@@ -5,17 +5,12 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
       name: "audio-survey-input-response",
       parameters: {
           /** The audio file to be played. */
+          /** NB in this experiment we have four audios to play, so we need to to do some coding here too */
           stimulus: {
               type: jspsych.ParameterType.AUDIO,
               pretty_name: "Stimulus",
               default: undefined,
           },
-          /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
-        //   choices: {
-        //       type: jspsych.ParameterType.KEYS,
-        //       pretty_name: "Choices",
-        //       default: "ALL_KEYS",
-        //   }, *COMMENTIN IT OUT BECAUSE WE DONT NEED THIS*
           /** Any content here will be displayed below the stimulus. */
           /** This used to be prompt but we've changed it */
           preamble: {
@@ -37,11 +32,10 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
           },
           /** The text that appears on the button to finish the trial. */
           button_label: {
-              type: jspsych.ParameterType.HTML_STRING,
-              pretty_name: "Button HTML",
-              default: '<button class="jspsych-btn"> Continue </button>',
-              array: true
-          },
+            type: jspsych.ParameterType.STRING,
+            pretty_name: "Button label",
+            default: "Continue",
+        },
           /** If true, then the trial will end as soon as the audio file finishes playing. */
           trial_ends_after_audio: {
             type: jspsych.ParameterType.BOOL,
@@ -98,13 +92,20 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
               console.error(`Failed to load audio file "${trial.stimulus}". Try checking the file path. We recommend using the preload plugin to load audio files.`);
               console.error(err);
           });
+
+          const enable_buttons = () => {
+            console.log("calma")
+            var btns = document.querySelectorAll(".horses-button");
+            var btn_el = btns[0];
+                if (btn_el) {
+                    btn_el.disabled = false;
+                
+        }
+        }
         const setupTrial = () => {
-            // set up end event if trial needs it
-            if (trial.trial_ends_after_audio) {
-                this.audio.addEventListener("ended", end_trial);
-            }
+            
             // enable buttons after audio ends if necessary
-            if (!trial.response_allowed_while_playing && !trial.trial_ends_after_audio) {
+            if (!trial.response_allowed_while_playing) {
                 this.audio.addEventListener("ended", enable_buttons);
             }
             var html = "";
@@ -116,17 +117,12 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
             html += '<form id="jspsych-survey-html-form" autocomplete="off">';
             // add form HTML / input elements
             html += trial.html;
-            html += "</form>";
             // add submit button
-            html +='<div class="jspsych-audio-button-response-button">' + trial.button_label +'</div>';
-            
+            html += '<input type="submit" id="jspsych-survey-html-form-next" class="jspsych-btn jspsych-survey-html-form horses-button" disabled value="' +
+              trial.button_label +
+              '"></input>';
+            html += "</form>";
             display_element.innerHTML = html;
-            if (trial.response_allowed_while_playing) {
-                enable_buttons();
-            }
-            else {
-                disable_buttons();
-            }
               // start audio
             if (context !== null) {
                   startTime = context.currentTime;
@@ -140,7 +136,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
             this.jsPsych.pluginAPI.setTimeout(() => {
                 end_trial();
             }, trial.trial_duration);
-        }
+        } 
         on_load();
         };
         const end_trial = () => {
@@ -156,11 +152,11 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
             //     this.audio.pause();
             //     }
              this.audio.removeEventListener("ended", end_trial);
-             this.audio.removeEventListener("ended", enable_buttons);
-            display_element  
+             display_element  
                 .querySelector("#jspsych-survey-html-form")
                 .addEventListener("submit", (event) => {
                     // measure response time
+                    event.preventDefault();
                     var endTime = performance.now();
                     var response_time = Math.round(endTime - startTime);
                     var this_form = display_element.querySelector("#jspsych-survey-html-form");
@@ -169,10 +165,9 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
                         question_data = objectifyForm(question_data);
                     }
                     // save data
-                    var trial_data = {
+                    var trialdata = {
                         rt: response_time,
-                        response: question_data,
-                        button: null
+                        response: question_data
                     };
                     display_element.innerHTML = "";
                     // next trial
@@ -180,37 +175,6 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
                     trial_complete()
                     });
       };
-      function after_response(choice) {
-        // disable all the buttons after a response
-        disable_buttons();
-        if (trial.response_ends_trial) {
-            end_trial();
-        }
-    }
-      function button_response(e) {
-        var choice = e.currentTarget.getAttribute("data-choice"); // don't use dataset for jsdom compatibility
-        after_response(choice);
-        }
-      function disable_buttons() {
-        var btns = document.querySelectorAll(".jspsych-audio-button-response-button");
-        for (var i = 0; i < btns.length; i++) {
-            var btn_el = btns[i].querySelector("button");
-            if (btn_el) {
-                btn_el.disabled = true;
-            }
-            btns[i].removeEventListener("click", button_response);
-        }
-        }
-        function enable_buttons() {
-            var btns = document.querySelectorAll(".jspsych-audio-button-response-button");
-            for (var i = 0; i < btns.length; i++) {
-                var btn_el = btns[i].querySelector("button");
-                if (btn_el) {
-                    btn_el.disabled = false;
-                }
-                btns[i].addEventListener("click", button_response);
-            }
-        }
       function serializeArray(form) {
         // Setup our serialized data
         var serialized = [];
