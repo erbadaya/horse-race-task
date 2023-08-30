@@ -23,7 +23,30 @@
     });
 
     var timeline = [];
+    
+    // we will use this to randomly put the pictures given the group
+    var horses = ['apocalypse', 'firewalker', 'blackblade', 'silversky']
 
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex > 0) {
+
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
+    }
+
+    shuffle(horses)
+    console.log(horses)
 
     // need this for the time being until we include all consent forms etc.
     var before_audio = {
@@ -41,13 +64,21 @@
     var bet = {
         type: jsPsychAudioSurveyInputResponse,
         stimulus: "critical_apocalypse_native_disfluent.mp3",
-        preamble: `<div class="image-gallery">
-            <img src="apocalypse.jpg"/>
-            <img src="firewalker.jpg"/>
-            <img src="blackblade.jpg"/>
-            <div class="clear"></div>
+        html: `
+            <div class="row">
+              <div class='column'>
+                <img src="`+ horses[0] +`.jpg"/>
+                <figcaption> Apocalypse: <input name="`+ horses[0] +`" type="number" required max="100"/> </figcaption>
+                <img src="`+ horses[1] +`.jpg"/>
+                <p> <input name="`+ horses[1] +`" type="number" required max="100"/></p>
+              </div>
+              <div class='column'>
+                <img src="`+ horses[2] +`.jpg"/>
+                <p> <input name="`+ horses[2] +`" type="number" required max="100"/></p>
+                <img src="`+ horses[3] +`.jpg"/>
+                <p> <input name="`+ horses[3] +`" type="number" required max="100"/></p>
+              </div>
             </div>`,
-        html: `<p> Place your bets on <input name="first" type="text" />, <input name="second" type="text" /></p>`,
         response_allowed_while_playing: false
     }
 
