@@ -25,7 +25,9 @@
     var timeline = [];
     
     // we will use this to randomly put the pictures given the group
-    var horses = ['apocalypse', 'firewalker', 'blackblade', 'silversky']
+
+    var horses = ['apocalypse', 'firewalker', 'blackblade', 'silversky'];
+    var descriptions = ["critical_apocalypse_native_disfluent.mp3","critical_firewalker_nonnative_disfluent.mp3"];
 
     function shuffle(array) {
         let currentIndex = array.length,  randomIndex;
@@ -46,22 +48,28 @@
     }
 
     shuffle(horses);
+    shuffle(descriptions);
 
     // need this for the time being until we include all consent forms etc.
-    var before_audio = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: 'Click to start',
-        choices: ['OK']
-    }
+    var check_headphones = {
+        type: jsPsychAudioButtonResponse,
+        stimulus: 'adjust_volume.mp3',
+        prompt: 'Please adjust your volume and follow the audio instruction. You will only hear this audio once.',
+        choices: ['T', 'M', 'Q', 'H', 'X', 'W', 'S', 'P']
+    };
 
-    // issue with this one: any response will jump to the next one. using user input in the prompt doesn't save the responses. 
-    // so still the best way to go is with survey-html
-    // either modify the plug in so it can also take sound
-    // but the next issue is to prevent participants from clicking the button until all audios have been listened to (kenny smith's student's modified plug)
+    // play four audios, and let people answer once the last audio has finished playing. NB all responses are in survey form in javascript and the code is that they can edit their old bets as they listen to new descriptions
+    // we have modified the AudioButtonResponse by combining it with the SurveyHtlmForm 
 
     var bet = {
         type: jsPsychAudioSurveyInputResponse,
-        stimulus: "critical_apocalypse_native_disfluent.mp3",
+        stimulus: function(){
+            for(i in descriptions){
+              console.log(descriptions)
+              console.log(descriptions[i])
+              return descriptions[i]
+            }
+        }, 
         html: `
             <div class="row">
               <div class='column'>
@@ -87,6 +95,8 @@
           console.log(tot)
           }
     }
+
+    // If participants bet more than 100 pounds, ask them again until their bet is lower than 100. In this rounds, they cannot listen to the audio.
 
     var if_feedback = {
       type: jsPsychSurveyHtmlForm,
@@ -138,6 +148,6 @@
 
 
 
-    jsPsych.run([before_audio, bet, if_node]);
+    jsPsych.run([check_headphones, bet, if_node]);
   </script>
 </html>
