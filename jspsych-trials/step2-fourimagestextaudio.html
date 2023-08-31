@@ -90,7 +90,15 @@
 
     var if_feedback = {
       type: jsPsychSurveyHtmlForm,
-      preamble: '<p> You bet more than your allocated 100 pounds. Please, re-distribute your bets.',
+      preamble: function(){
+        var horse0_bet = jsPsych.data.allData.trials[1].response[horses[0]];
+        var horse1_bet = jsPsych.data.allData.trials[1].response[horses[1]];
+        var horse2_bet = jsPsych.data.allData.trials[1].response[horses[2]];
+        var horse3_bet = jsPsych.data.allData.trials[1].response[horses[3]];
+        var text = '<p> You bet more than your allocated 100 pounds. Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + horses[0] + 
+          ', ' + horse1_bet +' on ' + horses[1] +', '+ horse2_bet +' on ' + horses[2] + ' and ' + horse3_bet +' on ' + horses[3] + '.</p>'
+        return text
+      },
       html: `
             <div class="row">
               <div class='column'>
