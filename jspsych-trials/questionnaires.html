@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@7.3.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey@0.2.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-likert@1.1.2"></script>
+    <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.2.1/css/survey.css">
+  </head>
+  <body></body>
+  <script>
+
+    /* initialize jsPsych */
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    // need this for the time being until we include all consent forms etc.
+    var before_audio = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: 'Click to start',
+        choices: ['OK']
+    }
+
+    const lang_attitude_native1 = {
+        type: jsPsychSurveyLikert,
+        preamble: 'This questions are about how you felt about the native speaker',
+        questions: [
+            {prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_native',labels: [1,2,3]},
+            {prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_native',labels: [1,2,3]},
+            {prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_native',labels: [1,2,3]},
+            {prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_native',labels: [1,2,3]},
+            {prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_native',labels: [1,2,3]},
+            {prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_native',labels: [1,2,3]}
+        ],
+        randomize_question_order: true
+    };
+
+    const lang_attitude_native2 = {
+        type: jsPsychSurveyLikert,
+        preamble: 'This questions are about how you felt about the native speaker',
+        questions: [
+            {prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_native',labels: [1,2,3]},
+            {prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_native',labels: [1,2,3]},
+            {prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_native',labels: [1,2,3]},
+            {prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_native',labels: [1,2,3]},
+            {prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_native',labels: [1,2,3]},
+        ],
+        randomize_question_order: true
+    };
+
+    const lang_attitude_native3 = {
+        type: jsPsychSurveyLikert,
+        preamble: 'This questions are about how you felt about the native speaker',
+        questions: [
+            {prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_native',labels: [1,2,3]},
+            {prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_native',labels: [1,2,3]},
+            {prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_native',labels: [1,2,3]},
+            {prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_native',labels: [1,2,3]},
+            {prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_native',labels: [1,2,3]},
+        ],
+        randomize_question_order: true
+    };
+
+    const lang_attitude_native4 = {
+        type: jsPsychSurveyLikert,
+        preamble: 'This questions are about how you felt about the native speaker',
+        questions: [
+            {prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_native',labels: [1,2,3]},
+            {prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_native',labels: [1,2,3]},
+            {prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_native',labels: [1,2,3]},
+            {prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_native',labels: [1,2,3]}
+        ],
+        randomize_question_order: true
+    };
+    
+    const lang_attitude_nonnative1 = {
+        type: jsPsychSurveyLikert,
+        preamble: 'This questions are about how you felt about the non-native speaker',
+        questions: [
+            {prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_nonnative',labels: [1,2,3]}
+        ],
+        randomize_question_order: true
+    };
+
+    const lang_attitude_nonnative2 = {
+        type: jsPsychSurveyLikert,
+        preamble: 'This questions are about how you felt about the non-native speaker',
+        questions: [
+            {prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_nonnative',labels: [1,2,3]},
+        ],
+        randomize_question_order: true
+    };
+
+    const lang_attitude_nonnative3 = {
+        type: jsPsychSurveyLikert,
+        preamble: 'This questions are about how you felt about the non-native speaker',
+        questions: [
+            {prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_nonnative',labels: [1,2,3]},
+        ],
+        randomize_question_order: true
+    };
+
+    const lang_attitude_nonnative4 = {
+        type: jsPsychSurveyLikert,
+        preamble: 'This questions are about how you felt about the non-native speaker',
+        questions: [
+            {prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_nonnative',labels: [1,2,3]},
+            {prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_nonnative',labels: [1,2,3]}
+        ],
+        randomize_question_order: true
+    };
+
+    const extra_questions = {
+        type: jsPsychSurvey,
+        pages: [
+            [
+                {type: 'html',
+                prompt: 'Please answer the following questions',
+                },
+                {type: 'likert',
+                prompt: 'How used are you to foreign-accented speech in your daily life? Please, rate your daily exposure on a scale from 1 (none) to 10 (always).',
+                name: 'exposure_nn',
+                likert_scale_max: 10,
+                likert_scale_min: 0,
+                required: true},
+                {type: 'likert',
+                prompt: 'How used are you to British-accented English? Please, rate your daily exposure on a scale from 1 (none) to 10 (always).',
+                name: 'exposure_n',
+                likert_scale_max: 10,
+                likert_scale_min: 0,
+                required: true},
+                {type: 'html',
+                prompt: 'The following questions are about your previous betting behaviours.',
+                },
+                {type:'multi-choice',
+                prompt: 'Have you ever bet on horse races in the past?',
+                options: ["Yes", "No"],
+                correct_response: "Yes",
+                required: true},
+                {type: 'likert',
+                prompt: 'How much do you agree with the statement \'I am an expert in horse races\'?',
+                likert_scale_values: [{value: 1, text: 'Strongly disagree'},
+                                        {value: 2, text: 'Somewhat disagree'},
+                                        {value: 3, text: 'Neither disagree nor agree'},
+                                        {value: 4, text: 'Somewhat agree'},
+                                        {value: 5, text: 'Strongly agree'}],
+                required: true}
+            ],[
+                {type: 'html',
+                prompt: 'The following questions are about the study you just completed (i.e., the horse betting).'},
+                {type: 'likert',
+                prompt: 'How natural did the recordings of the <b>native speaker</b> sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
+                likert_scale_max: 9,
+                likert_scale_min: 0,
+                name: 'naturalness_native',
+                required: true},
+                {type: 'likert',
+                prompt: 'How natural did the recordings of the <b>non-native speaker</b> sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
+                likert_scale_max: 9,
+                likert_scale_min: 0,
+                name: 'naturalness_nonnative',
+                required: true},
+                {type: 'text',
+                prompt: 'What do you think the aim of the experiment is?',
+                placeholder: "",
+                required: true
+                },
+                {type: 'text',
+                prompt: 'If you want to share your opinion with us, please do it here.',
+                placeholder: ''}
+            ]    
+
+            ],
+        button_label_next: 'Continue',
+        button_label_finish: 'Submit'
+    };
+
+    jsPsych.run([before_audio, extra_questions]);
+
+  </script>
+</html>
