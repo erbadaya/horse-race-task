@@ -91,10 +91,10 @@
     var if_feedback = {
       type: jsPsychSurveyHtmlForm,
       preamble: function(){
-        var horse0_bet = jsPsych.data.allData.trials[1].response[horses[0]];
-        var horse1_bet = jsPsych.data.allData.trials[1].response[horses[1]];
-        var horse2_bet = jsPsych.data.allData.trials[1].response[horses[2]];
-        var horse3_bet = jsPsych.data.allData.trials[1].response[horses[3]];
+        var horse0_bet = jsPsych.data.getLastTrialData().trials[0].response[horses[0]];
+        var horse1_bet = jsPsych.data.getLastTrialData().trials[0].response[horses[1]];
+        var horse2_bet = jsPsych.data.getLastTrialData().trials[0].response[horses[2]];
+        var horse3_bet = jsPsych.data.getLastTrialData().trials[0].response[horses[3]];
         var text = '<p> You bet more than your allocated 100 pounds. Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + horses[0] + 
           ', ' + horse1_bet +' on ' + horses[1] +', '+ horse2_bet +' on ' + horses[2] + ' and ' + horse3_bet +' on ' + horses[3] + '.</p>'
         return text
@@ -113,12 +113,20 @@
                 <p> Place your bet on `+ horses[2] +` <input name="`+ horses[2] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
                   Place your bet on `+ horses[3] +`<input name="`+ horses[3] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
               </div>
-            </div>`
+            </div>`,
+        on_finish: function(data) {
+          tot = 0
+          tot += parseFloat(data.response.apocalypse);
+          tot += parseFloat(data.response.blackblade);
+          tot += parseFloat(data.response.silversky);
+          tot += parseFloat(data.response.firewalker);
+          console.log(tot)
+          }
     }
 
     var if_node = {
       timeline: [if_feedback],
-      conditional_function: function() {
+      loop_function: function() {
         if(tot < 101){
           return false
         } else {
