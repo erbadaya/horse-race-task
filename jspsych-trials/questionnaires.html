@@ -33,32 +33,32 @@
         type: jsPsychSurvey,
         pages: [[
             {type: 'html',prompt: 'This questions are about the native speaker.',},
-            {type: 'likert',prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_native', likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_native',likert_scale_max: 10, likert_scale_min: 0}
+            {type: 'likert',prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_native', likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
+            {type: 'likert',prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
+            {type: 'likert',prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
+            {type: 'likert',prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
+            {type: 'likert',prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
+            {type: 'likert',prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
             ],[
             {type: 'html',prompt: 'This questions are about the native speaker.',},
-            {type: 'likert',prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_native',likert_scale_max: 10, likert_scale_min: 0}
+            {type: 'likert',prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
+            {type: 'likert',prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
+            {type: 'likert',prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
+            {type: 'likert',prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
+            {type: 'likert',prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
         ], [
             {type: 'html',prompt: 'This questions are about the native speaker.',},
-            {type: 'likert',prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_native',likert_scale_max: 10, likert_scale_min: 0}
+            {type: 'likert',prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
+            {type: 'likert',prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
+            {type: 'likert',prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
+            {type: 'likert',prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
+            {type: 'likert',prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
         ], [
             {type: 'html',prompt: 'This questions are about the native speaker.',},
-            {type: 'likert',prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_native',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_native',likert_scale_max: 10, likert_scale_min: 0}
+            {type: 'likert',prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
+            {type: 'likert',prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
+            {type: 'likert',prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
+            {type: 'likert',prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
         ]]
     };
     
@@ -66,32 +66,32 @@
         type: jsPsychSurvey,
         pages: [[
             {type: 'html',prompt: 'This questions are about the non-native speaker.',},
-            {type: 'likert',prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_nonnative',likert_scale_max: 10, likert_scale_min: 0}
+            {type: 'likert',prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
+            {type: 'likert',prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
+            {type: 'likert',prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
+            {type: 'likert',prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
+            {type: 'likert',prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
+            {type: 'likert',prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
         ],[
             {type: 'html',prompt: 'This questions are about the non-native speaker.',},
-            {type: 'likert',prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_nonnative',likert_scale_max: 10, likert_scale_min: 0}
+            {type: 'likert',prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
+            {type: 'likert',prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
+            {type: 'likert',prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
+            {type: 'likert',prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
+            {type: 'likert',prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
         ], [
             {type: 'html',prompt: 'This questions are about the non-native speaker.',},
-            {type: 'likert',prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_nonnative',likert_scale_max: 10, likert_scale_min: 0}
+            {type: 'likert',prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
+            {type: 'likert',prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
+            {type: 'likert',prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
+            {type: 'likert',prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
+            {type: 'likert',prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
         ],[
             {type: 'html',prompt: 'This questions are about the non-native speaker.',},
-            {type: 'likert',prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_nonnative',likert_scale_max: 10, likert_scale_min: 0},
-            {type: 'likert',prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_nonnative',likert_scale_max: 10,likert_scale_min: 0}
+            {type: 'likert',prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
+            {type: 'likert',prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
+            {type: 'likert',prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
+            {type: 'likert',prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_nonnative',likert_scale_max: 10,likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
         ]]
     };
 
