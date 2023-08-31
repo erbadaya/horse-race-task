@@ -45,8 +45,7 @@
         return array;
     }
 
-    shuffle(horses)
-    console.log(horses)
+    shuffle(horses);
 
     // need this for the time being until we include all consent forms etc.
     var before_audio = {
@@ -54,7 +53,6 @@
         stimulus: 'Click to start',
         choices: ['OK']
     }
-    timeline.push(before_audio);
 
     // issue with this one: any response will jump to the next one. using user input in the prompt doesn't save the responses. 
     // so still the best way to go is with survey-html
@@ -68,22 +66,62 @@
             <div class="row">
               <div class='column'>
                 <img src="`+ horses[0] +`.jpg"/>
-                <figcaption> Apocalypse: <input name="`+ horses[0] +`" type="number" required max="100"/> </figcaption>
                 <img src="`+ horses[1] +`.jpg"/>
-                <p> <input name="`+ horses[1] +`" type="number" required max="100"/></p>
+                <p> Place your bet on `+ horses[0] +` <input name="`+ horses[0] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
+                  Place your bet on `+ horses[1] +`<input name="`+ horses[1] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
               </div>
               <div class='column'>
                 <img src="`+ horses[2] +`.jpg"/>
-                <p> <input name="`+ horses[2] +`" type="number" required max="100"/></p>
                 <img src="`+ horses[3] +`.jpg"/>
-                <p> <input name="`+ horses[3] +`" type="number" required max="100"/></p>
+                <p> Place your bet on `+ horses[2] +` <input name="`+ horses[2] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
+                  Place your bet on `+ horses[3] +`<input name="`+ horses[3] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
               </div>
             </div>`,
-        response_allowed_while_playing: false
+        response_allowed_while_playing: false,
+        on_finish: function(data) {
+          tot = 0
+          tot += parseFloat(data.response.apocalypse);
+          tot += parseFloat(data.response.blackblade);
+          tot += parseFloat(data.response.silversky);
+          tot += parseFloat(data.response.firewalker);
+          console.log(tot)
+          }
     }
 
-    timeline.push(bet);
+    var if_feedback = {
+      type: jsPsychSurveyHtmlForm,
+      preamble: '<p> You bet more than your allocated 100 pounds. Please, re-distribute your bets.',
+      html: `
+            <div class="row">
+              <div class='column'>
+                <img src="`+ horses[0] +`.jpg"/>
+                <img src="`+ horses[1] +`.jpg"/>
+                <p> Place your bet on `+ horses[0] +` <input name="`+ horses[0] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
+                  Place your bet on `+ horses[1] +`<input name="`+ horses[1] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+              </div>
+              <div class='column'>
+                <img src="`+ horses[2] +`.jpg"/>
+                <img src="`+ horses[3] +`.jpg"/>
+                <p> Place your bet on `+ horses[2] +` <input name="`+ horses[2] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
+                  Place your bet on `+ horses[3] +`<input name="`+ horses[3] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+              </div>
+            </div>`
+    }
 
-    jsPsych.run(timeline);
+    var if_node = {
+      timeline: [if_feedback],
+      conditional_function: function() {
+        if(tot < 101){
+          return false
+        } else {
+          return true
+        }
+      }
+
+    }
+
+
+
+    jsPsych.run([before_audio, bet, if_node]);
   </script>
 </html>

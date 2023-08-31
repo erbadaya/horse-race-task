@@ -100,7 +100,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
                     btn_el.disabled = false;
                 
         }
-        }
+        };
         const setupTrial = () => {
             
             // enable buttons after audio ends if necessary
@@ -138,6 +138,25 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
         } 
         on_load();
         };
+
+        const fix_trial = ()=>{
+            var html = "";
+            var buttons = trial.button_label
+            // show text for user imput
+            if (trial.preamble !== null) {
+                html +='<div id="jspsych-audio-survey-input-response-preamble" class="jspsych-survey-html-form-preamble">' +trial.preamble + "</div>";
+            }
+            html += '<form id="jspsych-survey-html-form" autocomplete="off">';
+            // add form HTML / input elements
+            html += trial.html;
+            // add submit button
+            html += '<input type="submit" id="jspsych-survey-html-form-next" class="jspsych-btn jspsych-survey-html-form bet-button" disabled value="' +
+              trial.button_label +
+              '"></input>';
+            html += "</form>";
+            display_element.innerHTML = html;
+        };
+
         const end_trial = () => {
              // kill any remaining setTimeout handlers
              this.jsPsych.pluginAPI.clearAllTimeouts();
@@ -150,6 +169,7 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
                     var endTime = performance.now();
                     var response_time = Math.round(endTime - startTime);
                     var this_form = display_element.querySelector("#jspsych-survey-html-form");
+                    
                     var question_data = serializeArray(this_form);
                     if (!trial.dataAsArray) {
                         question_data = objectifyForm(question_data);
@@ -158,7 +178,8 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
                     var trialdata = {
                         rt: response_time,
                         response: question_data
-                    };
+                    }
+
                     display_element.innerHTML = "";
                     // next trial
                     this.jsPsych.finishTrial(trialdata);
