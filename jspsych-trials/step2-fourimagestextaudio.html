@@ -4,6 +4,7 @@
     <script src="https://unpkg.com/jspsych@7.3.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-text"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey@0.2.1"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.1"></script>
     <script src="https://unpkg.com/@jspsych/plugin-preload"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.2"></script>
@@ -13,6 +14,7 @@
     <script src="./dist/plugin-instructions.js"></script>
 
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.2.1/css/survey.css">
   </head>
   <body></body>
   <script>
@@ -50,6 +52,33 @@
 
     shuffle(horses);
     shuffle(descriptions);
+
+
+    // Alternatively we could do this on Testable and then re-direct them here? 
+
+    var check_criteria = {
+      type: jsPsychSurvey,
+        pages: [
+            [{type: 'text', prompt: 'What is your Prolific ID?', placeholder: ""}],
+            [
+                {type:'multi-choice',
+                prompt: 'Were you born and raised in the United Kingdom?',
+                options: ["Yes", "No"],
+                correct_response: "Yes",
+                required: true},
+              ],
+              [{type:'multi-choice',
+                prompt: 'Do you currently live in the United Kingdom?',
+                options: ["Yes", "No"],
+                correct_response: "Yes",
+                required: true},],
+              [{type:'multi-choice',
+                prompt: 'Is English your first language? If you learnt any other language before the age of six, because someone spoke to you in a language other than English, the answer is \'No\'.',
+                options: ["Yes", "No"],
+                correct_response: "Yes",
+                required: true},]
+              ]
+    }
 
     var welcome_screen = {
       type: jsPsychInstructions,
@@ -186,6 +215,6 @@
 
 
 
-    jsPsych.run([welcome_screen, check_headphones, bet, if_node, loop_feedback]);
+    jsPsych.run([check_criteria, welcome_screen, check_headphones, bet, if_node, loop_feedback]);
   </script>
 </html>
