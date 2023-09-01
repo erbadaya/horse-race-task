@@ -27,6 +27,13 @@
 
     var timeline = [];
     
+    // need this for the time being until we include all consent forms etc.
+    var before_audio = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: 'Click to start',
+        choices: ['OK']
+    }
+
     // we will use this to randomly put the pictures given the group
 
     var horses = ['apocalypse', 'firewalker', 'blackblade', 'silversky'];
@@ -88,7 +95,10 @@
           tot += parseFloat(data.response.blackblade);
           tot += parseFloat(data.response.silversky);
           tot += parseFloat(data.response.firewalker);
-          console.log(tot)
+          console.log(tot);
+          jsPsych.data.addProperties({first_bet: tot});
+          jsPsych.data.addProperties({fix_bet: 0});
+          data;
           }
     }
 
@@ -127,35 +137,46 @@
           tot += parseFloat(data.response.silversky);
           tot += parseFloat(data.response.firewalker);
           console.log(tot)
+          jsPsych.data.addProperties({fix_bet: tot});
+          jsPsych.data.addProperties({first_bet: 0});
           }
     }
 
-// there's an issue with this: it forces at least one repetition (with the loop feedback)
-
-    var if_node = {
-      timeline: [if_feedback],
-      conditional_function: function() {
-        if(tot < 101){
-          return false
-        } else {
-          return true
-        }
-      }
-    }
+    // var if_node = {
+    //   timeline: [if_feedback],
+    //   conditional_function: function() {
+    //     if(jsPsych.data.getLastTrialData().trials[0].first_bet < 101){
+    //       return false
+    //     } else {
+    //       return true
+    //     }
+    //   }
+    // }
 
     var loop_feedback = {
       timeline: [if_feedback],
       loop_function: function() {
-        if(tot < 101){
+        if(jsPsych.data.getLastTrialData().trials[0].fix_bet < 101 && jsPsych.data.getLastTrialData().trials[0].first_bet < 101){
           return false
         } else {
           return true
         }
       }
-    }
+    };
+
+    var loop_conditional_feedback = {
+      timeline: [loop_feedback],
+      conditional_function: function() {
+        if(jsPsych.data.getLastTrialData().trials[0].fix_bet < 101 && jsPsych.data.getLastTrialData().trials[0].first_bet < 101){
+          return false
+        } else {
+          return true
+        }
+      }
+    };
 
 
 
-    jsPsych.run([check_criteria, welcome_screen, check_headphones, bet, if_node, loop_feedback]);
+    jsPsych.run([before_audio, bet, loop_conditional_feedback]);
   </script>
 </html>
