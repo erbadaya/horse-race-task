@@ -160,7 +160,11 @@
         button_label_finish: 'Submit'
     };
 
-    jsPsych.run([before_audio, lang_attitude_native1]);
+    const survey_procedure = {
+        timeline: [lang_attitude_native1],
+        randomize_order: true
+    }
+    jsPsych.run([before_audio, survey_procedure]);
 
   </script>
 </html>
