@@ -14,7 +14,7 @@
     <script src="./dist/plugin-instructions.js"></script>
 
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.2.1/css/survey.css">
+    <link rel="stylesheet" href="./dist/jspsych.css">
   </head>
   <body></body>
   <script>
@@ -37,7 +37,10 @@
     // we will use this to randomly put the pictures given the group
 
     var horses = ['apocalypse', 'firewalker', 'blackblade', 'silversky'];
-    var descriptions = ["critical_apocalypse_native_disfluent.mp3","critical_firewalker_nonnative_disfluent.mp3"];
+    var descriptions = ['critical_apocalypse_native_disfluent.mp3',
+                        'critical_blackblade_nonnative_fluent.mp3',
+                        'critical_firewalker_nonnative_disfluent.mp3',
+                        'critical_silversky_native_disfluent.mp3']
 
     function shuffle(array) {
         let currentIndex = array.length,  randomIndex;
@@ -60,34 +63,38 @@
     shuffle(horses);
     shuffle(descriptions);
 
+    var bet_horse0;
+    var bet_horse1;
+    var bet_horse2;
+    
 
     // play four audios, and let people answer once the last audio has finished playing. NB all responses are in survey form in javascript and the code is that they can edit their old bets as they listen to new descriptions
     // we have modified the AudioButtonResponse by combining it with the SurveyHtlmForm 
 
-    var bet = {
+    // if we do this the only issue is that we force participants to re-write unless we write the code
+    // We do that by 1) only forcing an answer in the horse being described in each trial
+    var bet_firsthorse = {
         type: jsPsychAudioSurveyInputResponse,
-        stimulus: function(){
-            for(i in descriptions){
-              console.log(descriptions)
-              console.log(descriptions[i])
-              return descriptions[i]
-            }
-        }, 
+        stimulus: descriptions[0], 
         html: `
-            <div class="row">
-              <div class='column'>
-                <img src="`+ horses[0] +`.jpg"/>
-                <img src="`+ horses[1] +`.jpg"/>
-                <p> Place your bet on `+ horses[0] +` <input name="`+ horses[0] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
-                  Place your bet on `+ horses[1] +`<input name="`+ horses[1] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+        <div class="container">
+                <div class="item">
+                  <img  class="picture" src="`+ horses[0] +`_red.jpg">
+                  <p> Place your bet on `+ horses[0] +` <input name="`+ horses[0] +`" type="number" required max="100" step=".01" min="0" id="bet"/> </p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="`+ horses[1] +`.jpg"/>
+                  <p> You will listen this horse's description next.</p>
+                </div>
+            <div class="item">
+                <img class="picture" src="`+ horses[2] +`.jpg"/>
+                <p> Wait for its turn.</p>
               </div>
-              <div class='column'>
-                <img src="`+ horses[2] +`.jpg"/>
-                <img src="`+ horses[3] +`.jpg"/>
-                <p> Place your bet on `+ horses[2] +` <input name="`+ horses[2] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
-                  Place your bet on `+ horses[3] +`<input name="`+ horses[3] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
-              </div>
-            </div>`,
+            <div class="item">
+                <img class="picture" src="`+ horses[3] +`.jpg"/>
+                <p> Wait for its turn.</p>
+            </div>
+          </div>`,
         response_allowed_while_playing: false,
         on_finish: function(data) {
           tot = 0
@@ -98,6 +105,152 @@
           console.log(tot);
           jsPsych.data.addProperties({first_bet: tot});
           jsPsych.data.addProperties({fix_bet: 0});
+          jsPsych.data.addProperties({first_horse: horses[0]});
+          jsPsych.data.addProperties({first_bet: data.response[horses[0]]});
+          data;
+          }
+    }
+
+    var bet_secondhorse = {
+        type: jsPsychAudioSurveyInputResponse,
+        stimulus: descriptions[1], 
+        html: function(data){
+          var bet_horse0 = jsPsych.data.get().trials[1].response[horses[0]];
+          var text = `
+          <div class="container">
+                <div class="item">
+                  <img  class="picture" src="`+ horses[0] +`.jpg">
+                  <p> Money bet on ` + horses[0] + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ horses[0] +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="`+ horses[1] +`_red.jpg"/>
+                  <p> Place your bet on `+ horses[1] +`<input name="`+ horses[1] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+            <div class="item">
+                <img class="picture" src="`+ horses[2] +`.jpg"/>
+                <p> You will listen this horse's description next.</p>
+              </div>
+            <div class="item">
+                <img class="picture" src="`+ horses[3] +`.jpg"/>
+                <p> Wait for its turn.</p>
+            </div>
+          </div>`
+            return text
+          },
+        response_allowed_while_playing: false,
+        on_finish: function(data) {
+          tot = 0
+          tot += parseFloat(data.response.apocalypse);
+          tot += parseFloat(data.response.blackblade);
+          tot += parseFloat(data.response.silversky);
+          tot += parseFloat(data.response.firewalker);
+          console.log(tot);
+          jsPsych.data.addProperties({first_bet: tot});
+          jsPsych.data.addProperties({fix_bet: 0});
+          jsPsych.data.addProperties({first_horse: horses[0]});
+          jsPsych.data.addProperties({second_horse: horses[1]});
+          jsPsych.data.addProperties({first_bet: data.response[horses[0]]});
+          jsPsych.data.addProperties({second_bet: data.response[horses[1]]});
+          data;
+          }
+    }
+
+    var bet_thirdhorse = {
+        type: jsPsychAudioSurveyInputResponse,
+        stimulus: descriptions[2], 
+        html: function(){
+          var bet_horse0 = jsPsych.data.get().trials[2].response[horses[0]];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[horses[0]]}
+          var bet_horse1 = jsPsych.data.get().trials[2].response[horses[1]];
+          var text = `
+          <div class="container">
+                <div class="item">
+                  <img  class="picture" src="`+ horses[0] +`.jpg">
+                  <p> Money bet on ` + horses[0] + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ horses[0] +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="`+ horses[1] +`.jpg"/>
+                  <p> Money bet on ` + horses[1] + `: `+  bet_horse1 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ horses[1] +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+            <div class="item">
+                <img class="picture" src="`+ horses[2] +`_red.jpg"/>
+                <p> Place your bet on `+ horses[2] +` <input name="`+ horses[2] +`" type="number" required max="100" step=".01" min="0" id="bet"/> </p>
+              </div>
+            <div class="item">
+                <img class="picture" src="`+ horses[3] +`.jpg"/>
+                <p> You will listen this horse's description next.</p>
+            </div>
+          </div>`
+            return text
+          },
+        response_allowed_while_playing: false,
+        on_finish: function(data) {
+          tot = 0
+          tot += parseFloat(data.response.apocalypse);
+          tot += parseFloat(data.response.blackblade);
+          tot += parseFloat(data.response.silversky);
+          tot += parseFloat(data.response.firewalker);
+          console.log(tot);
+          jsPsych.data.addProperties({first_bet: tot});
+          jsPsych.data.addProperties({fix_bet: 0});
+          jsPsych.data.addProperties({first_horse: horses[0]});
+          jsPsych.data.addProperties({second_horse: horses[1]});
+          jsPsych.data.addProperties({third_horse: horses[2]});
+          data;
+          }
+    }
+
+    var bet_forthhorse = {
+        type: jsPsychAudioSurveyInputResponse,
+        stimulus: descriptions[3], 
+        html: function(){
+          var bet_horse0 = jsPsych.data.get().trials[3].response[horses[0]];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[2].response[horses[0]]}
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[horses[0]]}
+          var bet_horse1 = jsPsych.data.get().trials[3].response[horses[1]];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[2].response[horses[1]]}
+          var bet_horse2 = jsPsych.data.get().trials[3].response[horses[2]];
+          var text = `
+          <div class="container">
+                <div class="item">
+                  <img  class="picture" src="`+ horses[0] +`.jpg">
+                  <p> Money bet on ` + horses[0] + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ horses[0] +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="`+ horses[1] +`.jpg"/>
+                  <p> Money bet on ` + horses[1] + `: `+  bet_horse1 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ horses[1] +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+            <div class="item">
+                <img class="picture" src="`+ horses[2] +`.jpg"/>
+                <p> PMoney bet on ` + horses[2] + `: `+  bet_horse2 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ horses[2] +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+              </div>
+            <div class="item">
+                <img class="picture" src="`+ horses[3] +`_red.jpg"/>
+                <p> Place your bet on `+ horses[3] +`<input name="`+ horses[3] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+            </div>
+          </div>`
+            return text
+          },
+        response_allowed_while_playing: false,
+        on_finish: function(data) {
+          var bet_horse0 = jsPsych.data.get().trials[3].response[horses[0]];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[2].response[horses[0]]}
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[horses[0]]}
+          var bet_horse1 = jsPsych.data.get().trials[3].response[horses[1]];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[2].response[horses[1]]}
+          var bet_horse2 = jsPsych.data.get().trials[3].response[horses[2]];
+          tot = 0
+          tot += parseFloat(bet_horse0);
+          tot += parseFloat(bet_horse1);
+          tot += parseFloat(bet_horse2);
+          tot += parseFloat(data.response[horses[3]]);
+          console.log(tot);
+          jsPsych.data.addProperties({first_bet: tot});
+          jsPsych.data.addProperties({fix_bet: 0});
+          jsPsych.data.addProperties({first_horse: horses[0]});
+          jsPsych.data.addProperties({second_horse: horses[1]});
+          jsPsych.data.addProperties({third_horse: horses[2]});
+          jsPsych.data.addProperties({forth_horse: horses[3]});
           data;
           }
     }
@@ -108,28 +261,38 @@
       type: jsPsychSurveyHtmlForm,
       preamble: function(){
         var horse0_bet = jsPsych.data.getLastTrialData().trials[0].response[horses[0]];
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[3].response[horses[0]]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[2].response[horses[0]]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[1].response[horses[0]]}
         var horse1_bet = jsPsych.data.getLastTrialData().trials[0].response[horses[1]];
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[3].response[horses[1]]}
+        if(horse1_bet == ""){horse1_bet = jsPsych.data.get().trials[2].response[horses[1]]}
         var horse2_bet = jsPsych.data.getLastTrialData().trials[0].response[horses[2]];
+        if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[3].response[horses[2]]}
         var horse3_bet = jsPsych.data.getLastTrialData().trials[0].response[horses[3]];
         var text = '<p> You bet more than your allocated 100 pounds. Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + horses[0] + 
           ', ' + horse1_bet +' on ' + horses[1] +', '+ horse2_bet +' on ' + horses[2] + ' and ' + horse3_bet +' on ' + horses[3] + '.</p>'
         return text
       },
       html: `
-            <div class="row">
-              <div class='column'>
-                <img src="`+ horses[0] +`.jpg"/>
-                <img src="`+ horses[1] +`.jpg"/>
-                <p> Place your bet on `+ horses[0] +` <input name="`+ horses[0] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
-                  Place your bet on `+ horses[1] +`<input name="`+ horses[1] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+          <div class="container">
+                <div class="item">
+                  <img  class="picture" src="`+ horses[0] +`.jpg">
+                  <p> Place your bet on `+ horses[0] +`<input name="`+ horses[0] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="`+ horses[1] +`.jpg"/>
+                  <p> Place your bet on `+ horses[1] +`<input name="`+ horses[1] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+            <div class="item">
+                <img class="picture" src="`+ horses[2] +`.jpg"/>
+                <p> Place your bet on `+ horses[2] +`<input name="`+ horses[2] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
               </div>
-              <div class='column'>
-                <img src="`+ horses[2] +`.jpg"/>
-                <img src="`+ horses[3] +`.jpg"/>
-                <p> Place your bet on `+ horses[2] +` <input name="`+ horses[2] +`" type="number" required max="100" step=".01" min="0" id="bet"/>
-                  Place your bet on `+ horses[3] +`<input name="`+ horses[3] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
-              </div>
-            </div>`,
+            <div class="item">
+                <img class="picture" src="`+ horses[3] +`_red.jpg"/>
+                <p> Place your bet on `+ horses[3] +`<input name="`+ horses[3] +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+            </div>
+          </div>`,
         on_finish: function(data) {
           tot = 0
           tot += parseFloat(data.response.apocalypse);
@@ -141,17 +304,6 @@
           jsPsych.data.addProperties({first_bet: 0});
           }
     }
-
-    // var if_node = {
-    //   timeline: [if_feedback],
-    //   conditional_function: function() {
-    //     if(jsPsych.data.getLastTrialData().trials[0].first_bet < 101){
-    //       return false
-    //     } else {
-    //       return true
-    //     }
-    //   }
-    // }
 
     var loop_feedback = {
       timeline: [if_feedback],
@@ -177,6 +329,6 @@
 
 
 
-    jsPsych.run([before_audio, bet, loop_conditional_feedback]);
+    jsPsych.run([before_audio, bet_firsthorse, bet_secondhorse, bet_thirdhorse, bet_forthhorse, loop_conditional_feedback]);
   </script>
 </html>

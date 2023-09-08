@@ -526,3 +526,21 @@
   display: table;
   clear: both;
 }
+
+.left, .right {
+  display: inline-block;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  justify-items: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.item {
+  text-align: center;
+}
