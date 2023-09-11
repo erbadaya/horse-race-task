@@ -12,22 +12,22 @@
     <script src="https://unpkg.com/@jspsych/plugin-audio-button-response@1.1.2"></script>
     <script src="./create-new-plugin/plugin-audio-survey-input-response.js"></script>
     <script src="./dist/plugin-instructions.js"></script>
-
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="./dist/jspsych.css">
+    <script src="jatos.js"></script>
   </head>
   <body></body>
   <script>
     /* initialize jsPsych */
     var jsPsych = initJsPsych({
       on_finish: function() {
-        jsPsych.data.displayData();
+        var subjectNumber = jatos.workerId;
+        var filedata = jsPsych.data.get().ignore('stimulus').csv();
+        var filename = "ID_"+subjectNumber+jatos.urlQueryParameters.PROLIFIC_PID+".csv";
+        jatos.submitResultData(filedata)
+        jatos.uploadResultFile(filedata, filename)
       }
     });
-
-
-
-    // We want to save the data trial-by-trial, in case something happens to a participant and they cannot finish the experiment
 
     var timeline = [];
     
@@ -250,7 +250,10 @@
                                                                                 list13, list14, list15, list16, list17, list18, list19, list20, list21, list22, list23, list24])[0];
     shuffle(condition_assignment);
 
-
+    var preload = {
+      type: jsPsychPreload,
+      auto_preload: true,
+    };
     // play four audios, and let people answer once the last audio has finished playing. NB all responses are in survey form in javascript and the code is that they can edit their old bets as they listen to new descriptions
     // we have modified the AudioButtonResponse by combining it with the SurveyHtlmForm 
 
@@ -279,17 +282,14 @@
             </div>
           </div>`,
         response_allowed_while_playing: false,
-        on_finish: function(data) {
-          tot = 0
-          tot += parseFloat(data.response.apocalypse);
-          tot += parseFloat(data.response.blackblade);
-          tot += parseFloat(data.response.silversky);
-          tot += parseFloat(data.response.firewalker);
-          console.log(tot);
-          jsPsych.data.addProperties({first_bet: tot});
-          jsPsych.data.addProperties({fix_bet: 0});
-          data;
-          }
+        data: {
+          type: 'firstbet', // for data filtering
+          overbet: 'no',
+          speaker: condition_assignment[0].speaker,
+          delivery: condition_assignment[0].delivery,
+          list: condition_assignment[0].group,
+          horse: condition_assignment[0].horses
+        }
     }
 
     var bet_secondhorse = {
@@ -319,17 +319,14 @@
             return text
           },
         response_allowed_while_playing: false,
-        on_finish: function(data) {
-          tot = 0
-          tot += parseFloat(data.response.apocalypse);
-          tot += parseFloat(data.response.blackblade);
-          tot += parseFloat(data.response.silversky);
-          tot += parseFloat(data.response.firewalker);
-          console.log(tot);
-          jsPsych.data.addProperties({first_bet: tot});
-          jsPsych.data.addProperties({fix_bet: 0});
-          data;
-          }
+        data: {
+          type: 'secondbet', // for data filtering
+          overbet: 'no',
+          speaker: condition_assignment[1].speaker,
+          delivery: condition_assignment[1].delivery,
+          list: condition_assignment[1].group,
+          horse: condition_assignment[1].horses
+        }
     }
 
     var bet_thirdhorse = {
@@ -361,17 +358,14 @@
             return text
           },
         response_allowed_while_playing: false,
-        on_finish: function(data) {
-          tot = 0
-          tot += parseFloat(data.response.apocalypse);
-          tot += parseFloat(data.response.blackblade);
-          tot += parseFloat(data.response.silversky);
-          tot += parseFloat(data.response.firewalker);
-          console.log(tot);
-          jsPsych.data.addProperties({first_bet: tot});
-          jsPsych.data.addProperties({fix_bet: 0});
-          data;
-          }
+        data: {
+          type: 'thirdbet', // for data filtering
+          overbet: 'no',
+          speaker: condition_assignment[2].speaker,
+          delivery: condition_assignment[2].delivery,
+          list: condition_assignment[2].group,
+          horse: condition_assignment[2].horses
+        }
     }
 
     var bet_forthhorse = {
@@ -406,6 +400,14 @@
             return text
           },
         response_allowed_while_playing: false,
+        data: {
+          type: 'forthbet', // for data filtering
+          overbet: 'no',
+          speaker: condition_assignment[3].speaker,
+          delivery: condition_assignment[3].delivery,
+          list: condition_assignment[3].group,
+          horse: condition_assignment[3].horses
+        },
         on_finish: function(data) {
           var bet_horse0 = jsPsych.data.get().trials[3].response[condition_assignment[0].horses];
           if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[2].response[condition_assignment[0].horses]}
@@ -417,11 +419,9 @@
           tot += parseFloat(bet_horse0);
           tot += parseFloat(bet_horse1);
           tot += parseFloat(bet_horse2);
-          tot += parseFloat(data.response[condition_assignment[3].horses]);
-          console.log(tot);
-          jsPsych.data.addProperties({first_bet: tot});
-          jsPsych.data.addProperties({fix_bet: 0});
-          data;
+          tot += parseFloat(data.response[condition_assignment[3].horses])
+          jsPsych.data.addProperties({total_bet: tot});
+          jsPsych.data.addProperties({fixed_bet_over100: 0}); 
           }
     }
 
@@ -463,22 +463,25 @@
                 <p> Place your bet on `+ condition_assignment[3].text +`<input name="`+ condition_assignment[3].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
             </div>
           </div>`,
-        on_finish: function(data) {
-          tot = 0
-          tot += parseFloat(data.response.apocalypse);
-          tot += parseFloat(data.response.blackblade);
-          tot += parseFloat(data.response.silversky);
-          tot += parseFloat(data.response.firewalker);
-          console.log(tot)
-          jsPsych.data.addProperties({fix_bet: tot});
-          jsPsych.data.addProperties({first_bet: 0});
+          data: {
+            type: 'overbet', // for data filtering
+            overbet: 'yes'
+        },
+          on_finish: function(data) {
+          tot_fix = 0
+          tot_fix += parseFloat(data.response.apocalypse);
+          tot_fix += parseFloat(data.response.blackblade);
+          tot_fix += parseFloat(data.response.silversky);
+          tot_fix += parseFloat(data.response.firewalker);
+          jsPsych.data.addProperties({fixed_bet_over100: tot_fix});
+          jsPsych.data.addProperties({total_bet: 0});
           }
     }
 
     var loop_feedback = {
       timeline: [if_feedback],
       loop_function: function() {
-        if(jsPsych.data.getLastTrialData().trials[0].fix_bet < 101 && jsPsych.data.getLastTrialData().trials[0].first_bet < 101){
+        if(jsPsych.data.getLastTrialData().trials[0].fixed_bet_over100 < 101 && jsPsych.data.getLastTrialData().trials[0].total_bet < 101){
           return false
         } else {
           return true
@@ -489,7 +492,7 @@
     var loop_conditional_feedback = {
       timeline: [loop_feedback],
       conditional_function: function() {
-        if(jsPsych.data.getLastTrialData().trials[0].fix_bet < 101 && jsPsych.data.getLastTrialData().trials[0].first_bet < 101){
+        if(jsPsych.data.getLastTrialData().trials[0].fixed_bet_over100 < 101 && jsPsych.data.getLastTrialData().trials[0].total_bet < 101){
           return false
         } else {
           return true
@@ -498,7 +501,8 @@
     };
 
 
-
-    jsPsych.run([before_audio, bet_firsthorse, bet_secondhorse, bet_thirdhorse, bet_forthhorse, loop_conditional_feedback]);
+    jatos.onLoad(() => {
+    jsPsych.run([preload, bet_firsthorse, bet_secondhorse, bet_thirdhorse, bet_forthhorse, loop_conditional_feedback])
+  });
   </script>
 </html>
