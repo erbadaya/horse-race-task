@@ -57,6 +57,8 @@
     }
 
     // presentation of stimuli
+    // random allocation by group is done via JATOS
+    // so each code here has a different set of stimuli, one per list
 
     var list1 = [
         {descriptions: 'sounds/critical_apocalypse_native_fluent.mp3', horses: 'apocalypse', text: 'Apocalypse', group: '1', speaker: 'native', delivery: 'fluent'},
@@ -415,7 +417,7 @@
           tot += parseFloat(bet_horse0);
           tot += parseFloat(bet_horse1);
           tot += parseFloat(bet_horse2);
-          tot += parseFloat(data.response[horses[3]]);
+          tot += parseFloat(data.response[condition_assignment[3].horses]);
           console.log(tot);
           jsPsych.data.addProperties({first_bet: tot});
           jsPsych.data.addProperties({fix_bet: 0});
