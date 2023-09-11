@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@7.3.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey@0.2.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-audio-keyboard-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-audio-button-response@1.1.2"></script>
+    <script src="./modified-plugin/plugin-audio-survey-input-response.js"></script> 
+    <script src="https://unpkg.com/@jspsych/plugin-survey-likert@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <script src="./dist/plugin-instructions.js"></script>
+    <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="./dist/jspsych.css">
+    <script src="jatos.js"></script>
+  </head>
+  <body></body>
+  <script>
+
+    /* functions */
+
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex > 0) {
+
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
+    };
+
+    // presentation of stimuli
+    // random allocation by group is done via JATOS
+    // so each code here has a different set of stimuli, one per list
+
+    var list15 = [
+        {descriptions: 'sounds/critical_apocalypse_nonnative_fluent.mp3', horses: 'apocalypse', text: 'Apocalypse', group: '15', speaker: 'nonnative', delivery: 'fluent'},
+        {descriptions: 'sounds/critical_firewalker_native_fluent.mp3', horses: 'firewalker', text: 'Fire Walker', group: '15', speaker: 'native', delivery: 'fluent'},
+        {descriptions: 'sounds/critical_blackblade_nonnative_disfluent.mp3', horses: 'blackblade', text: 'Black Blade', group: '15', speaker: 'nonnative', delivery: 'disfluent'},
+        {descriptions: 'sounds/critical_silversky_native_disfluent.mp3', horses: 'silversky', text: 'Silver Sky', group: '15', speaker: 'native', delivery: 'disfluent'}
+    ];
+
+
+    var condition_assignment = list1;
+
+    shuffle(condition_assignment);
+
+    /* initialize jsPsych */
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        var subjectNumber = jatos.workerId;
+        var filedata = jsPsych.data.get().ignore('stimulus').csv();
+        var filename = "ID_"+subjectNumber+jatos.urlQueryParameters.PROLIFIC_PID+".csv";
+        jatos.submitResultData(filedata)
+        jatos.uploadResultFile(filedata, filename)
+      }
+    });
+
+    var timeline = [];
+
+    // text screens
+
+    // We need to check that they meet our criteria, otherwise they are re-directed outside of the experiment and back to Prolific where they are asked to return their submission
+    // Alternatively we could do this on Testable and then re-direct them here? 
+
+    var check_criteria = {
+      type: jsPsychSurvey,
+        pages: [
+            [{type: 'text', prompt: 'What is your Prolific ID?', placeholder: "", name: 'prolific_id'}],
+            [
+                {type:'multi-choice',
+                prompt: 'Were you born and raised in the United Kingdom?',
+                options: ["Yes", "No"],
+                correct_response: "Yes",
+                required: true,
+                name: 'uk_origin'},
+              ],
+              [{type:'multi-choice',
+                prompt: 'Do you currently live in the United Kingdom?',
+                options: ["No", "Yes"],
+                correct_response: "Yes",
+                required: true,
+                name: 'uk_live'},],
+              [{type:'multi-choice',
+                prompt: 'Is English your first language? If you learnt any other language before the age of six, because someone spoke to you in a language other than English, the answer is \'No\'.',
+                options: ["Yes", "No"],
+                correct_response: "Yes",
+                required: true,
+                name: 'english_l1'},]
+              ],
+        on_finish: function(data){
+            if(data.accuracy[0].uk_origin && data.accuracy[1].uk_live && data.accuracy[2].english_l1){
+              proceed = 'yes'; // not working atm \_o.o_/
+            } else {
+              proceed = 'no';
+            }
+          }
+    };
+
+
+    var no_criteria = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<p> Unfortunately, you do not meet the criteria to take part in the experiment.<p>' +
+            'Only participants who reported being born and raised, and currently residing in the United Kingdom, with English as a first language, and no knowledge of any other language on Prolific are allowed to take part in this experiment. <br> <br> Please, <a href="https://app.prolific.co/submissions/complete?cc=C8J1HJFX">click here to </a>return your submission on Prolific as the information you gave on the platform does not meet your answers to the questions in our experiment.'
+    };
+
+    var conditional_outcriteria = {
+        timeline: [no_criteria],
+        conditional_function: function(){
+            if(proceed == 'yes'){
+                return false;
+            } else {
+                return true;
+            }
+    }
+    };
+
+    var welcome_screen = {
+      type: jsPsychInstructions,
+      pages: [
+        'In this experiment, you will listen to a series of speaker providing descriptions about horses. Because the experiment relies on you listening to audios, <b> it works best if you are in a quiet place, and wear headphones. </b> If you don\'t have headphones, earbuds or decent computer speakers would be helpful. <br> Please decide on what you are doing to use, and check that your sound is working properly, before continuing to the next page.'
+      ],
+      show_clickable_nav: true
+    };
+
+    // check that headphones are on
+    var check_headphones = {
+        type: jsPsychAudioButtonResponse,
+        stimulus:  'sounds/adjust_volume.mp3',
+        prompt: 'Please adjust your volume and follow the audio instruction. You will only hear this audio once.',
+        choices: ['T', 'M', 'Q', 'H', 'X', 'W', 'S', 'P'],
+        response_allowed_while_playing: false,
+        on_finish: function(data) {
+            if(data.response == 2){
+              data.correct = true;
+              headphones = 'yes' // not working atm \_o.o_/
+            } else {
+              data.correct = false;
+              headphones = 'no'
+            }
+          }
+    };
+
+    var no_headphones = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<p> You failed the attention check as you did not follow the instructions in the audio.<p>' +
+            'Please, <a href="https://app.prolific.co/submissions/complete?cc=CPA7W0TO">click here to </a>return your submission on Prolific.'
+    };
+
+    var conditional_outheadphones = {
+        timeline: [no_headphones],
+        conditional_function: function(){
+            if(headphones == 'yes'){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    };
+
+
+    // introduce speakers
+
+    var introduction_speakers = {
+      type: jsPsychInstructions,
+      pages: [
+        'We have received information from the UK and Italy\'s leading horse racing tipsters, Lauren Waterstone and Marila Fiammetta, about the upcoming \'Scottish Flat Season Finale\' race next Monday, 16th October at Musselburgh Racecourse (Edinburgh). <br> Ms Waterstone and Ms Fiammetta are highly respected tipsters amongst the horse racing elites in the UK and Italy. Both have achieved an outstanding level of performance that marks them as the very best in the game. They currently stand undefeated, having had an unbeatable strike of consecutive wins since 2021. We are truly honoured to have received information from Ms Waterstone and Ms Fiammetta on the 4 most popular horses running at Musselburgh in October. Click \'NEXT\' to continue.'
+      ],
+      show_clickable_nav: true
+    }
+
+    var preload = {
+      type: jsPsychPreload,
+      auto_preload: true,
+    };
+    // play four audios, and let people answer once the last audio has finished playing. NB all responses are in survey form in javascript and the code is that they can edit their old bets as they listen to new descriptions
+    // we have modified the AudioButtonResponse by combining it with the SurveyHtlmForm 
+
+    // if we do this the only issue is that we force participants to re-write unless we write the code
+    // We do that by 1) only forcing an answer in the horse being described in each trial, the code works so that it will always show the latest value input 
+    var bet_firsthorse = {
+        type: jsPsychAudioSurveyInputResponse,
+        stimulus: condition_assignment[0].descriptions, 
+        html: `
+        <div class="container">
+                <div class="item">
+                  <img  class="picture" src="img/`+ condition_assignment[0].horses +`_red.jpg">
+                  <p> Place your bet on `+ condition_assignment[0].text +` <input name="`+ condition_assignment[0].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/> </p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
+                  <p> You will listen this horse's description next.</p>
+                </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
+                <p> Wait for its turn.</p>
+              </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
+                <p> Wait for its turn.</p>
+            </div>
+          </div>`,
+        response_allowed_while_playing: false,
+        data: {
+          type: 'firstbet', // for data filtering
+          overbet: 'no',
+          speaker: condition_assignment[0].speaker,
+          delivery: condition_assignment[0].delivery,
+          list: condition_assignment[0].group,
+          horse: condition_assignment[0].horses
+        }
+    }
+
+    var bet_secondhorse = {
+        type: jsPsychAudioSurveyInputResponse,
+        stimulus: condition_assignment[1].descriptions, 
+        html: function(data){
+          var bet_horse0 = jsPsych.data.get().trials[1].response[condition_assignment[0].horses];
+          var text = `
+          <div class="container">
+                <div class="item">
+                  <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
+                  <p> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="img/`+ condition_assignment[1].horses +`_red.jpg"/>
+                  <p> Place your bet on `+ condition_assignment[1].text +`<input name="`+ condition_assignment[1].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
+                <p> You will listen this horse's description next.</p>
+              </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
+                <p> Wait for its turn.</p>
+            </div>
+          </div>`
+            return text
+          },
+        response_allowed_while_playing: false,
+        data: {
+          type: 'secondbet', // for data filtering
+          overbet: 'no',
+          speaker: condition_assignment[1].speaker,
+          delivery: condition_assignment[1].delivery,
+          list: condition_assignment[1].group,
+          horse: condition_assignment[1].horses
+        }
+    }
+
+    var bet_thirdhorse = {
+        type: jsPsychAudioSurveyInputResponse,
+        stimulus: condition_assignment[2].descriptions, 
+        html: function(){
+          var bet_horse0 = jsPsych.data.get().trials[2].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[condition_assignment[0].horses]}
+          var bet_horse1 = jsPsych.data.get().trials[2].response[condition_assignment[1].horses];
+          var text = `
+          <div class="container">
+                <div class="item">
+                  <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
+                  <p> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
+                  <p> Money bet on ` + condition_assignment[1].text + `: `+  bet_horse1 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[1].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[2].horses +`_red.jpg"/>
+                <p> Place your bet on `+ condition_assignment[2].text +` <input name="`+ condition_assignment[2].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/> </p>
+              </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
+                <p> You will listen this horse's description next.</p>
+            </div>
+          </div>`
+            return text
+          },
+        response_allowed_while_playing: false,
+        data: {
+          type: 'thirdbet', // for data filtering
+          overbet: 'no',
+          speaker: condition_assignment[2].speaker,
+          delivery: condition_assignment[2].delivery,
+          list: condition_assignment[2].group,
+          horse: condition_assignment[2].horses
+        }
+    }
+
+    var bet_forthhorse = {
+        type: jsPsychAudioSurveyInputResponse,
+        stimulus: condition_assignment[3].descriptions, 
+        html: function(){
+          var bet_horse0 = jsPsych.data.get().trials[3].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[2].response[condition_assignment[0].horses]}
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[condition_assignment[0].horses]}
+          var bet_horse1 = jsPsych.data.get().trials[3].response[condition_assignment[1].horses];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[2].response[condition_assignment[1].horses]}
+          var bet_horse2 = jsPsych.data.get().trials[3].response[condition_assignment[2].horses];
+          var text = `
+          <div class="container">
+                <div class="item">
+                  <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
+                  <p> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
+                  <p> Money bet on ` + condition_assignment[1].text + `: `+  bet_horse1 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[1].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
+                <p> PMoney bet on ` + condition_assignment[2].text + `: `+  bet_horse2 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[2].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+              </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[3].horses +`_red.jpg"/>
+                <p> Place your bet on `+ condition_assignment[3].text +`<input name="`+ condition_assignment[3].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+            </div>
+          </div>`
+            return text
+          },
+        response_allowed_while_playing: false,
+        data: {
+          type: 'forthbet', // for data filtering
+          overbet: 'no',
+          speaker: condition_assignment[3].speaker,
+          delivery: condition_assignment[3].delivery,
+          list: condition_assignment[3].group,
+          horse: condition_assignment[3].horses
+        },
+        on_finish: function(data) {
+          var bet_horse0 = jsPsych.data.get().trials[3].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[2].response[condition_assignment[0].horses]}
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[condition_assignment[0].horses]}
+          var bet_horse1 = jsPsych.data.get().trials[3].response[condition_assignment[1].horses];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[2].response[condition_assignment[1].horses]}
+          var bet_horse2 = jsPsych.data.get().trials[3].response[condition_assignment[2].horses];
+          tot = 0
+          tot += parseFloat(bet_horse0);
+          tot += parseFloat(bet_horse1);
+          tot += parseFloat(bet_horse2);
+          tot += parseFloat(data.response[condition_assignment[3].horses])
+          jsPsych.data.addProperties({total_bet: tot});
+          jsPsych.data.addProperties({fixed_bet_over100: 0}); 
+          }
+    }
+
+    // If participants bet more than 100 pounds, ask them again until their bet is lower than 100. In this rounds, they cannot listen to the audio.
+
+    var if_feedback = {
+      type: jsPsychSurveyHtmlForm,
+      preamble: function(){
+        var horse0_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[0].horses];
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[3].response[condition_assignment[0].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[2].response[condition_assignment[0].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[1].response[condition_assignment[0].horses]}
+        var horse1_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[1].horses];
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[3].response[condition_assignment[1].horses]}
+        if(horse1_bet == ""){horse1_bet = jsPsych.data.get().trials[2].response[condition_assignment[1].horses]}
+        var horse2_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[2].horses];
+        if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[3].response[condition_assignment[2].horses]}
+        var horse3_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[3].horses];
+        var text = '<p> You bet more than your allocated 100 pounds. Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + condition_assignment[0].text + 
+          ', ' + horse1_bet +' on ' + condition_assignment[1].text +', '+ horse2_bet +' on ' + condition_assignment[2].text + ' and ' + horse3_bet +' on ' + condition_assignment[3].text + '.</p>'
+        return text
+      },
+      html: `
+          <div class="container">
+                <div class="item">
+                  <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
+                  <p> Place your bet on `+ condition_assignment[0].text +`<input name="`+ condition_assignment[0].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+                <div class="item">
+                  <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
+                  <p> Place your bet on `+ condition_assignment[1].text +`<input name="`+ condition_assignment[1].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
+                <p> Place your bet on `+ condition_assignment[2].text +`<input name="`+ condition_assignment[2].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+              </div>
+            <div class="item">
+                <img class="picture" src="img/`+ condition_assignment[3].horses +`_red.jpg"/>
+                <p> Place your bet on `+ condition_assignment[3].text +`<input name="`+ condition_assignment[3].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+            </div>
+          </div>`,
+          data: {
+            type: 'overbet', // for data filtering
+            overbet: 'yes'
+        },
+          on_finish: function(data) {
+          tot_fix = 0
+          tot_fix += parseFloat(data.response.apocalypse);
+          tot_fix += parseFloat(data.response.blackblade);
+          tot_fix += parseFloat(data.response.silversky);
+          tot_fix += parseFloat(data.response.firewalker);
+          jsPsych.data.addProperties({fixed_bet_over100: tot_fix});
+          jsPsych.data.addProperties({total_bet: 0});
+          }
+    }
+
+    var loop_feedback = {
+      timeline: [if_feedback],
+      loop_function: function() {
+        if(jsPsych.data.getLastTrialData().trials[0].fixed_bet_over100 < 101 && jsPsych.data.getLastTrialData().trials[0].total_bet < 101){
+          return false
+        } else {
+          return true
+        }
+      }
+    };
+
+    var loop_conditional_feedback = {
+      timeline: [loop_feedback],
+      conditional_function: function() {
+        if(jsPsych.data.getLastTrialData().trials[0].fixed_bet_over100 < 101 && jsPsych.data.getLastTrialData().trials[0].total_bet < 101){
+          return false
+        } else {
+          return true
+        }
+      }
+    };
+
+    // !! need to randomise within attitude questionnaires and order of presentation
+
+    const lang_attitude_native1 = {
+        type: jsPsychSurvey,
+        pages: [[
+            {type: 'html',prompt: 'This questions are about the native speaker.',},
+            {type: 'likert',prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_native', likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
+            {type: 'likert',prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
+            {type: 'likert',prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
+            {type: 'likert',prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
+            {type: 'likert',prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
+            {type: 'likert',prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
+            ],[
+            {type: 'html',prompt: 'This questions are about the native speaker.',},
+            {type: 'likert',prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
+            {type: 'likert',prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
+            {type: 'likert',prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
+            {type: 'likert',prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
+            {type: 'likert',prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
+        ], [
+            {type: 'html',prompt: 'This questions are about the native speaker.',},
+            {type: 'likert',prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
+            {type: 'likert',prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
+            {type: 'likert',prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
+            {type: 'likert',prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
+            {type: 'likert',prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
+        ], [
+            {type: 'html',prompt: 'This questions are about the native speaker.',},
+            {type: 'likert',prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
+            {type: 'likert',prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
+            {type: 'likert',prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
+            {type: 'likert',prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
+        ]]
+    };
+    
+    const lang_attitude_nonnative1 = {
+        type: jsPsychSurvey,
+        pages: [[
+            {type: 'html',prompt: 'This questions are about the non-native speaker.',},
+            {type: 'likert',prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
+            {type: 'likert',prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
+            {type: 'likert',prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
+            {type: 'likert',prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
+            {type: 'likert',prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
+            {type: 'likert',prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
+        ],[
+            {type: 'html',prompt: 'This questions are about the non-native speaker.',},
+            {type: 'likert',prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
+            {type: 'likert',prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
+            {type: 'likert',prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
+            {type: 'likert',prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
+            {type: 'likert',prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
+        ], [
+            {type: 'html',prompt: 'This questions are about the non-native speaker.',},
+            {type: 'likert',prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
+            {type: 'likert',prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
+            {type: 'likert',prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
+            {type: 'likert',prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
+            {type: 'likert',prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
+        ],[
+            {type: 'html',prompt: 'This questions are about the non-native speaker.',},
+            {type: 'likert',prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
+            {type: 'likert',prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
+            {type: 'likert',prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
+            {type: 'likert',prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_nonnative',likert_scale_max: 10,likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
+        ]]
+    };
+
+    const extra_questions = {
+        type: jsPsychSurvey,
+        pages: [
+            [
+                {type: 'html',
+                prompt: 'Please answer the following questions',
+                },
+                {type: 'likert',
+                prompt: 'How used are you to foreign-accented speech in your daily life? Please, rate your daily exposure on a scale from 1 (none) to 10 (always).',
+                name: 'exposure_nn',
+                likert_scale_max: 10,
+                likert_scale_min: 0,
+                required: true},
+                {type: 'likert',
+                prompt: 'How used are you to British-accented English? Please, rate your daily exposure on a scale from 1 (none) to 10 (always).',
+                name: 'exposure_n',
+                likert_scale_max: 10,
+                likert_scale_min: 0,
+                required: true},
+                {type: 'html',
+                prompt: 'The following questions are about your previous betting behaviours.',
+                },
+                {type:'multi-choice',
+                prompt: 'Have you ever bet on horse races in the past?',
+                options: ["Yes", "No"],
+                correct_response: "Yes",
+                required: true},
+                {type: 'likert',
+                prompt: 'How much do you agree with the statement \'I am an expert in horse races\'?',
+                likert_scale_values: [{value: 1, text: 'Strongly disagree'},
+                                        {value: 2, text: 'Somewhat disagree'},
+                                        {value: 3, text: 'Neither disagree nor agree'},
+                                        {value: 4, text: 'Somewhat agree'},
+                                        {value: 5, text: 'Strongly agree'}],
+                required: true}
+            ],[
+                {type: 'html',
+                prompt: 'The following questions are about the study you just completed (i.e., the horse betting).'},
+                {type: 'likert',
+                prompt: 'How natural did the recordings of the <b>native speaker</b> sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
+                likert_scale_max: 9,
+                likert_scale_min: 0,
+                name: 'naturalness_native',
+                required: true},
+                {type: 'likert',
+                prompt: 'How natural did the recordings of the <b>non-native speaker</b> sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
+                likert_scale_max: 9,
+                likert_scale_min: 0,
+                name: 'naturalness_nonnative',
+                required: true},
+                {type: 'text',
+                prompt: 'What do you think the aim of the experiment is?',
+                placeholder: "",
+                required: true
+                },
+                {type: 'text',
+                prompt: 'If you want to share your opinion with us, please do it here.',
+                placeholder: ''}
+            ]    
+
+            ],
+        button_label_next: 'Continue',
+        button_label_finish: 'Submit'
+    };
+
+    const survey_procedure_nat = {
+        timeline: [lang_attitude_native1],
+        randomize_order: true
+    };
+
+    const survey_procedure_non = {
+        timeline: [lang_attitude_nonnative1],
+        randomize_order: true
+    };
+
+    jatos.onLoad(() => {
+    jsPsych.run([check_criteria, conditional_outcriteria, welcome_screen, check_headphones, conditional_outheadphones,
+    preload, bet_firsthorse, bet_secondhorse, bet_thirdhorse, bet_forthhorse, loop_conditional_feedback, 
+      survey_procedure_nat, survey_procedure_non, extra_questions])
+  });
+  </script>
+</html>
+    
