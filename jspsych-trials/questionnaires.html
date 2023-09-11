@@ -160,11 +160,16 @@
         button_label_finish: 'Submit'
     };
 
-    const survey_procedure = {
+    const survey_procedure_nat = {
         timeline: [lang_attitude_native1],
         randomize_order: true
+    };
+
+    const survey_procedure_non = {
+        timeline: [lang_attitude_nonnative1],
+        randomize_order: true
     }
-    jsPsych.run([before_audio, survey_procedure]);
+    jsPsych.run([before_audio, survey_procedure_nat, survey_procedure_non, extra_questions]);
 
   </script>
 </html>
