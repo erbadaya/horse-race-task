@@ -15,6 +15,7 @@
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
     <script src="./dist/plugin-instructions.js"></script>
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.2.1/css/survey.css">
     <link rel="stylesheet" href="./dist/jspsych.css">
     <script src="jatos.js"></script>
   </head>
@@ -52,7 +53,7 @@
         {descriptions: 'sounds/critical_silversky_nonnative_disfluent.mp3', horses: 'silversky', text: 'Silver Sky', group: '7', speaker: 'nonnative', delivery: 'disfluent'}
     ];
 
-    var condition_assignment = list1;
+    var condition_assignment = list7;
 
     shuffle(condition_assignment);
 
@@ -137,7 +138,7 @@
     // check that headphones are on
     var check_headphones = {
         type: jsPsychAudioButtonResponse,
-        stimulus:  'sounds/adjust_volume.mp3',
+        stimulus: 'sounds/adjust_volume.mp3',
         prompt: 'Please adjust your volume and follow the audio instruction. You will only hear this audio once.',
         choices: ['T', 'M', 'Q', 'H', 'X', 'W', 'S', 'P'],
         response_allowed_while_playing: false,
@@ -226,7 +227,7 @@
         type: jsPsychAudioSurveyInputResponse,
         stimulus: condition_assignment[1].descriptions, 
         html: function(data){
-          var bet_horse0 = jsPsych.data.get().trials[1].response[condition_assignment[0].horses];
+          var bet_horse0 = jsPsych.data.get().trials[5].response[condition_assignment[0].horses];
           var text = `
           <div class="container">
                 <div class="item">
@@ -235,7 +236,7 @@
                 </div>
                 <div class="item">
                   <img class="picture" src="img/`+ condition_assignment[1].horses +`_red.jpg"/>
-                  <p> Place your bet on `+ condition_assignment[1].text +`<input name="`+ condition_assignment[1].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                  <p> Place your bet on `+ condition_assignment[1].text +` <input name="`+ condition_assignment[1].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
                 </div>
             <div class="item">
                 <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
@@ -263,9 +264,9 @@
         type: jsPsychAudioSurveyInputResponse,
         stimulus: condition_assignment[2].descriptions, 
         html: function(){
-          var bet_horse0 = jsPsych.data.get().trials[2].response[condition_assignment[0].horses];
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[condition_assignment[0].horses]}
-          var bet_horse1 = jsPsych.data.get().trials[2].response[condition_assignment[1].horses];
+          var bet_horse0 = jsPsych.data.get().trials[6].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[5].response[condition_assignment[0].horses]}
+          var bet_horse1 = jsPsych.data.get().trials[6].response[condition_assignment[1].horses];
           var text = `
           <div class="container">
                 <div class="item">
@@ -302,12 +303,12 @@
         type: jsPsychAudioSurveyInputResponse,
         stimulus: condition_assignment[3].descriptions, 
         html: function(){
-          var bet_horse0 = jsPsych.data.get().trials[3].response[condition_assignment[0].horses];
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[2].response[condition_assignment[0].horses]}
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[condition_assignment[0].horses]}
-          var bet_horse1 = jsPsych.data.get().trials[3].response[condition_assignment[1].horses];
-          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[2].response[condition_assignment[1].horses]}
-          var bet_horse2 = jsPsych.data.get().trials[3].response[condition_assignment[2].horses];
+          var bet_horse0 = jsPsych.data.get().trials[7].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[6].response[condition_assignment[0].horses]}
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[5].response[condition_assignment[0].horses]}
+          var bet_horse1 = jsPsych.data.get().trials[7].response[condition_assignment[1].horses];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[6].response[condition_assignment[1].horses]}
+          var bet_horse2 = jsPsych.data.get().trials[7].response[condition_assignment[2].horses];
           var text = `
           <div class="container">
                 <div class="item">
@@ -324,7 +325,7 @@
               </div>
             <div class="item">
                 <img class="picture" src="img/`+ condition_assignment[3].horses +`_red.jpg"/>
-                <p> Place your bet on `+ condition_assignment[3].text +`<input name="`+ condition_assignment[3].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                <p> Place your bet on `+ condition_assignment[3].text +` <input name="`+ condition_assignment[3].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
             </div>
           </div>`
             return text
@@ -339,12 +340,12 @@
           horse: condition_assignment[3].horses
         },
         on_finish: function(data) {
-          var bet_horse0 = jsPsych.data.get().trials[3].response[condition_assignment[0].horses];
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[2].response[condition_assignment[0].horses]}
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[1].response[condition_assignment[0].horses]}
-          var bet_horse1 = jsPsych.data.get().trials[3].response[condition_assignment[1].horses];
-          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[2].response[condition_assignment[1].horses]}
-          var bet_horse2 = jsPsych.data.get().trials[3].response[condition_assignment[2].horses];
+          var bet_horse0 = jsPsych.data.get().trials[7].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[6].response[condition_assignment[0].horses]}
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[5].response[condition_assignment[0].horses]}
+          var bet_horse1 = jsPsych.data.get().trials[7].response[condition_assignment[1].horses];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[6].response[condition_assignment[1].horses]}
+          var bet_horse2 = jsPsych.data.get().trials[7].response[condition_assignment[2].horses];
           tot = 0
           tot += parseFloat(bet_horse0);
           tot += parseFloat(bet_horse1);
@@ -361,14 +362,14 @@
       type: jsPsychSurveyHtmlForm,
       preamble: function(){
         var horse0_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[0].horses];
-        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[3].response[condition_assignment[0].horses]}
-        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[2].response[condition_assignment[0].horses]}
-        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[1].response[condition_assignment[0].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[7].response[condition_assignment[0].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[6].response[condition_assignment[0].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[5].response[condition_assignment[0].horses]}
         var horse1_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[1].horses];
-        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[3].response[condition_assignment[1].horses]}
-        if(horse1_bet == ""){horse1_bet = jsPsych.data.get().trials[2].response[condition_assignment[1].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[7].response[condition_assignment[1].horses]}
+        if(horse1_bet == ""){horse1_bet = jsPsych.data.get().trials[6].response[condition_assignment[1].horses]}
         var horse2_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[2].horses];
-        if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[3].response[condition_assignment[2].horses]}
+        if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[7].response[condition_assignment[2].horses]}
         var horse3_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[3].horses];
         var text = '<p> You bet more than your allocated 100 pounds. Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + condition_assignment[0].text + 
           ', ' + horse1_bet +' on ' + condition_assignment[1].text +', '+ horse2_bet +' on ' + condition_assignment[2].text + ' and ' + horse3_bet +' on ' + condition_assignment[3].text + '.</p>'
@@ -435,66 +436,66 @@
     const lang_attitude_native1 = {
         type: jsPsychSurvey,
         pages: [[
-            {type: 'html',prompt: 'This questions are about the native speaker.',},
-            {type: 'likert',prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_native', likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
-            {type: 'likert',prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
-            {type: 'likert',prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
-            {type: 'likert',prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
-            {type: 'likert',prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
-            {type: 'likert',prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
+            {type: 'html',prompt: 'These questions are about the <b>native</b> speaker.',},
+            {type: 'likert',prompt: 'How irritated did you feel when you listened to this speaker?',required: true,name: 'irritated_native', likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
+            {type: 'likert',prompt: 'How interested did you feel when you listened to this speaker?',required: true,name: 'interested_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
+            {type: 'likert',prompt: 'How enthusiastic did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
+            {type: 'likert',prompt: 'How frustrated did you feel when you listened to this speaker? ',required: true,name: 'frustrated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
+            {type: 'likert',prompt: 'How annoyed did you feel when you listened to this speaker?',required: true,name: 'annoyed_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
+            {type: 'likert',prompt: 'How happy did you feel when you listened to this speaker? ',required: true,name: 'happy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
             ],[
-            {type: 'html',prompt: 'This questions are about the native speaker.',},
-            {type: 'likert',prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
-            {type: 'likert',prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
-            {type: 'likert',prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
-            {type: 'likert',prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
-            {type: 'likert',prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
+            {type: 'html',prompt: 'These questions are about the <b>native</b> speaker.',},
+            {type: 'likert',prompt: 'How competent did you find this speaker? ',required: true,name: 'competent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
+            {type: 'likert',prompt: 'How smart did you find this speaker? ',required: true,name: 'smart_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
+            {type: 'likert',prompt: 'How educated did you find this speaker?',required: true,name: 'educated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
+            {type: 'likert',prompt: 'How intelligent did you find this speaker?',required: true,name: 'intelligent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
+            {type: 'likert',prompt: 'How successful did you find this speaker?',required: true,name: 'successful_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
         ], [
-            {type: 'html',prompt: 'This questions are about the native speaker.',},
-            {type: 'likert',prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
-            {type: 'likert',prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
-            {type: 'likert',prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
-            {type: 'likert',prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
-            {type: 'likert',prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
+            {type: 'html',prompt: 'These questions are about the <b>native</b> speaker.',},
+            {type: 'likert',prompt: 'How sociable did you find this speaker?',required: true,name: 'sociable_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
+            {type: 'likert',prompt: 'How friendly did you find this speaker?',required: true,name: 'friendly_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
+            {type: 'likert',prompt: 'How nice did you find this speaker? ',required: true,name: 'nice_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
+            {type: 'likert',prompt: 'How honest did you find this speaker?',required: true,name: 'honest_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
+            {type: 'likert',prompt: 'How pleasant did you find this speaker?',required: true,name: 'pleasant_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
         ], [
-            {type: 'html',prompt: 'This questions are about the native speaker.',},
-            {type: 'likert',prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
-            {type: 'likert',prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
-            {type: 'likert',prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
-            {type: 'likert',prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
+            {type: 'html',prompt: 'These questions are about the <b>native</b> speaker.',},
+            {type: 'likert',prompt: 'How trustworthy was this speaker? ',required: true,name: 'trustworthy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
+            {type: 'likert',prompt: 'How easy was it to understand this speaker?',required: true,name: 'easy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
+            {type: 'likert',prompt: 'How fluent was this speaker?  ',required: true,name: 'fluent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
+            {type: 'likert',prompt: 'How strong was this speaker\'s accent? ',required: true,name: 'strong_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
         ]]
     };
     
     const lang_attitude_nonnative1 = {
         type: jsPsychSurvey,
         pages: [[
-            {type: 'html',prompt: 'This questions are about the non-native speaker.',},
-            {type: 'likert',prompt: 'How <b>irritated</b> did you feel when you listened to this speaker?',required: true,name: 'irritated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
-            {type: 'likert',prompt: 'How <b>interested</b> did you feel when you listened to this speaker?',required: true,name: 'interested_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
-            {type: 'likert',prompt: 'How <b>enthusiastic</b> did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
-            {type: 'likert',prompt: 'How <b>frustrated</b> did you feel when you listened to this speaker? ',required: true,name: 'frustrated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
-            {type: 'likert',prompt: 'How <b>annoyed</b> did you feel when you listened to this speaker?',required: true,name: 'annoyed_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
-            {type: 'likert',prompt: 'How <b>happy</b> did you feel when you listened to this speaker? ',required: true,name: 'happy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
+            {type: 'html',prompt: 'These questions are about the <b>non-native</b> speaker.',},
+            {type: 'likert',prompt: 'How irritated did you feel when you listened to this speaker?',required: true,name: 'irritated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
+            {type: 'likert',prompt: 'How interested did you feel when you listened to this speaker?',required: true,name: 'interested_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
+            {type: 'likert',prompt: 'How enthusiastic did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
+            {type: 'likert',prompt: 'How frustrated did you feel when you listened to this speaker? ',required: true,name: 'frustrated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
+            {type: 'likert',prompt: 'How annoyed did you feel when you listened to this speaker?',required: true,name: 'annoyed_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
+            {type: 'likert',prompt: 'How happy did you feel when you listened to this speaker? ',required: true,name: 'happy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
         ],[
-            {type: 'html',prompt: 'This questions are about the non-native speaker.',},
-            {type: 'likert',prompt: 'How <b>competent</b> did you find this speaker? ',required: true,name: 'competent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
-            {type: 'likert',prompt: 'How <b>smart</b> did you find this speaker? ',required: true,name: 'smart_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
-            {type: 'likert',prompt: 'How <b>educated</b> did you find this speaker?',required: true,name: 'educated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
-            {type: 'likert',prompt: 'How <b>intelligent</b> did you find this speaker?',required: true,name: 'intelligent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
-            {type: 'likert',prompt: 'How <b>successful</b> did you find this speaker?',required: true,name: 'successful_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
+            {type: 'html',prompt: 'These questions are about the <b>non-native</b> speaker.',},
+            {type: 'likert',prompt: 'How competent did you find this speaker? ',required: true,name: 'competent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
+            {type: 'likert',prompt: 'How smart did you find this speaker? ',required: true,name: 'smart_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
+            {type: 'likert',prompt: 'How educated did you find this speaker?',required: true,name: 'educated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
+            {type: 'likert',prompt: 'How intelligent did you find this speaker?',required: true,name: 'intelligent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
+            {type: 'likert',prompt: 'How successful did you find this speaker?',required: true,name: 'successful_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
         ], [
-            {type: 'html',prompt: 'This questions are about the non-native speaker.',},
-            {type: 'likert',prompt: 'How <b>sociable</b> did you find this speaker?',required: true,name: 'sociable_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
-            {type: 'likert',prompt: 'How <b>friendly</b> did you find this speaker?',required: true,name: 'friendly_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
-            {type: 'likert',prompt: 'How <b>nice</b> did you find this speaker? ',required: true,name: 'nice_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
-            {type: 'likert',prompt: 'How <b>honest</b> did you find this speaker?',required: true,name: 'honest_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
-            {type: 'likert',prompt: 'How <b>pleasant</b> did you find this speaker?',required: true,name: 'pleasant_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
+            {type: 'html',prompt: 'These questions are about the <b>non-native</b> speaker.',},
+            {type: 'likert',prompt: 'How sociable did you find this speaker?',required: true,name: 'sociable_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
+            {type: 'likert',prompt: 'How friendly did you find this speaker?',required: true,name: 'friendly_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
+            {type: 'likert',prompt: 'How nice did you find this speaker? ',required: true,name: 'nice_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
+            {type: 'likert',prompt: 'How honest did you find this speaker?',required: true,name: 'honest_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
+            {type: 'likert',prompt: 'How pleasant did you find this speaker?',required: true,name: 'pleasant_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
         ],[
-            {type: 'html',prompt: 'This questions are about the non-native speaker.',},
-            {type: 'likert',prompt: 'How <b>trustworthy</b> was this speaker? ',required: true,name: 'trustworthy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
-            {type: 'likert',prompt: 'How <b>easy was it to understand</b> this speaker?',required: true,name: 'easy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
-            {type: 'likert',prompt: 'How <b>fluent</b> was this speaker?  ',required: true,name: 'fluent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
-            {type: 'likert',prompt: 'How <b>strong</b> was this speaker\'s accent? ',required: true,name: 'strong_nonnative',likert_scale_max: 10,likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
+            {type: 'html',prompt: 'These questions are about the <b>non-native</b> speaker.',},
+            {type: 'likert',prompt: 'How trustworthy was this speaker? ',required: true,name: 'trustworthy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
+            {type: 'likert',prompt: 'How easy was it to understand this speaker?',required: true,name: 'easy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
+            {type: 'likert',prompt: 'How fluent was this speaker?  ',required: true,name: 'fluent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
+            {type: 'likert',prompt: 'How strong was this speaker\'s accent? ',required: true,name: 'strong_nonnative',likert_scale_max: 10,likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
         ]]
     };
 
@@ -537,21 +538,20 @@
                 {type: 'html',
                 prompt: 'The following questions are about the study you just completed (i.e., the horse betting).'},
                 {type: 'likert',
-                prompt: 'How natural did the recordings of the <b>native speaker</b> sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
+                prompt: 'How natural did the recordings of the native speaker sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
                 likert_scale_max: 9,
                 likert_scale_min: 0,
                 name: 'naturalness_native',
                 required: true},
                 {type: 'likert',
-                prompt: 'How natural did the recordings of the <b>non-native speaker</b> sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
+                prompt: 'How natural did the recordings of the non-native speaker sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
                 likert_scale_max: 9,
                 likert_scale_min: 0,
                 name: 'naturalness_nonnative',
                 required: true},
                 {type: 'text',
                 prompt: 'What do you think the aim of the experiment is?',
-                placeholder: "",
-                required: true
+                placeholder: ""
                 },
                 {type: 'text',
                 prompt: 'If you want to share your opinion with us, please do it here.',
@@ -563,20 +563,15 @@
         button_label_finish: 'Submit'
     };
 
-    const survey_procedure_nat = {
-        timeline: [lang_attitude_native1],
-        randomize_order: true
-    };
-
-    const survey_procedure_non = {
-        timeline: [lang_attitude_nonnative1],
-        randomize_order: true
-    };
+    shuffle(lang_attitude_native1.pages);
+    shuffle(lang_attitude_nonnative1.pages); 
+    var survey = [lang_attitude_native1, lang_attitude_nonnative1];
+    shuffle(survey);
 
     jatos.onLoad(() => {
     jsPsych.run([check_criteria, conditional_outcriteria, welcome_screen, check_headphones, conditional_outheadphones, introduction_speakers, 
     preload, bet_firsthorse, bet_secondhorse, bet_thirdhorse, bet_forthhorse, loop_conditional_feedback, 
-      survey_procedure_nat, survey_procedure_non, extra_questions])
+    survey[0], survey[1], extra_questions])
   });
   </script>
 </html>

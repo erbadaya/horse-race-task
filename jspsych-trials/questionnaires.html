@@ -160,16 +160,31 @@
         button_label_finish: 'Submit'
     };
 
-    const survey_procedure_nat = {
-        timeline: [lang_attitude_native1],
-        randomize_order: true
+    shuffle(lang_attitude_native1.pages);
+
+    shuffle(lang_attitude_nonnative1.pages); 
+
+    var survey = [lang_attitude_native1, lang_attitude_nonnative1];
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex > 0) {
+
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
     };
 
-    const survey_procedure_non = {
-        timeline: [lang_attitude_nonnative1],
-        randomize_order: true
-    }
-    jsPsych.run([before_audio, survey_procedure_nat, survey_procedure_non, extra_questions]);
+    shuffle(survey);
+    jsPsych.run([before_audio, survey[0], survey[1], extra_questions]);
 
   </script>
 </html>
