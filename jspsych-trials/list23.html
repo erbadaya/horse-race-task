@@ -301,9 +301,6 @@
           delivery: condition_assignment[0].delivery,
           list: condition_assignment[0].group,
           horse: condition_assignment[0].horses
-        },
-        on_finish: function(data){
-          jsPsych.data.addProperties({firstbet : data.response[condition_assignment[0].horses]})
         }
     }
 
@@ -345,13 +342,7 @@
           delivery: condition_assignment[1].delivery,
           list: condition_assignment[1].group,
           horse: condition_assignment[1].horses
-        },
-        on_finish: function(data){
-          jsPsych.data.addProperties({secondbet:  data.response[condition_assignment[1].horses]});
-          var bet_horse0 = data.response[condition_assignment[0].horses];
-          if(bet_horse0 != ""){jsPsych.data.addProperties({firstbet_fixed2ndtrial: data.response[condition_assignment[0].horses]})}
         }
-        
     }
 
     var bet_thirdhorse = {
@@ -395,13 +386,6 @@
           delivery: condition_assignment[2].delivery,
           list: condition_assignment[2].group,
           horse: condition_assignment[2].horses
-        },
-        on_finish: function(data){
-          jsPsych.data.addProperties({thirdbet:  data.response[condition_assignment[2].horses]});
-          var bet_horse0 = data.response[condition_assignment[0].horses];
-          if(bet_horse0 != ""){jsPsych.data.addProperties({firstbet_fixed3rdtrial: data.response[condition_assignment[0].horses]})}
-          var bet_horse1 = data.response[condition_assignment[1].horses];
-          if(bet_horse1 != ""){jsPsych.data.addProperties({secondbet_fixed3rdtrial: data.response[condition_assignment[1].horses]})}
         }
     }
 
@@ -465,14 +449,11 @@
           tot += parseFloat(data.response[condition_assignment[3].horses])
           jsPsych.data.addProperties({total_bet: tot});
           jsPsych.data.addProperties({fixed_bet_over100: 0}); 
-          jsPsych.data.addProperties({forthbet:  data.response[condition_assignment[3].horses]});
-          var bethorse0 = data.response[condition_assignment[0].horses];
-          if(bethorse0 != ""){jsPsych.data.addProperties({firstbet_fixed4thtrial: data.response[condition_assignment[0].horses]})}
-          var bethorse1 = data.response[condition_assignment[1].horses];
-          if(bethorse1 != ""){jsPsych.data.addProperties({secondbet_fixed4thtrial: data.response[condition_assignment[1].horses]})};
-          var bethorse2 = data.response[condition_assignment[2].horses];
-          if(bethorse2 != ""){jsPsych.data.addProperties({thirdbet_fixed4thtrial: data.response[condition_assignment[2].horses]})}
-        
+          // store bets for easy wrangling
+          jsPsych.data.addProperties({horse0_bet: bet_horse0});
+          jsPsych.data.addProperties({horse1_bet: bet_horse1});
+          jsPsych.data.addProperties({horse2_bet: bet_horse2});
+          jsPsych.data.addProperties({horse3_bet: bet_horse3});
           }
     }
 
@@ -532,10 +513,10 @@
           tot_fix += parseFloat(data.response.firewalker);
           jsPsych.data.addProperties({fixed_bet_over100: tot_fix});
           jsPsych.data.addProperties({total_bet: 0});
-          jsPsych.data.addProperties({apocalypse_fix: data.response.apocalypse});
-          jsPsych.data.addProperties({blackblade_fix: data.response.blackblade});
-          jsPsych.data.addProperties({silversky_fix: data.response.silversky});
-          jsPsych.data.addProperties({firewalker_fix: data.response.firewalker});
+          jsPsych.data.addProperties({horse0_fix: data.response[condition_assignment[0].horses]});
+          jsPsych.data.addProperties({horse1_fix: data.response[condition_assignment[1].horses]});
+          jsPsych.data.addProperties({horse2_fix: data.response[condition_assignment[2].horses]});
+          jsPsych.data.addProperties({horse3_fix: data.response[condition_assignment[3].horses]});
           }
     }
 
