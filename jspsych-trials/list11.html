@@ -491,10 +491,10 @@
         if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[10].response[condition_assignment[2].horses]}
         var horse3_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[3].horses];
         var total_to_fix = 0
-        total_to_fix += horse0_bet;
-        total_to_fix += horse1_bet; 
-        total_to_fix += horse2_bet; 
-        total_to_fix += horse3_bet;
+        total_to_fix += parseFloat(horse0_bet);
+        total_to_fix += parseFloat(horse1_bet); 
+        total_to_fix += parseFloat(horse2_bet); 
+        total_to_fix += parseFloat(horse3_bet);
         var text = 
         '<div class="container">'+ 
           '<div class="margin-text-up">'+
