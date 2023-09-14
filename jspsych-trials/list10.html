@@ -13,10 +13,14 @@
     <script src="./modified-plugin/plugin-audio-survey-input-response.js"></script> 
     <script src="https://unpkg.com/@jspsych/plugin-survey-likert@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-fullscreen@1.1.1"></script>
+    <script src="./dist/plugin-resize.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-browser-check@1.0.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-browser-check@1.0.1"></script>
     <script src="./dist/plugin-instructions.js"></script>
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.2.1/css/survey.css">
     <link rel="stylesheet" href="./dist/jspsych.css">
+    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.2.1/css/survey.css">
     <script src="jatos.js"></script>
   </head>
   <body></body>
@@ -43,8 +47,6 @@
     };
 
     // presentation of stimuli
-    // random allocation by group is done via JATOS
-    // so each code here has a different set of stimuli, one per list
 
     var list10 = [
         {descriptions: 'sounds/critical_apocalypse_native_disfluent.mp3', horses: 'apocalypse', text: 'Apocalypse', group: '10', speaker: 'native', delivery: 'disfluent'},
@@ -54,7 +56,11 @@
     ];
 
 
+    // this is just a lazy shortcut (instead of calling listX below, i can just copy and paste this code for all lists and only change this bit of code above and below)
+
     var condition_assignment = list10;
+
+    // randomize stimulus presentation
 
     shuffle(condition_assignment);
 
@@ -71,10 +77,26 @@
 
     var timeline = [];
 
+    var force_pc = { // prevent participants using tablets/phones
+      type: jsPsychBrowserCheck,
+      inclusion_function: (data) => {
+        return  data.mobile === false
+      },
+      exclusion_message: (data) => {
+        if(data.mobile){
+          return '<p>You must use a desktop/laptop computer to participate in this experiment.</p>';
+        } 
+      }
+    };
+
+    var enter_fullscreen = { // force fullscreen
+      type: jsPsychFullscreen,
+      fullscreen_mode: true
+    };
+
     // text screens
 
     // We need to check that they meet our criteria, otherwise they are re-directed outside of the experiment and back to Prolific where they are asked to return their submission
-    // Alternatively we could do this on Testable and then re-direct them here? 
 
     var check_criteria = {
       type: jsPsychSurvey,
@@ -103,7 +125,7 @@
               ],
         on_finish: function(data){
             if(data.accuracy[0].uk_origin && data.accuracy[1].uk_live && data.accuracy[2].english_l1){
-              proceed = 'yes'; // not working atm \_o.o_/
+              proceed = 'yes'; 
             } else {
               proceed = 'no';
             }
@@ -140,18 +162,39 @@
     var check_headphones = {
         type: jsPsychAudioButtonResponse,
         stimulus: 'sounds/adjust_volume.mp3',
-        prompt: 'Please adjust your volume and follow the audio instruction. You will only hear this audio once.',
-        choices: ['T', 'M', 'Q', 'H', 'X', 'W', 'S', 'P'],
+        prompt: 'Please adjust your volume and follow the audio instruction. ',
+        choices: ['T', 'M', 'Q', 'H', 'X', 'W', 'S', 'P', 'Listen again'],
         response_allowed_while_playing: false,
         on_finish: function(data) {
             if(data.response == 2){
               data.correct = true;
-              headphones = 'yes' // not working atm \_o.o_/
+              headphones = 'yes' 
             } else {
               data.correct = false;
               headphones = 'no'
             }
+          },
+          on_load: function(){
+                var btn_group_div = document.getElementById("jspsych-audio-button-response-btngroup");
+                btn_group_div.style.position = "relative";
+                btn_group_div.style.height = "100px";
+                var replay_btn_div = document.getElementById("jspsych-audio-button-response-button-8");
+                replay_btn_div.style.position = "absolute";
+                replay_btn_div.style.top = "50%";
+                replay_btn_div.style.left = "40%";
           }
+    };
+
+    /* this allows audio to be replayed */
+    var adjust_headphones = {
+      timeline: [check_headphones],
+      loop_function: function(data){
+                if (data.values()[0].response == 8){
+              return true;
+          } else {
+              return false;
+          }
+      }
     };
 
     var no_headphones = {
@@ -177,7 +220,11 @@
     var introduction_speakers = {
       type: jsPsychInstructions,
       pages: [
-        'We have received information from the UK and Italy\'s leading horse racing tipsters, Lauren Waterstone and Marila Fiammetta, about the upcoming \'Scottish Flat Season Finale\' race next Monday, 16th October at Musselburgh Racecourse (Edinburgh). <br> Ms Waterstone and Ms Fiammetta are highly respected tipsters amongst the horse racing elites in the UK and Italy. Both have achieved an outstanding level of performance that marks them as the very best in the game. They currently stand undefeated, having had an unbeatable strike of consecutive wins since 2021. We are truly honoured to have received information from Ms Waterstone and Ms Fiammetta on the 4 most popular horses running at Musselburgh in October. Click \'NEXT\' to continue.'
+        "	<h1><center><i>Scottish Flat Season Finale</i> Race</center></h1>" +
+          "<p>We have received information from two leading horse racing tipsters about the upcoming \"Scottish Flat Season Finale\" race next Monday, 16th October at Musselburgh Racecourse (Edinburgh).</p>"+
+          "<p>Our two speakers are highly respected tipsters amongst the horse racing elites (note that one of our speakers is a non-native English speaker). Both have achieved an outstanding level of performance that marks them as the very best in the game. They currently stand undefeated, having had an unbeatable strike of consecutive wins since 2021.</p>"+
+          "<p> We are truly honoured to have received information on the 4 most popular horses running at Musselburgh in October, and are looking forward to sharing this information with you.</p>"+
+          "<center><p> Click on 'Next' to continue and see the four horses.</p> </center>"
       ],
       show_clickable_nav: true
     }
@@ -186,33 +233,65 @@
       type: jsPsychPreload,
       auto_preload: true,
     };
-    // play four audios, and let people answer once the last audio has finished playing. NB all responses are in survey form in javascript and the code is that they can edit their old bets as they listen to new descriptions
-    // we have modified the AudioButtonResponse by combining it with the SurveyHtlmForm 
 
-    // if we do this the only issue is that we force participants to re-write unless we write the code
-    // We do that by 1) only forcing an answer in the horse being described in each trial, the code works so that it will always show the latest value input 
+    // show participants the horses and remind them the instructions
+
+    var betting_slip = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+      <div class="container">
+          <div class="margin-text-up">
+              <br> These are the four horses we have received information about. You can see the name and a picture of each.</br>
+              <br> During the study, you will hear four descriptions, one about each horse. You will only hear each passage once. You have <b>one-hundred</b> virtual pounds to split between the four horses. You must place a bet on each horse <font color="red">based on the likelihood you think each horse has of winning</font>. You may split the money however you like, and you do not have to spend it all. You can place your bets as you go, and you can edit previous bets. </br>
+              <br> There will be further instructions on the screen, which should make your task clear. </br>
+              <center><br> Press any key to continue.</br> </center>
+          </div>
+                <div class="itemTL">
+                <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
+              </div>
+                <div class="itemTR">
+                <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
+              </div>
+                <div class="itemBL">
+                <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
+              </div>
+                <div class="itemBR">
+                <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
+              </div>
+        </div>
+     `
+    };
+
+    // Experimental trials
+    // we have modified the AudioButtonResponse by combining it with the SurveyHtlmForm 
+    // four trials, one per horse.
+    // each trial (bar the first one) takes information about the previous trial to check whether and how much money was bet on previous horses and allows participants to change their answers
+
     var bet_firsthorse = {
         type: jsPsychAudioSurveyInputResponse,
-        stimulus: condition_assignment[0].descriptions, 
-        html: `
+        stimulus: condition_assignment[0].descriptions, // audio
+        html: ` 
         <div class="container">
-                <div class="item">
+          <div class="margin-text-up">
+        This is your first bet. Enter a quantity, out of a hundred, in the box under the horse picture. Please, use digits instead of text. You can submit your response once the audio is over, by clicking on 'Continue' below. You will then listen to the next horse description. <br>You have <b> 100 </b> pounds left.</br> 
+        </div>
+                <div class="itemTL">
                   <img  class="picture" src="img/`+ condition_assignment[0].horses +`_red.jpg">
-                  <p> Place your bet on `+ condition_assignment[0].text +` <input name="`+ condition_assignment[0].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/> </p>
+                  <br> Place your bet on `+ condition_assignment[0].text +` <input name="`+ condition_assignment[0].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/> </br>
                 </div>
-                <div class="item">
+                <div class="itemTR">
                   <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
-                  <p> You will listen this horse's description next.</p>
+                  <br> You will hear this horse's description next.</br>
                 </div>
-            <div class="item">
+            <div class="itemBL">
                 <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
-                <p> Wait for its turn.</p>
+                <br> ...</br>
               </div>
-            <div class="item">
+            <div class="itemBR">
                 <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
-                <p> Wait for its turn.</p>
+                <br> ...</br>
             </div>
-          </div>`,
+         `, // margin-text-up and itemXX classes are defined in the css file in dist
         response_allowed_while_playing: false,
         data: {
           type: 'firstbet', // for data filtering
@@ -221,6 +300,9 @@
           delivery: condition_assignment[0].delivery,
           list: condition_assignment[0].group,
           horse: condition_assignment[0].horses
+        },
+        on_finish: function(data){
+          jsPsych.data.addProperties({firstbet : data.response[condition_assignment[0].horses]})
         }
     }
 
@@ -228,26 +310,30 @@
         type: jsPsychAudioSurveyInputResponse,
         stimulus: condition_assignment[1].descriptions, 
         html: function(data){
-          var bet_horse0 = jsPsych.data.get().trials[5].response[condition_assignment[0].horses];
+          var bet_horse0 = jsPsych.data.get().trials[8].response[condition_assignment[0].horses];
+          var money_left = 100
+          money_left -= bet_horse0
           var text = `
           <div class="container">
-                <div class="item">
+            <div class="margin-text-up">
+          This is your second bet. Enter a quantity, out of a hundred, in the box under the horse picture. Please, use digits instead of text. You can submit your response once the audio is over, by clicking on 'Continue' below. You will then listen to the next horse description. <br>You have <b>`+ money_left +`</b> pounds left.</br> 
+          </div>
+                <div class="itemTL">
                   <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
-                  <p> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                  <br> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </br> <br>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`"  placeholder=`+  bet_horse0 + ` type="number"  max="100" step=".01" min="0" id="bet"/></br>
                 </div>
-                <div class="item">
+                <div class="itemTR">
                   <img class="picture" src="img/`+ condition_assignment[1].horses +`_red.jpg"/>
-                  <p> Place your bet on `+ condition_assignment[1].text +` <input name="`+ condition_assignment[1].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                  <br> Place your bet on `+ condition_assignment[1].text +` <input name="`+ condition_assignment[1].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></br>
                 </div>
-            <div class="item">
+            <div class="itemBL">
                 <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
-                <p> You will listen this horse's description next.</p>
+                <br> You will hear this horse's description next.</br>
               </div>
-            <div class="item">
+            <div class="itemBR">
                 <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
-                <p> Wait for its turn.</p>
-            </div>
-          </div>`
+                <br> Wait for ... turn.</br>
+            </div>`
             return text
           },
         response_allowed_while_playing: false,
@@ -258,35 +344,46 @@
           delivery: condition_assignment[1].delivery,
           list: condition_assignment[1].group,
           horse: condition_assignment[1].horses
+        },
+        on_finish: function(data){
+          jsPsych.data.addProperties({secondbet:  data.response[condition_assignment[1].horses]});
+          var bet_horse0 = data.response[condition_assignment[0].horses];
+          if(bet_horse0 != ""){jsPsych.data.addProperties({firstbet_fixed2ndtrial: data.response[condition_assignment[0].horses]})}
         }
+        
     }
 
     var bet_thirdhorse = {
         type: jsPsychAudioSurveyInputResponse,
         stimulus: condition_assignment[2].descriptions, 
         html: function(){
-          var bet_horse0 = jsPsych.data.get().trials[6].response[condition_assignment[0].horses];
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[5].response[condition_assignment[0].horses]}
-          var bet_horse1 = jsPsych.data.get().trials[6].response[condition_assignment[1].horses];
+          var bet_horse0 = jsPsych.data.get().trials[9].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[8].response[condition_assignment[0].horses]};
+          var bet_horse1 = jsPsych.data.get().trials[9].response[condition_assignment[1].horses];
+          var money_left = 100;
+          money_left -= bet_horse0;
+          money_left -= bet_horse1;
           var text = `
           <div class="container">
-                <div class="item">
+          <div class="margin-text-up">
+          This is your third bet. Enter a quantity, out of a hundred, in the box under the horse picture. Please, use digits instead of text. You can submit your response once the audio is over, by clicking on 'Continue' below. You will then listen to the next horse description. <br>You have <b>`+ money_left +`</b> pounds left.</br> 
+          </div>
+                <div class="itemTL">
                   <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
-                  <p> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                  <br> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </br> <br>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`"  placeholder=`+  bet_horse0 + ` type="number"  max="100" step=".01" min="0" id="bet"/></br>
                 </div>
-                <div class="item">
+                <div class="itemTR">
                   <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
-                  <p> Money bet on ` + condition_assignment[1].text + `: `+  bet_horse1 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[1].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                  <br> Money bet on ` + condition_assignment[1].text + `: `+  bet_horse1 + `. </br> <br>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[1].horses +`"  placeholder=`+  bet_horse1 + ` type="number"  max="100" step=".01" min="0" id="bet"/></br>
                 </div>
-            <div class="item">
+            <div class="itemBL">
                 <img class="picture" src="img/`+ condition_assignment[2].horses +`_red.jpg"/>
-                <p> Place your bet on `+ condition_assignment[2].text +` <input name="`+ condition_assignment[2].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/> </p>
+                <br> Place your bet on `+ condition_assignment[2].text +` <input name="`+ condition_assignment[2].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/> </br>
               </div>
-            <div class="item">
+            <div class="itemBR">
                 <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
-                <p> You will listen this horse's description next.</p>
-            </div>
-          </div>`
+                <br> You will hear this horse's description next.</br>
+            </div>`
             return text
           },
         response_allowed_while_playing: false,
@@ -297,6 +394,13 @@
           delivery: condition_assignment[2].delivery,
           list: condition_assignment[2].group,
           horse: condition_assignment[2].horses
+        },
+        on_finish: function(data){
+          jsPsych.data.addProperties({thirdbet:  data.response[condition_assignment[1].horses]});
+          var bet_horse0 = data.response[condition_assignment[0].horses];
+          if(bet_horse0 != ""){jsPsych.data.addProperties({firstbet_fixed3rdtrial: data.response[condition_assignment[0].horses]})}
+          var bet_horse1 = data.response[condition_assignment[1].horses];
+          if(bet_horse1 != ""){jsPsych.data.addProperties({secondbet_fixed3rdtrial: data.response[condition_assignment[1].horses]})}
         }
     }
 
@@ -304,31 +408,37 @@
         type: jsPsychAudioSurveyInputResponse,
         stimulus: condition_assignment[3].descriptions, 
         html: function(){
-          var bet_horse0 = jsPsych.data.get().trials[7].response[condition_assignment[0].horses];
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[6].response[condition_assignment[0].horses]}
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[5].response[condition_assignment[0].horses]}
-          var bet_horse1 = jsPsych.data.get().trials[7].response[condition_assignment[1].horses];
-          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[6].response[condition_assignment[1].horses]}
-          var bet_horse2 = jsPsych.data.get().trials[7].response[condition_assignment[2].horses];
+          var bet_horse0 = jsPsych.data.get().trials[10].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[9].response[condition_assignment[0].horses]}
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[8].response[condition_assignment[0].horses]}
+          var bet_horse1 = jsPsych.data.get().trials[10].response[condition_assignment[1].horses];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[9].response[condition_assignment[1].horses]}
+          var bet_horse2 = jsPsych.data.get().trials[10].response[condition_assignment[2].horses];
+          var money_left = 100
+          money_left -= bet_horse0;
+          money_left -= bet_horse1;
+          money_left -= bet_horse2;
           var text = `
           <div class="container">
-                <div class="item">
+          <div class="margin-text-up">
+          This is your forth bet. Enter a quantity, out of a hundred, in the box under the horse picture. Please, use digits instead of text. You can submit your response once the audio is over, by clicking on 'Continue' below. You will then listen to the next horse description. <br>You have <b>`+ money_left +`</b> pounds left.</br> 
+          </div>
+                <div class="itemTL">
                   <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
-                  <p> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                  <br> Money bet on ` + condition_assignment[0].text + `: `+  bet_horse0 + `. </br> <br>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[0].horses +`"  placeholder=`+  bet_horse0 + ` type="number"  max="100" step=".01" min="0" id="bet"/></br>
                 </div>
-                <div class="item">
+                <div class="itemTR">
                   <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
-                  <p> Money bet on ` + condition_assignment[1].text + `: `+  bet_horse1 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[1].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                  <br> Money bet on ` + condition_assignment[1].text + `: `+  bet_horse1 + `. </br> <br>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[1].horses +`"  placeholder=`+  bet_horse1 + ` type="number"  max="100" step=".01" min="0" id="bet"/></br>
                 </div>
-            <div class="item">
+            <div class="itemBL">
                 <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
-                <p> PMoney bet on ` + condition_assignment[2].text + `: `+  bet_horse2 + `. </p> <p>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[2].horses +`" type="number"  max="100" step=".01" min="0" id="bet"/></p>
+                <br> PMoney bet on ` + condition_assignment[2].text + `: `+  bet_horse2 + `. </br> <br>If you wish to modify your bet, please enter the new bet here: <input name="`+ condition_assignment[2].horses +`"  placeholder=`+  bet_horse2 + ` type="number"  max="100" step=".01" min="0" id="bet"/></br>
               </div>
-            <div class="item">
+            <div class="itemBR">
                 <img class="picture" src="img/`+ condition_assignment[3].horses +`_red.jpg"/>
-                <p> Place your bet on `+ condition_assignment[3].text +` <input name="`+ condition_assignment[3].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
-            </div>
-          </div>`
+                <br> Place your bet on `+ condition_assignment[3].text +` <input name="`+ condition_assignment[3].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></br>
+            </div>`
             return text
           },
         response_allowed_while_playing: false,
@@ -341,12 +451,12 @@
           horse: condition_assignment[3].horses
         },
         on_finish: function(data) {
-          var bet_horse0 = jsPsych.data.get().trials[7].response[condition_assignment[0].horses];
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[6].response[condition_assignment[0].horses]}
-          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[5].response[condition_assignment[0].horses]}
-          var bet_horse1 = jsPsych.data.get().trials[7].response[condition_assignment[1].horses];
-          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[6].response[condition_assignment[1].horses]}
-          var bet_horse2 = jsPsych.data.get().trials[7].response[condition_assignment[2].horses];
+          var bet_horse0 = jsPsych.data.get().trials[10].response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[9].response[condition_assignment[0].horses]}
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[8].response[condition_assignment[0].horses]}
+          var bet_horse1 = jsPsych.data.get().trials[10].response[condition_assignment[1].horses];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[9].response[condition_assignment[1].horses]}
+          var bet_horse2 = jsPsych.data.get().trials[10].response[condition_assignment[2].horses];
           tot = 0
           tot += parseFloat(bet_horse0);
           tot += parseFloat(bet_horse1);
@@ -354,47 +464,61 @@
           tot += parseFloat(data.response[condition_assignment[3].horses])
           jsPsych.data.addProperties({total_bet: tot});
           jsPsych.data.addProperties({fixed_bet_over100: 0}); 
+          jsPsych.data.addProperties({forthbet:  data.response[condition_assignment[3].horses]});
+          var bethorse0 = data.response[condition_assignment[0].horses];
+          if(bethorse0 != ""){jsPsych.data.addProperties({firstbet_fixed4thtrial: data.response[condition_assignment[0].horses]})}
+          var bethorse1 = data.response[condition_assignment[1].horses];
+          if(bethorse1 != ""){jsPsych.data.addProperties({secondbet_fixed4thtrial: data.response[condition_assignment[1].horses]})};
+          var bethorse2 = data.response[condition_assignment[2].horses];
+          if(bethorse2 != ""){jsPsych.data.addProperties({thirdbet_fixed4thtrial: data.response[condition_assignment[2].horses]})}
+        
           }
     }
 
-    // If participants bet more than 100 pounds, ask them again until their bet is lower than 100. In this rounds, they cannot listen to the audio.
+    // If participants bet more than 100 pounds, ask them again until their bet is lower than 100. In this round, they cannot listen to the audio.
 
     var if_feedback = {
       type: jsPsychSurveyHtmlForm,
-      preamble: function(){
+      html: function(){
         var horse0_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[0].horses];
-        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[7].response[condition_assignment[0].horses]}
-        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[6].response[condition_assignment[0].horses]}
-        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[5].response[condition_assignment[0].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[10].response[condition_assignment[0].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[9].response[condition_assignment[0].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[8].response[condition_assignment[0].horses]}
         var horse1_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[1].horses];
-        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[7].response[condition_assignment[1].horses]}
-        if(horse1_bet == ""){horse1_bet = jsPsych.data.get().trials[6].response[condition_assignment[1].horses]}
+        if(horse0_bet == ""){horse0_bet = jsPsych.data.get().trials[10].response[condition_assignment[1].horses]}
+        if(horse1_bet == ""){horse1_bet = jsPsych.data.get().trials[9].response[condition_assignment[1].horses]}
         var horse2_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[2].horses];
-        if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[7].response[condition_assignment[2].horses]}
+        if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[10].response[condition_assignment[2].horses]}
         var horse3_bet = jsPsych.data.getLastTrialData().trials[0].response[condition_assignment[3].horses];
-        var text = '<p> You bet more than your allocated 100 pounds. Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + condition_assignment[0].text + 
-          ', ' + horse1_bet +' on ' + condition_assignment[1].text +', '+ horse2_bet +' on ' + condition_assignment[2].text + ' and ' + horse3_bet +' on ' + condition_assignment[3].text + '.</p>'
-        return text
-      },
-      html: `
-          <div class="container">
-                <div class="item">
+        var total_to_fix = 0
+        total_to_fix += horse0_bet;
+        total_to_fix += horse1_bet; 
+        total_to_fix += horse2_bet; 
+        total_to_fix += horse3_bet;
+        var text = 
+        '<div class="container">'+ 
+          '<div class="margin-text-up">'+
+        '<br> You bet more than your allocated 100 pounds (total bet:'+ total_to_fix +'). Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + condition_assignment[0].text + 
+          ', ' + horse1_bet +' on ' + condition_assignment[1].text +', '+ horse2_bet +' on ' + condition_assignment[2].text + ' and ' + horse3_bet +' on ' + condition_assignment[3].text + '.</br>'+
+         ` </div>
+                <div class="itemTL">
                   <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
-                  <p> Place your bet on `+ condition_assignment[0].text +`<input name="`+ condition_assignment[0].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                  <br> Place your bet on `+ condition_assignment[0].text +`<input name="`+ condition_assignment[0].horses +`"  placeholder=`+  horse0_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
                 </div>
-                <div class="item">
+                <div class="itemTR">
                   <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
-                  <p> Place your bet on `+ condition_assignment[1].text +`<input name="`+ condition_assignment[1].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                  <br> Place your bet on `+ condition_assignment[1].text +`<input name="`+ condition_assignment[1].horses +`"  placeholder=`+  horse1_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
                 </div>
-            <div class="item">
+            <div class="itemBL">
                 <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
-                <p> Place your bet on `+ condition_assignment[2].text +`<input name="`+ condition_assignment[2].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+                <br> Place your bet on `+ condition_assignment[2].text +`<input name="`+ condition_assignment[2].horses +`"  placeholder=`+  horse2_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
               </div>
-            <div class="item">
-                <img class="picture" src="img/`+ condition_assignment[3].horses +`_red.jpg"/>
-                <p> Place your bet on `+ condition_assignment[3].text +`<input name="`+ condition_assignment[3].horses +`" type="number" required max="100" step=".01" min="0" id="bet"/></p>
+            <div class="itemBR">
+                <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
+                <br> Place your bet on `+ condition_assignment[3].text +`<input name="`+ condition_assignment[3].horses +`"  placeholder=`+  horse3_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
             </div>
-          </div>`,
+          </div>`
+          return text},
           data: {
             type: 'overbet', // for data filtering
             overbet: 'yes'
@@ -407,8 +531,14 @@
           tot_fix += parseFloat(data.response.firewalker);
           jsPsych.data.addProperties({fixed_bet_over100: tot_fix});
           jsPsych.data.addProperties({total_bet: 0});
+          jsPsych.data.addProperties({apocalypse_fix: data.response.apocalypse});
+          jsPsych.data.addProperties({blackblade_fix: data.response.blackblade});
+          jsPsych.data.addProperties({silversky_fix: data.response.silversky});
+          jsPsych.data.addProperties({firewalker_fix: data.response.firewalker});
           }
     }
+
+    // forced the re-bet until participants' have bet less than 100
 
     var loop_feedback = {
       timeline: [if_feedback],
@@ -421,6 +551,7 @@
       }
     };
 
+    // checks whether in the last experimental trial (i.e., bet on 4th horse) the total amount is less than 100. if not, it initialises the loop above
     var loop_conditional_feedback = {
       timeline: [loop_feedback],
       conditional_function: function() {
@@ -432,12 +563,23 @@
       }
     };
 
-    // !! need to randomise within attitude questionnaires and order of presentation
+    // signal end of betting trials
+    var end_bet_screen = {
+      type: jsPsychInstructions,
+      pages: [
+        "	<h1><center>That was the end of the first task!</h1>" +
+          "<p>The next part of the experiment are a series of questions regarding the experiment you just did, your perception of the speakers you just heard, as well as your exposure to native and non-native English speakers. <br> It is very important that you devote your entire attention to answering these questions. <br></p>"+
+          "<center><p> Click on 'Next' to start.</p> </center>"
+      ],
+      show_clickable_nav: true
+    }
+
+    // language attitudes questionnaires for native and non-native speaker
 
     const lang_attitude_native1 = {
         type: jsPsychSurvey,
         pages: [[
-            {type: 'html',prompt: 'These questions are about the <b>native</b> speaker.',},
+            {type: 'html',prompt: '<center>These questions are about the <b>native</b> speaker.</center>',},
             {type: 'likert',prompt: 'How irritated did you feel when you listened to this speaker?',required: true,name: 'irritated_native', likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
             {type: 'likert',prompt: 'How interested did you feel when you listened to this speaker?',required: true,name: 'interested_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
             {type: 'likert',prompt: 'How enthusiastic did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
@@ -445,32 +587,36 @@
             {type: 'likert',prompt: 'How annoyed did you feel when you listened to this speaker?',required: true,name: 'annoyed_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
             {type: 'likert',prompt: 'How happy did you feel when you listened to this speaker? ',required: true,name: 'happy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
             ],[
-            {type: 'html',prompt: 'These questions are about the <b>native</b> speaker.',},
+            {type: 'html',prompt: '<center>These questions are about the <b>native</b> speaker.</center>',},
             {type: 'likert',prompt: 'How competent did you find this speaker? ',required: true,name: 'competent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
             {type: 'likert',prompt: 'How smart did you find this speaker? ',required: true,name: 'smart_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
             {type: 'likert',prompt: 'How educated did you find this speaker?',required: true,name: 'educated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
             {type: 'likert',prompt: 'How intelligent did you find this speaker?',required: true,name: 'intelligent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
             {type: 'likert',prompt: 'How successful did you find this speaker?',required: true,name: 'successful_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
         ], [
-            {type: 'html',prompt: 'These questions are about the <b>native</b> speaker.',},
+            {type: 'html',prompt: '<center>These questions are about the <b>native</b> speaker.</center>',},
             {type: 'likert',prompt: 'How sociable did you find this speaker?',required: true,name: 'sociable_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
             {type: 'likert',prompt: 'How friendly did you find this speaker?',required: true,name: 'friendly_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
             {type: 'likert',prompt: 'How nice did you find this speaker? ',required: true,name: 'nice_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
             {type: 'likert',prompt: 'How honest did you find this speaker?',required: true,name: 'honest_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
             {type: 'likert',prompt: 'How pleasant did you find this speaker?',required: true,name: 'pleasant_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
         ], [
-            {type: 'html',prompt: 'These questions are about the <b>native</b> speaker.',},
+            {type: 'html',prompt: '<center>These questions are about the <b>native</b> speaker.</center>',},
             {type: 'likert',prompt: 'How trustworthy was this speaker? ',required: true,name: 'trustworthy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
             {type: 'likert',prompt: 'How easy was it to understand this speaker?',required: true,name: 'easy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
             {type: 'likert',prompt: 'How fluent was this speaker?  ',required: true,name: 'fluent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
             {type: 'likert',prompt: 'How strong was this speaker\'s accent? ',required: true,name: 'strong_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
-        ]]
+        ]],
+        data: {
+          type: 'survey_native',
+          speaker: 'native'
+        }
     };
     
     const lang_attitude_nonnative1 = {
         type: jsPsychSurvey,
         pages: [[
-            {type: 'html',prompt: 'These questions are about the <b>non-native</b> speaker.',},
+            {type: 'html',prompt: '<center>These questions are about the <b>non-native</b> speaker.</center>',},
             {type: 'likert',prompt: 'How irritated did you feel when you listened to this speaker?',required: true,name: 'irritated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
             {type: 'likert',prompt: 'How interested did you feel when you listened to this speaker?',required: true,name: 'interested_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
             {type: 'likert',prompt: 'How enthusiastic did you feel when you listened to this speaker? ',required: true,name: 'enthusiastic_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
@@ -478,27 +624,33 @@
             {type: 'likert',prompt: 'How annoyed did you feel when you listened to this speaker?',required: true,name: 'annoyed_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
             {type: 'likert',prompt: 'How happy did you feel when you listened to this speaker? ',required: true,name: 'happy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
         ],[
-            {type: 'html',prompt: 'These questions are about the <b>non-native</b> speaker.',},
+            {type: 'html',prompt: '<center>These questions are about the <b>non-native</b> speaker.</center>',},
             {type: 'likert',prompt: 'How competent did you find this speaker? ',required: true,name: 'competent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
             {type: 'likert',prompt: 'How smart did you find this speaker? ',required: true,name: 'smart_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
             {type: 'likert',prompt: 'How educated did you find this speaker?',required: true,name: 'educated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
             {type: 'likert',prompt: 'How intelligent did you find this speaker?',required: true,name: 'intelligent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
             {type: 'likert',prompt: 'How successful did you find this speaker?',required: true,name: 'successful_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
         ], [
-            {type: 'html',prompt: 'These questions are about the <b>non-native</b> speaker.',},
+            {type: 'html',prompt: '<center>These questions are about the <b>non-native</b> speaker.</center>',},
             {type: 'likert',prompt: 'How sociable did you find this speaker?',required: true,name: 'sociable_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
             {type: 'likert',prompt: 'How friendly did you find this speaker?',required: true,name: 'friendly_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
             {type: 'likert',prompt: 'How nice did you find this speaker? ',required: true,name: 'nice_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
             {type: 'likert',prompt: 'How honest did you find this speaker?',required: true,name: 'honest_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
             {type: 'likert',prompt: 'How pleasant did you find this speaker?',required: true,name: 'pleasant_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
         ],[
-            {type: 'html',prompt: 'These questions are about the <b>non-native</b> speaker.',},
+            {type: 'html',prompt: '<center>These questions are about the <b>non-native</b> speaker.</center>',},
             {type: 'likert',prompt: 'How trustworthy was this speaker? ',required: true,name: 'trustworthy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
             {type: 'likert',prompt: 'How easy was it to understand this speaker?',required: true,name: 'easy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
             {type: 'likert',prompt: 'How fluent was this speaker?  ',required: true,name: 'fluent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
             {type: 'likert',prompt: 'How strong was this speaker\'s accent? ',required: true,name: 'strong_nonnative',likert_scale_max: 10,likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
-        ]]
+        ]],
+        data: {
+          type: 'survey_nonnative',
+          speaker: 'non-native'
+        }
     };
+
+    // check participants' previous experience with horses & guesses about the experiment
 
     const extra_questions = {
         type: jsPsychSurvey,
@@ -561,18 +713,25 @@
 
             ],
         button_label_next: 'Continue',
-        button_label_finish: 'Submit'
+        button_label_finish: 'Submit',
+        data: {
+          type: 'survey_checks'
+        }
     };
+
+    // randomize factor presentation and speaker presentation
 
     shuffle(lang_attitude_native1.pages);
     shuffle(lang_attitude_nonnative1.pages); 
     var survey = [lang_attitude_native1, lang_attitude_nonnative1];
     shuffle(survey);
+  
+    // load timeline
 
     jatos.onLoad(() => {
-    jsPsych.run([check_criteria, conditional_outcriteria, welcome_screen, check_headphones, conditional_outheadphones, introduction_speakers, 
-    preload, bet_firsthorse, bet_secondhorse, bet_thirdhorse, bet_forthhorse, loop_conditional_feedback, 
-    survey[0], survey[1], extra_questions])
+        jsPsych.run([force_pc, enter_fullscreen, check_criteria, conditional_outcriteria, welcome_screen, adjust_headphones, conditional_outheadphones, introduction_speakers, 
+        preload, betting_slip, bet_firsthorse, bet_secondhorse, bet_thirdhorse, bet_forthhorse, loop_conditional_feedback, end_bet_screen,
+        survey[0], survey[1], extra_questions])
   });
   </script>
 </html>
