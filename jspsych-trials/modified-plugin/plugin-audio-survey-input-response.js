@@ -117,9 +117,9 @@ var jsPsychAudioSurveyInputResponse = (function (jspsych) {
             // add form HTML / input elements
             html += trial.html;
             // add submit button
-            html += '<input type="submit" id="jspsych-survey-html-form-next" class="jspsych-btn jspsych-survey-html-form bet-button" disabled value="' +
+            html += '<div class="margin-text-down"><input type="submit" id="jspsych-survey-html-form-next" class="jspsych-btn jspsych-survey-html-form bet-button" disabled value="' +
               trial.button_label +
-              '"></input>';
+              '"></input></div></div>';
             html += "</form>";
             display_element.innerHTML = html;
               // start audio

@@ -533,14 +533,71 @@
 
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: [main-start] 10% [content1-start] 1fr [content2-start] 1fr [content-end]10% [main-end];
+  grid-template-rows: [empty-space-start]10%[main-start] 10% [content1-start] 1fr [content2-start] 1fr [content-end] 10% [main-end] 10% [empty-space-end];
   justify-items: center;
   align-items: center;
   height: 100vh;
 }
 
-.item {
+.itemTL {
+  grid-column-start: content1-start;
+  grid-row-start: content1-start;
+  grid-column-end: content2-start;
+  grid-row-end: content2-start;
   text-align: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.itemTR {
+  grid-column-start: content2-start;
+  grid-row-start: content1-start;
+  grid-column-end: content-end;
+  grid-row-end: content2-start;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.itemBL {
+  grid-column-start: content1-start;
+  grid-row-start: content2-start;
+  grid-column-end: content2-start;
+  grid-row-end: content-end;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.itemBR {
+  grid-column-start: content2-start;
+  grid-row-start: content2-start;
+  grid-column-end: content-end;
+  grid-row-end: content-end;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.margin-text-up {
+  text-align: center;
+  grid-column-start: content1-start;
+  grid-column-end: content-end;
+  grid-row-start: main-start;
+  grid-row-end: content1-start;
+  font-size: 18px;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.margin-text-down {
+  text-align: center;
+  grid-column-start: content1-start;
+  grid-column-end: content-end;
+  grid-row-start: content-end;
+  grid-row-end: main-end;
+  font-size: 18px;
+  line-height: 1;
+  margin-bottom: 5px;
 }
