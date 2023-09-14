@@ -395,7 +395,7 @@
           horse: condition_assignment[2].horses
         },
         on_finish: function(data){
-          jsPsych.data.addProperties({thirdbet:  data.response[condition_assignment[1].horses]});
+          jsPsych.data.addProperties({thirdbet:  data.response[condition_assignment[2].horses]});
           var bet_horse0 = data.response[condition_assignment[0].horses];
           if(bet_horse0 != ""){jsPsych.data.addProperties({firstbet_fixed3rdtrial: data.response[condition_assignment[0].horses]})}
           var bet_horse1 = data.response[condition_assignment[1].horses];
