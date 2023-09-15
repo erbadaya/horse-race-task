@@ -19,8 +19,7 @@ ppt_id <- length(temp)
 dexp1 <- data.frame()
 
 for(i in 1:ppt_id){
-  FILE <- read_csv(paste("./data/",temp[i], sep = ""), skip = 3) # read in each file, skip the first three lines (information about the session of Testable)
-  FILE <- FILE %>% filter(!condition5 == "id") # anonymise data
+  FILE <- read_csv(paste("./data/",temp[i], sep = "")) # read in each file, skip the first three lines (information about the session of Testable)
   FILE$ppt <- i # add participant number, anonymous
   dexp1 <- rbind(dexp1, FILE)
   print(i)
