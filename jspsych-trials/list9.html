@@ -69,11 +69,13 @@
       on_finish: function() {
         var subjectNumber = jatos.workerId;
         var filedata = jsPsych.data.get().ignore('stimulus').csv();
-        var filename = "ID_"+subjectNumber+jatos.urlQueryParameters.PROLIFIC_PID+".csv";
+        var filename = "ID_"+subjectNumber+".csv";
         jatos.submitResultData(filedata)
         jatos.uploadResultFile(filedata, filename)
+        jatos.endStudy()
       }
     });
+
 
     var timeline = [];
 

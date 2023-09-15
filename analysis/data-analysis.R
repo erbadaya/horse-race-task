@@ -59,7 +59,8 @@ tests_questionnaires[[2]] <- t.test(status ~ speaker, data = dexp1quest, paired 
 tests_questionnaires[[3]] <- t.test(solidarity ~ speaker, data = dexp1quest, paired = TRUE)
 tests_questionnaires[[4]] <- t.test(easy ~ speaker, data = dexp1quest, paired = TRUE)
 tests_questionnaires[[5]] <- t.test(strong ~ speaker, data = dexp1quest, paired = TRUE)
-names(tests_questionnaires) <- c("Affect", "Status", "Solidarity", "Comprehensibility", "Accent")
+tests_questionnaires[[5]] <- t.test(trustworthy ~ speaker, data = dexp1quest, paired = TRUE)
+names(tests_questionnaires) <- c("Affect", "Status", "Solidarity", "Comprehensibility", "Accent", "Trustworthy")
 
 # table for report
 # idea from https://stackoverflow.com/questions/21840021/grabbing-certain-results-out-of-multiple-t-test-outputs-to-create-a-table
@@ -122,6 +123,5 @@ gtsave(tab_ttestsexp1, 'exp1-ttests_results.png', path = './analysis/tables')
 
 
 # 3. Explore whether model fit improves by including the variable with significant differences.
-# All potential models are written here for pre-reg, only those where the variable is significant will be run.
 
 

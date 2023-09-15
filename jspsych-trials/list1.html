@@ -68,9 +68,10 @@
       on_finish: function() {
         var subjectNumber = jatos.workerId;
         var filedata = jsPsych.data.get().ignore('stimulus').csv();
-        var filename = "ID_"+subjectNumber+jatos.urlQueryParameters.PROLIFIC_PID+".csv";
+        var filename = "ID_"+subjectNumber+".csv";
         jatos.submitResultData(filedata)
         jatos.uploadResultFile(filedata, filename)
+        jatos.endStudy()
       }
     });
 
@@ -647,6 +648,14 @@
                 name: 'exposure_nn',
                 likert_scale_max: 10,
                 likert_scale_min: 0,
+                required: true},
+                {type: 'text',
+                prompt: 'Can you guess from where the native speaker was?',
+                placeholder: '',
+                required: true},
+                {type: 'text',
+                prompt: 'Can you guess from where the non-native speaker was?',
+                placeholder: '',
                 required: true},
                 {type: 'likert',
                 prompt: 'How used are you to British-accented English? Please, rate your daily exposure on a scale from 1 (none) to 10 (always).',
