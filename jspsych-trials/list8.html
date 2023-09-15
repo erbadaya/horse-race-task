@@ -50,9 +50,9 @@
 
     var list8 = [
         {descriptions: 'sounds/critical_apocalypse_native_disfluent.mp3', horses: 'apocalypse', text: 'Apocalypse', group: '8', speaker: 'native', delivery: 'disfluent'},
+        {descriptions: 'sounds/critical_blackblade_nonnative_fluent.mp3', horses: 'blackblade', text: 'Black Blade', group: '8', speaker: 'nonnative', delivery: 'fluent'},
         {descriptions: 'sounds/critical_firewalker_native_fluent.mp3', horses: 'firewalker', text: 'Fire Walker', group: '8', speaker: 'native', delivery: 'fluent'},
-        {descriptions: 'sounds/critical_blackblade_nonnative_disfluent.mp3', horses: 'blackblade', text: 'Black Blade', group: '8', speaker: 'nonnative', delivery: 'disfluent'},
-        {descriptions: 'sounds/critical_silversky_nonnative_fluent.mp3', horses: 'silversky', text: 'Silver Sky', group: '8', speaker: 'nonnative', delivery: 'fluent'}
+        {descriptions: 'sounds/critical_silversky_nonnative_disfluent.mp3', horses: 'silversky', text: 'Silver Sky', group: '8', speaker: 'nonnative', delivery: 'disfluent'}
     ];
 
 
@@ -443,7 +443,7 @@
           if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[10].response[condition_assignment[1].horses]}
           if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[9].response[condition_assignment[1].horses]}
           var bet_horse2 = data.response[condition_assignment[2].horses];
-          if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[10].response[condition_assignment[2].horses]}
+          if(bet_horse2 == ""){bet_horse2 = jsPsych.data.get().trials[10].response[condition_assignment[2].horses]}
           tot = 0
           tot += parseFloat(bet_horse0);
           tot += parseFloat(bet_horse1);
