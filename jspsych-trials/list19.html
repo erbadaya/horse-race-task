@@ -435,12 +435,15 @@
           horse: condition_assignment[3].horses
         },
         on_finish: function(data) {
-          var bet_horse0 = jsPsych.data.get().trials[10].response[condition_assignment[0].horses];
+          var bet_horse0 = data.response[condition_assignment[0].horses];
+          if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[10].response[condition_assignment[0].horses]}
           if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[9].response[condition_assignment[0].horses]}
           if(bet_horse0 == ""){bet_horse0 = jsPsych.data.get().trials[8].response[condition_assignment[0].horses]}
-          var bet_horse1 = jsPsych.data.get().trials[10].response[condition_assignment[1].horses];
+          var bet_horse1 = data.response[condition_assignment[1].horses];
+          if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[10].response[condition_assignment[1].horses]}
           if(bet_horse1 == ""){bet_horse1 = jsPsych.data.get().trials[9].response[condition_assignment[1].horses]}
-          var bet_horse2 = jsPsych.data.get().trials[10].response[condition_assignment[2].horses];
+          var bet_horse2 = data.response[condition_assignment[2].horses];
+          if(horse2_bet == ""){horse2_bet = jsPsych.data.get().trials[10].response[condition_assignment[2].horses]}
           tot = 0
           tot += parseFloat(bet_horse0);
           tot += parseFloat(bet_horse1);
@@ -484,19 +487,19 @@
          ` </div>
                 <div class="itemTL">
                   <img  class="picture" src="img/`+ condition_assignment[0].horses +`.jpg">
-                  <br> Place your bet on `+ condition_assignment[0].text +`<input name="`+ condition_assignment[0].horses +`"  placeholder=`+  horse0_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
+                  <br> Place your bet on `+ condition_assignment[0].text +` <input name="`+ condition_assignment[0].horses +`"  placeholder=`+  horse0_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
                 </div>
                 <div class="itemTR">
                   <img class="picture" src="img/`+ condition_assignment[1].horses +`.jpg"/>
-                  <br> Place your bet on `+ condition_assignment[1].text +`<input name="`+ condition_assignment[1].horses +`"  placeholder=`+  horse1_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
+                  <br> Place your bet on `+ condition_assignment[1].text +` <input name="`+ condition_assignment[1].horses +`"  placeholder=`+  horse1_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
                 </div>
             <div class="itemBL">
                 <img class="picture" src="img/`+ condition_assignment[2].horses +`.jpg"/>
-                <br> Place your bet on `+ condition_assignment[2].text +`<input name="`+ condition_assignment[2].horses +`"  placeholder=`+  horse2_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
+                <br> Place your bet on `+ condition_assignment[2].text +` <input name="`+ condition_assignment[2].horses +`"  placeholder=`+  horse2_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
               </div>
             <div class="itemBR">
                 <img class="picture" src="img/`+ condition_assignment[3].horses +`.jpg"/>
-                <br> Place your bet on `+ condition_assignment[3].text +`<input name="`+ condition_assignment[3].horses +`"  placeholder=`+  horse3_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
+                <br> Place your bet on `+ condition_assignment[3].text + ` <input name="`+ condition_assignment[3].horses +`"  placeholder=`+  horse3_bet + ` type="number" required max="100" step=".01" min="0" id="bet"/></br>
             </div>
           </div>`
           return text},
