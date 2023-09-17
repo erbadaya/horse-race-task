@@ -484,7 +484,7 @@
         var text = 
         '<div class="container">'+ 
           '<div class="margin-text-up">'+
-        '<br> You bet more than your allocated 100 pounds (you current bet is ' + total_to_fix +'). Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + condition_assignment[0].text + 
+        '<br> You bet more than your allocated 100 pounds (your current bet is ' + total_to_fix +'). Please, re-distribute your bets. You allocated ' + horse0_bet + ' on ' + condition_assignment[0].text + 
           ', ' + horse1_bet +' on ' + condition_assignment[1].text +', '+ horse2_bet +' on ' + condition_assignment[2].text + ' and ' + horse3_bet +' on ' + condition_assignment[3].text + '.</br>'+
          ` </div>
                 <div class="itemTL">
@@ -560,38 +560,38 @@
       show_clickable_nav: true
     }
 
-    // language attitudes questionnaires for native and non-native speaker
+ // language attitudes questionnaires for native and non-native speaker
 
-    const lang_attitude_native1 = {
+ const lang_attitude_native1 = {
         type: jsPsychSurvey,
         pages: [[
             {type: 'html',prompt: '<center>These questions are about the <b>native</b> speaker.</center>',},
-            {type: 'likert',prompt: 'How irritated did you feel when you listened to the native speaker?',required: true,name: 'irritated_native', likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
-            {type: 'likert',prompt: 'How interested did you feel when you listened to the native speaker?',required: true,name: 'interested_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
-            {type: 'likert',prompt: 'How enthusiastic did you feel when you listened to the native speaker? ',required: true,name: 'enthusiastic_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
-            {type: 'likert',prompt: 'How frustrated did you feel when you listened to the native speaker? ',required: true,name: 'frustrated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
-            {type: 'likert',prompt: 'How annoyed did you feel when you listened to the native speaker?',required: true,name: 'annoyed_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
-            {type: 'likert',prompt: 'How happy did you feel when you listened to the native speaker? ',required: true,name: 'happy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
+            {type: 'likert',prompt: 'How irritated did you feel when you listened to the native speaker?',required: true,name: 'irritated_native', likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
+            {type: 'likert',prompt: 'How interested did you feel when you listened to the native speaker?',required: true,name: 'interested_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
+            {type: 'likert',prompt: 'How enthusiastic did you feel when you listened to the native speaker? ',required: true,name: 'enthusiastic_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
+            {type: 'likert',prompt: 'How frustrated did you feel when you listened to the native speaker? ',required: true,name: 'frustrated_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
+            {type: 'likert',prompt: 'How annoyed did you feel when you listened to the native speaker?',required: true,name: 'annoyed_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
+            {type: 'likert',prompt: 'How happy did you feel when you listened to the native speaker? ',required: true,name: 'happy_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
             ],[
             {type: 'html',prompt: '<center>These questions are about the <b>native</b> speaker.</center>',},
-            {type: 'likert',prompt: 'How competent did you find the native speaker? ',required: true,name: 'competent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
-            {type: 'likert',prompt: 'How smart did you find the native speaker? ',required: true,name: 'smart_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
-            {type: 'likert',prompt: 'How educated did you find the native speaker?',required: true,name: 'educated_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
-            {type: 'likert',prompt: 'How intelligent did you find the native speaker?',required: true,name: 'intelligent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
-            {type: 'likert',prompt: 'How successful did you find the native speaker?',required: true,name: 'successful_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
+            {type: 'likert',prompt: 'How competent did you find the native speaker? ',required: true,name: 'competent_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
+            {type: 'likert',prompt: 'How smart did you find the native speaker? ',required: true,name: 'smart_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
+            {type: 'likert',prompt: 'How educated did you find the native speaker?',required: true,name: 'educated_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
+            {type: 'likert',prompt: 'How intelligent did you find the native speaker?',required: true,name: 'intelligent_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
+            {type: 'likert',prompt: 'How successful did you find the native speaker?',required: true,name: 'successful_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
         ], [
             {type: 'html',prompt: '<center>These questions are about the <b>native</b> speaker.</center>',},
-            {type: 'likert',prompt: 'How sociable did you find the native speaker?',required: true,name: 'sociable_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
-            {type: 'likert',prompt: 'How friendly did you find the native speaker?',required: true,name: 'friendly_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
-            {type: 'likert',prompt: 'How nice did you find the native speaker? ',required: true,name: 'nice_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
-            {type: 'likert',prompt: 'How honest did you find the native speaker?',required: true,name: 'honest_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
-            {type: 'likert',prompt: 'How pleasant did you find the native speaker?',required: true,name: 'pleasant_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
+            {type: 'likert',prompt: 'How sociable did you find the native speaker?',required: true,name: 'sociable_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
+            {type: 'likert',prompt: 'How friendly did you find the native speaker?',required: true,name: 'friendly_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
+            {type: 'likert',prompt: 'How nice did you find the native speaker? ',required: true,name: 'nice_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
+            {type: 'likert',prompt: 'How honest did you find the native speaker?',required: true,name: 'honest_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
+            {type: 'likert',prompt: 'How pleasant did you find the native speaker?',required: true,name: 'pleasant_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
         ], [
             {type: 'html',prompt: '<center>These questions are about the <b>native</b> speaker.</center>',},
-            {type: 'likert',prompt: 'How trustworthy was the native speaker? ',required: true,name: 'trustworthy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
-            {type: 'likert',prompt: 'How easy was it to understand the native speaker?',required: true,name: 'easy_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
-            {type: 'likert',prompt: 'How fluent was the native speaker?  ',required: true,name: 'fluent_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
-            {type: 'likert',prompt: 'How strong was the native speaker\'s accent? ',required: true,name: 'strong_native',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
+            {type: 'likert',prompt: 'How trustworthy was the native speaker? ',required: true,name: 'trustworthy_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
+            {type: 'likert',prompt: 'How easy was it to understand the native speaker?',required: true,name: 'easy_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
+            {type: 'likert',prompt: 'How fluent was the native speaker?  ',required: true,name: 'fluent_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
+            {type: 'likert',prompt: 'How strong was the native speaker\'s accent? ',required: true,name: 'strong_native',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
         ]],
         data: {
           type: 'survey_native',
@@ -603,32 +603,32 @@
         type: jsPsychSurvey,
         pages: [[
             {type: 'html',prompt: '<center>These questions are about the <b>non-native</b> speaker.</center>',},
-            {type: 'likert',prompt: 'How irritated did you feel when you listened to the non-native speaker?',required: true,name: 'irritated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
-            {type: 'likert',prompt: 'How interested did you feel when you listened to the non-native speaker?',required: true,name: 'interested_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
-            {type: 'likert',prompt: 'How enthusiastic did you feel when you listened to the non-native speaker? ',required: true,name: 'enthusiastic_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
-            {type: 'likert',prompt: 'How frustrated did you feel when you listened to the non-native speaker? ',required: true,name: 'frustrated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
-            {type: 'likert',prompt: 'How annoyed did you feel when you listened to the non-native speaker?',required: true,name: 'annoyed_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
-            {type: 'likert',prompt: 'How happy did you feel when you listened to the non-native speaker? ',required: true,name: 'happy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
+            {type: 'likert',prompt: 'How irritated did you feel when you listened to the non-native speaker?',required: true,name: 'irritated_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not irritated at all', likert_scale_max_label: 'Extremely irritated'},
+            {type: 'likert',prompt: 'How interested did you feel when you listened to the non-native speaker?',required: true,name: 'interested_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not interested at all', likert_scale_max_label: 'Extremely interested'},
+            {type: 'likert',prompt: 'How enthusiastic did you feel when you listened to the non-native speaker? ',required: true,name: 'enthusiastic_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not enthusiastic at all', likert_scale_max_label: 'Extremely enthusiastic'},
+            {type: 'likert',prompt: 'How frustrated did you feel when you listened to the non-native speaker? ',required: true,name: 'frustrated_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not frustrated at all', likert_scale_max_label: 'Extremely frustrated'},
+            {type: 'likert',prompt: 'How annoyed did you feel when you listened to the non-native speaker?',required: true,name: 'annoyed_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not annoyed at all', likert_scale_max_label: 'Extremely annoyed'},
+            {type: 'likert',prompt: 'How happy did you feel when you listened to the non-native speaker? ',required: true,name: 'happy_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not happy at all', likert_scale_max_label: 'Extremely happy'}
         ],[
             {type: 'html',prompt: '<center>These questions are about the <b>non-native</b> speaker.</center>',},
-            {type: 'likert',prompt: 'How competent did you find the non-native speaker? ',required: true,name: 'competent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
-            {type: 'likert',prompt: 'How smart did you find the non-native speaker? ',required: true,name: 'smart_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
-            {type: 'likert',prompt: 'How educated did you find the non-native speaker?',required: true,name: 'educated_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
-            {type: 'likert',prompt: 'How intelligent did you find the non-native speaker?',required: true,name: 'intelligent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
-            {type: 'likert',prompt: 'How successful did you find the non-native speaker?',required: true,name: 'successful_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
+            {type: 'likert',prompt: 'How competent did you find the non-native speaker? ',required: true,name: 'competent_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not competent at all', likert_scale_max_label: 'Extremely competent'},
+            {type: 'likert',prompt: 'How smart did you find the non-native speaker? ',required: true,name: 'smart_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not smart at all', likert_scale_max_label: 'Extremely smart'},
+            {type: 'likert',prompt: 'How educated did you find the non-native speaker?',required: true,name: 'educated_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not educated at all', likert_scale_max_label: 'Extremely educated'},
+            {type: 'likert',prompt: 'How intelligent did you find the non-native speaker?',required: true,name: 'intelligent_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not intelligent at all', likert_scale_max_label: 'Extremely intelligent'},
+            {type: 'likert',prompt: 'How successful did you find the non-native speaker?',required: true,name: 'successful_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not successful at all', likert_scale_max_label: 'Extremely successful'}
         ], [
             {type: 'html',prompt: '<center>These questions are about the <b>non-native</b> speaker.</center>',},
-            {type: 'likert',prompt: 'How sociable did you find the non-native speaker?',required: true,name: 'sociable_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
-            {type: 'likert',prompt: 'How friendly did you find the non-native speaker?',required: true,name: 'friendly_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
-            {type: 'likert',prompt: 'How nice did you find the non-native speaker? ',required: true,name: 'nice_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
-            {type: 'likert',prompt: 'How honest did you find the non-native speaker?',required: true,name: 'honest_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
-            {type: 'likert',prompt: 'How pleasant did you find the non-native speaker?',required: true,name: 'pleasant_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
+            {type: 'likert',prompt: 'How sociable did you find the non-native speaker?',required: true,name: 'sociable_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not sociable at all', likert_scale_max_label: 'Extremely sociable'},
+            {type: 'likert',prompt: 'How friendly did you find the non-native speaker?',required: true,name: 'friendly_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not friendly at all', likert_scale_max_label: 'Extremely friendly'},
+            {type: 'likert',prompt: 'How nice did you find the non-native speaker? ',required: true,name: 'nice_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not nice at all', likert_scale_max_label: 'Extremely nice'},
+            {type: 'likert',prompt: 'How honest did you find the non-native speaker?',required: true,name: 'honest_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not honest at all', likert_scale_max_label: 'Extremely honest'},
+            {type: 'likert',prompt: 'How pleasant did you find the non-native speaker?',required: true,name: 'pleasant_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not pleasant at all', likert_scale_max_label: 'Extremely pleasant'}
         ],[
             {type: 'html',prompt: '<center>These questions are about the <b>non-native</b> speaker.</center>',},
-            {type: 'likert',prompt: 'How trustworthy was the non-native speaker? ',required: true,name: 'trustworthy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
-            {type: 'likert',prompt: 'How easy was it to understand the non-native speaker?',required: true,name: 'easy_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
-            {type: 'likert',prompt: 'How fluent was the non-native speaker?  ',required: true,name: 'fluent_nonnative',likert_scale_max: 10, likert_scale_min: 0, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
-            {type: 'likert',prompt: 'How strong was the non-native speaker\'s accent? ',required: true,name: 'strong_nonnative',likert_scale_max: 10,likert_scale_min: 0, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
+            {type: 'likert',prompt: 'How trustworthy was the non-native speaker? ',required: true,name: 'trustworthy_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not trustworthy at all', likert_scale_max_label: 'Extremely trustworthy'},
+            {type: 'likert',prompt: 'How easy was it to understand the non-native speaker?',required: true,name: 'easy_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not easy at all', likert_scale_max_label: 'Extremely easy'},
+            {type: 'likert',prompt: 'How fluent was the non-native speaker?  ',required: true,name: 'fluent_nonnative',likert_scale_max: 9, likert_scale_min: 1, likert_scale_min_label: 'Not fluent at all', likert_scale_max_label: 'Extremely fluent'},
+            {type: 'likert',prompt: 'How strong was the non-native speaker\'s accent? ',required: true,name: 'strong_nonnative',likert_scale_max: 9,likert_scale_min: 1, likert_scale_min_label: 'Not strong at all', likert_scale_max_label: 'Extremely strong'}
         ]],
         data: {
           type: 'survey_nonnative',
@@ -648,27 +648,34 @@
                 {type: 'text',
                 prompt: 'Can you guess from where the native speaker was?',
                 placeholder: '',
+                name: 'country_native',
                 required: true},
                 {type: 'text',
                 prompt: 'Can you guess from where the non-native speaker was?',
                 placeholder: '',
+                name: 'country_nonnative',
+                required: true},
+                {type: 'multi-choice',
+                prompt: 'From what speaker would you prefer to learn in the future?',
+                options: ['Native speaker', 'Non-native speaker'],
+                name: 'learn_future',
                 required: true}
               ],
-            [
+              [
                 {type: 'html',
                 prompt: 'Please answer the following questions',
                 },
                 {type: 'likert',
-                prompt: 'How used are you to foreign-accented speech in your daily life? Please, rate your daily exposure on a scale from 1 (none) to 10 (always).',
+                prompt: 'How used are you to foreign-accented speech in your daily life? Please, rate your daily exposure on a scale from 1 (none) to 9 (always).',
                 name: 'exposure_nn',
-                likert_scale_max: 10,
-                likert_scale_min: 0,
+                likert_scale_max: 9,
+                likert_scale_min: 1,
                 required: true},
                 {type: 'likert',
-                prompt: 'How used are you to British-accented English? Please, rate your daily exposure on a scale from 1 (none) to 10 (always).',
+                prompt: 'How used are you to British-accented English? Please, rate your daily exposure on a scale from 1 (none) to 9 (always).',
                 name: 'exposure_n',
-                likert_scale_max: 10,
-                likert_scale_min: 0,
+                likert_scale_max: 9,
+                likert_scale_min: 1,
                 required: true},
                 {type: 'html',
                 prompt: 'The following questions are about your previous betting behaviours.',
@@ -692,15 +699,21 @@
                 {type: 'likert',
                 prompt: 'How natural did the recordings of the native speaker sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
                 likert_scale_max: 9,
-                likert_scale_min: 0,
+                likert_scale_min: 1,
                 name: 'naturalness_native',
                 required: true},
                 {type: 'likert',
                 prompt: 'How natural did the recordings of the non-native speaker sound to you? By naturalness, we mean whether there was anything odd in the stimuli i.e., how likely it is that their recordings were made in one go? Please rate it on a scale from 1 (very likely) to 9 (very unlikely).',
                 likert_scale_max: 9,
-                likert_scale_min: 0,
+                likert_scale_min: 1,
                 name: 'naturalness_nonnative',
                 required: true},
+                {type: 'text',
+                prompt: 'How did you decide how to distribute your bets?',
+                placeholder: "",
+                name: 'decision_making',
+                required: true
+                },
                 {type: 'text',
                 prompt: 'What do you think the aim of the experiment is?',
                 placeholder: ""
