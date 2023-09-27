@@ -142,13 +142,21 @@ dexp1survey <- dexp1survey %>%
     IN_ANALYSIS_AUDIO = ifelse(naturalness_native < 4 | naturalness_nonnative < 4, "No", "Yes"),
     IN_ANALYSIS_EXPERTISE = ifelse(expertise_betting > 3, "No", "Yes")
   ) %>%
-  select(!c(horse0, horse1, horse2, horse3, trial_type, trial_index))
+  select(!c(horse0, horse1, horse2, horse3, trial_type, trial_index)) %>%
+  pivot_longer(c(9,10), names_to = 'question', values_to = 'naturalness') %>%
+  separate_wider_delim(question, delim = '_', names = c("rly", "speaker")) %>%
+  pivot_longer(c(5,6), names_to = 'question', values_to = 'exposure') %>%
+  separate_wider_delim(question, delim = '_', names = c("opsi", "sp")) %>%
+  mutate(sp = ifelse(sp == 'nn', 'nonnative', 'native')) %>%
+  filter(sp == speaker) %>%
+  select(!c(sp, rly, opsi))
 
 
 # PUT ALL INFO IN ONE DF
 # for filtering & analyses
 
 dexp1lang <- left_join(dexp1lang, dexp1survey, by = 'ppt')
+dexp1lang <- dexp1lang %>%  filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% select(!c(speaker.x, speaker.y))
 dexp1bet <- left_join(dexp1bet, dexp1lang, by = c('ppt'))
 dexp1bet <- dexp1bet %>% filter(speaker.x == speaker.y)
 
@@ -158,6 +166,9 @@ dexp1bet <- dexp1bet %>% filter(speaker.x == speaker.y)
 # filter participants
 
 dexp1bet_prereg <- dexp1bet %>%
+  filter(IN_ANALYSIS_AUDIO == "Yes" & IN_ANALYSIS_EXPERTISE == "Yes")
+
+dexp1lang_prereg <- dexp1lang %>%
   filter(IN_ANALYSIS_AUDIO == "Yes" & IN_ANALYSIS_EXPERTISE == "Yes")
 
 # check list
@@ -177,7 +188,7 @@ dexp1bet_prereg %>%
 dexp1bet_prereg <- dexp1bet_prereg %>%
   mutate(
     delivery = factor(delivery, levels = c("fluent", "disfluent")),
-    speaker = factor(speaker.x, levels = c("native", "non-native")),
+    speaker = factor(as.factor(speaker.x), levels = c("native", "nonnative")),
     money = as.numeric(money)
   )
 

@@ -16,9 +16,8 @@ library(wesanderson)
 # questionnaire data
 # avg and sd of language attitudes dimensions, naturalness, accentedness, fluency, trustworthiness, ease of understanding, exposure to native and non-native speakers
 
-tab_exp1descriptive <- dexp1quest %>%
-  mutate(across(c(15:18, 24:28), as.numeric)) %>%
-  select(c(1,15:18, 24:28)) %>%
+tab_exp1descriptive <- dexp1lang_prereg %>%
+  select(c(18:24,38,39)) %>% mutate(speaker = ifelse(speaker=='native', 'Native Speaker', 'Non-native Speaker')) %>%
   rename_with(str_to_title) %>%
   tbl_summary(
     by = Speaker,
@@ -67,8 +66,8 @@ gtsave(tab_exp1descriptive, 'exp1-descriptive.png', path = './analysis/exp1/tabl
 
 # proportion money distributed
 
-tab_exp1moneydist <- dexp1bet %>%
-  select(c(3,4,13)) %>%
+tab_exp1moneydist <- dexp1bet_prereg %>%
+  select(c(4,12,51)) %>%
   rename_with(str_to_title) %>%
   group_by(Delivery, Speaker) %>%
   dplyr::summarise(
@@ -76,7 +75,7 @@ tab_exp1moneydist <- dexp1bet %>%
     sd_money = std.error(as.numeric(Money), na.rm = TRUE)
   ) %>% 
   dplyr::mutate(
-    distribution = paste(round(avg_money, 2), paste("(", sd_money, ")", sep = ""), sep = " ")) %>%
+    distribution = paste(round(avg_money, 2), paste("(", round(sd_money,2), ")", sep = ""), sep = " ")) %>%
   mutate(Delivery = ifelse(Delivery == 'fluent', 'Fluent', 'Disfluent'), Speaker = ifelse(Speaker == 'native', 'Native', 'Non-native')) %>%
   select(c(Delivery, Speaker, distribution)) %>%
   #pivot_wider(names_from = Speaker, values_from = distribution) %>%
@@ -134,7 +133,7 @@ dexp1bet %>%
   theme_minimal()
 
 
-dexp1bet %>%
+dexp1bet_prereg %>%
   group_by(delivery, speaker)%>%
   summarise(mean_money = mean(money), sd_money = std.error(money)) %>% ungroup() %>%
   mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native Speaker', 'Non-native Speaker'))%>%
