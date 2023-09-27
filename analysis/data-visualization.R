@@ -9,6 +9,7 @@ library(gtsummary)
 library(webshot2)
 library(plotrix)
 library(MetBrewer) # for colors
+library(wesanderson)
 
 # Descriptive statistics
 
@@ -127,8 +128,24 @@ dexp1bet %>%
                position = position_dodge(.175))  +
   scale_x_discrete(name = "Manner of Delivery", labels = c("Disfluent", "Fluent")) +
   scale_y_continuous(name = "Money bet",
-                     breaks = seq(0, 200, 20), 
-                     limits = c(0, 200)) +
+                     breaks = seq(0, 100, 20), 
+                     limits = c(0, 100)) +
   scale_fill_brewer(palette = "Dark2", name = "Speaker's linguistic background") + # need to decide color palette based on poster palette
   theme_minimal()
 
+
+dexp1bet %>%
+  group_by(delivery, speaker)%>%
+  summarise(mean_money = mean(money), sd_money = std.error(money)) %>% ungroup() %>%
+  mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native Speaker', 'Non-native Speaker'))%>%
+  mutate(delivery = factor(delivery, levels = c("Fluent", "Disfluent"))) %>%
+  ggplot(., aes(x=delivery,y=as.numeric(mean_money), fill = speaker)) +
+  geom_bar(stat="identity", color="black", 
+           position=position_dodge()) +
+  geom_errorbar(aes(ymin=mean_money-sd_money, ymax=mean_money+sd_money), width=.2,
+                position=position_dodge(.9)) +
+  scale_x_discrete(name = "Manner of Delivery", labels = c("Fluent", "Disfluent")) +
+  scale_y_continuous(name = "Money bet") + # need to decide color palette based on poster palette
+  theme_minimal() +
+  scale_fill_manual(values = c("Native Speaker" = "#00A08A",
+                               "Non-native Speaker" = "#F2AD00"), name = "Speaker's linguistic background") + theme(legend.position="top")

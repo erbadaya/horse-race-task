@@ -19,7 +19,7 @@ t.test(accent ~ speaker, data = dexp1quest, paired = TRUE)
 exp1_mdlbet <- lmer(
   money ~ delivery * speaker +
     (1 + delivery + speaker | ppt) +
-    (1 + delivery + speaker | description),
+    (1 + delivery + speaker | horse),
   data = dexp1bet, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
 )
