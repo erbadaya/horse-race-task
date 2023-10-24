@@ -20,9 +20,8 @@ t.test(exposure ~ speaker, data = dexp1lang_prereg, paired = TRUE) # exposure to
 
 exp1_mdlbet <- lmer(
   money ~ delivery * speaker +
-    (1 + delivery + speaker | ppt) +
-    (1 + delivery + speaker | horse),
-  data = dexp1bet_prereg, 
+    (1 | horse),
+  data = dexp1bet, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
 )
 

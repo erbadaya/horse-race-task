@@ -64,6 +64,14 @@ tab_exp1descriptive <- dexp1lang_prereg %>%
 
 gtsave(tab_exp1descriptive, 'exp1-descriptive.png', path = './analysis/exp1/tables')
 
+# from whom they'd like to learn in the future
+
+dexp1lang_prereg %>% 
+  filter(!duplicated(ppt)) %>%
+  mutate(learn_future = as.factor(learn_future)) %>%
+  group_by(learn_future) %>%
+  summarise(no_rows = length(learn_future))
+
 # proportion money distributed
 
 tab_exp1moneydist <- dexp1bet_prereg %>%
@@ -118,7 +126,7 @@ gtsave(tab_exp1moneydist, 'exp1-moneydist.png', path = './analysis/exp1/tables')
 
 # viz for poster presentations
 
-dexp1bet %>%
+dexp1bet_prereg %>%
   mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native', 'Non-native'))%>%
   ggplot(., aes (x = delivery, y = as.numeric(money), fill = speaker)) +
   geom_split_violin(alpha = .4, trim = FALSE)  +
@@ -133,10 +141,12 @@ dexp1bet %>%
   theme_minimal()
 
 
-dexp1bet_prereg %>%
-  group_by(delivery, speaker)%>%
+# bar chart
+
+dexp1bet_prereg%>%
+  group_by(delivery, speaker.x)%>%
   summarise(mean_money = mean(money), sd_money = std.error(money)) %>% ungroup() %>%
-  mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native Speaker', 'Non-native Speaker'))%>%
+  mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker.x == 'native', 'Native Speaker', 'Non-native Speaker'))%>%
   mutate(delivery = factor(delivery, levels = c("Fluent", "Disfluent"))) %>%
   ggplot(., aes(x=delivery,y=as.numeric(mean_money), fill = speaker)) +
   geom_bar(stat="identity", color="black", 
@@ -148,3 +158,4 @@ dexp1bet_prereg %>%
   theme_minimal() +
   scale_fill_manual(values = c("Native Speaker" = "#00A08A",
                                "Non-native Speaker" = "#F2AD00"), name = "Speaker's linguistic background") + theme(legend.position="top")
+

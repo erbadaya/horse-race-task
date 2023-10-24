@@ -151,7 +151,6 @@ dexp1survey <- dexp1survey %>%
   filter(sp == speaker) %>%
   select(!c(sp, rly, opsi))
 
-
 # PUT ALL INFO IN ONE DF
 # for filtering & analyses
 
@@ -171,17 +170,35 @@ dexp1bet_prereg <- dexp1bet %>%
 dexp1lang_prereg <- dexp1lang %>%
   filter(IN_ANALYSIS_AUDIO == "Yes" & IN_ANALYSIS_EXPERTISE == "Yes")
 
+dexp1lang_prereg %>%
+  filter(!duplicated(ppt)) %>%
+  write.csv(., "./analysis/horse_race_exp1_surveydata.csv")
+
+# additional: participants that need to be removed due to their post-experimental questionnaire answers (e.g., reported noticing the manipulation and the like)
+# source: dexp1survey
+
+# ppt 23: fluency of language
+# ppt 41: importance of what someone is saying v how they're saying it
+# ppt 46: difference between confident speech and um-ing speech
+
+# 28/09/2023: up to ppt 97
+
+
 # check list
 
 dexp1bet %>%
   group_by(list) %>%
   filter(!duplicated(ppt)) %>%
-  summarise(number = n())
+  summarise(number = n()) %>%
+  print(n = 24)  %>%
+  summarise(total = sum(number))
 
 dexp1bet_prereg %>%
   group_by(list) %>%
   filter(!duplicated(ppt)) %>%
-  summarise(number = n())
+  summarise(number = n()) %>%
+  print(n = 24) %>%
+  summarise(total = sum(number))
 
 # Contrast coding
 
@@ -194,3 +211,6 @@ dexp1bet_prereg <- dexp1bet_prereg %>%
 
 contrasts(dexp1bet_prereg$delivery) <- c(-0.5, +0.5)
 contrasts(dexp1bet_prereg$speaker) <- c(-0.5, +0.5)
+
+contrasts(dexp1bet$delivery.x) <- c(-0.5, +0.5)
+contrasts(dexp1bet$speaker.x) <- c(-0.5, +0.5)
