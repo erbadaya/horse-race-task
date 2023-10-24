@@ -212,5 +212,3 @@ dexp1bet_prereg <- dexp1bet_prereg %>%
 contrasts(dexp1bet_prereg$delivery) <- c(-0.5, +0.5)
 contrasts(dexp1bet_prereg$speaker) <- c(-0.5, +0.5)
 
-contrasts(dexp1bet$delivery.x) <- c(-0.5, +0.5)
-contrasts(dexp1bet$speaker.x) <- c(-0.5, +0.5)
