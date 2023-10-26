@@ -14,39 +14,40 @@ library(here)
 # to run only once
 # merges all individual .csv files & anonymises data
 
-temp <- list.files(path = "./data/", pattern = "*.csv")
-ppt_id <- length(temp)
-dexp1 <- data.frame()
+# temp <- list.files(path = "./data/", pattern = "*.csv")
+# ppt_id <- length(temp)
+# dexp1 <- data.frame()
+# 
+# for(i in 1:ppt_id){
+#   FILE <- read_csv(paste("./data/",temp[i], sep = "")) # read in each file, skip the first three lines (information about the session of Testable)
+#   FILE$ppt <- i # add participant number, anonymous
+#   # check that we have same number of columns (because of participants overbetting)
+#   if(any(FILE$overbet=="yes", na.rm = TRUE)){
+#     FILE <- FILE %>%
+#       select(., c("ppt", "horse", "list", "delivery", "overbet", "speaker", "response", "horse3_fix",
+#                   "horse2_fix", "horse1_fix", "horse0_fix", "trial_type", "trial_index"))
+#     for (col in 1:ncol(FILE)){
+#       colnames(FILE)[col] <-  sub("_fix*", "", colnames(FILE)[col])
+#     }
+#   } else {
+#     FILE <- FILE %>%
+#       select(., c("ppt", "horse", "list", "delivery", "overbet", "speaker", "response", "horse3_bet",
+#                   "horse2_bet", "horse1_bet", "horse0_bet", "trial_type", "trial_index"))
+#     for (col in 1:ncol(FILE)){
+#       colnames(FILE)[col] <-  sub("_bet*", "", colnames(FILE)[col])
+#   }}
+#   FILE <- FILE %>% filter(!trial_index == 2) # anonymise data
+#   dexp1 <- rbind(dexp1, FILE)
+#   print(i)
+# }
+# 
+# rm(FILE, i, ppt_id, temp)
+# 
+# write.csv(dexp1, "./data/horse_race_exp1_rawdata.csv")
 
-for(i in 1:ppt_id){
-  FILE <- read_csv(paste("./data/",temp[i], sep = "")) # read in each file, skip the first three lines (information about the session of Testable)
-  FILE$ppt <- i # add participant number, anonymous
-  # check that we have same number of columns (because of participants overbetting)
-  if(any(FILE$overbet=="yes", na.rm = TRUE)){
-    FILE <- FILE %>%
-      select(., c("ppt", "horse", "list", "delivery", "overbet", "speaker", "response", "horse3_fix",
-                  "horse2_fix", "horse1_fix", "horse0_fix", "trial_type", "trial_index"))
-    for (col in 1:ncol(FILE)){
-      colnames(FILE)[col] <-  sub("_fix*", "", colnames(FILE)[col])
-    }
-  } else {
-    FILE <- FILE %>%
-      select(., c("ppt", "horse", "list", "delivery", "overbet", "speaker", "response", "horse3_bet",
-                  "horse2_bet", "horse1_bet", "horse0_bet", "trial_type", "trial_index"))
-    for (col in 1:ncol(FILE)){
-      colnames(FILE)[col] <-  sub("_bet*", "", colnames(FILE)[col])
-  }}
-  
-  dexp1 <- rbind(dexp1, FILE)
-  print(i)
-}
+# load all anonymised data
 
-rm(FILE, i, ppt_id, temp)
-
-#write.csv(dexp1, "./data/horse_race_exp1_rawdata.csv")
-
-#dexp1 <- read_csv("./data/horse_race_exp1_rawdata.csv")
-
+dexp1 <- read_csv("./data/horse_race_exp1_rawdata.csv") %>% select(-c(1))
 
 # wrangle separately bet data from questionnaire data
 
@@ -160,8 +161,6 @@ dexp1bet <- left_join(dexp1bet, dexp1lang, by = c('ppt'))
 dexp1bet <- dexp1bet %>% filter(speaker.x == speaker.y)
 
 
-# LAST CHECKS
-
 # filter participants
 
 dexp1bet_prereg <- dexp1bet %>%
@@ -170,6 +169,8 @@ dexp1bet_prereg <- dexp1bet %>%
 dexp1lang_prereg <- dexp1lang %>%
   filter(IN_ANALYSIS_AUDIO == "Yes" & IN_ANALYSIS_EXPERTISE == "Yes")
 
+# LAST CHECKS
+
 dexp1lang_prereg %>%
   filter(!duplicated(ppt)) %>%
   write.csv(., "./analysis/horse_race_exp1_surveydata.csv")
@@ -177,11 +178,56 @@ dexp1lang_prereg %>%
 # additional: participants that need to be removed due to their post-experimental questionnaire answers (e.g., reported noticing the manipulation and the like)
 # source: dexp1survey
 
+# ppt 12: accent and clarity of speech
 # ppt 23: fluency of language
-# ppt 41: importance of what someone is saying v how they're saying it
+# ppt 40: importance of what someone is saying v how they're saying it
 # ppt 46: difference between confident speech and um-ing speech
+# ppt 279: ums were removed from audio
+# ppt 334: effect of fluency
+# ppt 505: cuts on the audio
+# ppt 586: there are cuts in the audio
+# ppt 617: fluency and trust
+# log: 24/10
 
-# 28/09/2023: up to ppt 97
+dexp1bet <- dexp1bet %>%
+  mutate(
+    IN_ANALYSIS_RESPONSE = case_when(
+      ppt == 12 ~ "No", 
+      ppt == 23 ~ "No",
+      ppt == 40 ~ "No", 
+      ppt == 46 ~ "No", 
+      ppt == 279 ~ "No", 
+      ppt == 334 ~ "No", 
+      ppt == 505 ~ "No", 
+      ppt == 586 ~ "No", 
+      ppt == 617 ~ "No",  
+      TRUE  ~ "Yes"
+    )
+  )
+
+dexp1lang <- dexp1lang %>%
+  mutate(
+    IN_ANALYSIS_RESPONSE = case_when(
+      ppt == 12 ~ "No", 
+      ppt == 23 ~ "No",
+      ppt == 40 ~ "No", 
+      ppt == 46 ~ "No", 
+      ppt == 279 ~ "No", 
+      ppt == 334 ~ "No", 
+      ppt == 505 ~ "No", 
+      ppt == 586 ~ "No", 
+      ppt == 617 ~ "No",  
+      TRUE  ~ "Yes"
+    )
+  )
+
+# filter participants
+
+dexp1bet_prereg <- dexp1bet %>%
+  filter(IN_ANALYSIS_AUDIO == "Yes" & IN_ANALYSIS_EXPERTISE == "Yes" & IN_ANALYSIS_RESPONSE == "Yes")
+
+dexp1lang_prereg <- dexp1lang %>%
+  filter(IN_ANALYSIS_AUDIO == "Yes" & IN_ANALYSIS_EXPERTISE == "Yes" & IN_ANALYSIS_RESPONSE == "Yes")
 
 
 # check list

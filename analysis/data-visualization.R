@@ -62,7 +62,7 @@ tab_exp1descriptive <- dexp1lang_prereg %>%
   opt_align_table_header(align = "left") 
 
 
-gtsave(tab_exp1descriptive, 'exp1-descriptive.png', path = './analysis/exp1/tables')
+gtsave(tab_exp1descriptive, 'exp1-descriptive.png', path = './analysis/tables')
 
 # from whom they'd like to learn in the future
 
@@ -75,7 +75,7 @@ dexp1lang_prereg %>%
 # proportion money distributed
 
 tab_exp1moneydist <- dexp1bet_prereg %>%
-  select(c(4,12,51)) %>%
+  select(c(4,12,52)) %>%
   rename_with(str_to_title) %>%
   group_by(Delivery, Speaker) %>%
   dplyr::summarise(
@@ -159,3 +159,4 @@ dexp1bet_prereg%>%
   scale_fill_manual(values = c("Native Speaker" = "#00A08A",
                                "Non-native Speaker" = "#F2AD00"), name = "Speaker's linguistic background") + theme(legend.position="top")
 
+ggsave('exp1-money-barchart.png', path = './analysis/figures')
