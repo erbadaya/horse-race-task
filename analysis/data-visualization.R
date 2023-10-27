@@ -19,15 +19,19 @@ library(wesanderson)
 tab_exp1descriptive <- dexp1lang_prereg %>%
   select(c(18:24,38,39)) %>% mutate(speaker = ifelse(speaker=='native', 'Native Speaker', 'Non-native Speaker')) %>%
   rename_with(str_to_title) %>%
+  select(c("Speaker", "Easy", "Strong", "Affect", "Status", "Solidarity", "Trustworthy")) %>%
+  rename(Comprehensibility = Easy,
+         Accentedness = Strong
+         ) %>%
   tbl_summary(
     by = Speaker,
     statistic = list(
       all_continuous() ~ "{mean} ({sd})"
     ),
     digits = all_continuous() ~ 2,
-    type = c(Fluent = "continuous", Trustworthy = "continuous", Easy = "continuous", Strong = "continuous",
-             Exposure = "continuous", Naturalness = "continuous", Affect = "continuous", Status = "continuous", Solidarity = "continuous") # just for testing the table
-  )%>% modify_header(label = "**Variable**") %>% as_gt() %>%
+    type = c(Comprehensibility = "continuous", Accentedness = "continuous", 
+             Affect = "continuous", Status = "continuous", Solidarity = "continuous", Trustworthy = "continuous") # just for testing the table
+  )%>% modify_header(label = "**Dimension**") %>% as_gt() %>%
   tab_options(
     table.border.top.color = "white",
     heading.title.font.size = px(16),
@@ -60,7 +64,6 @@ tab_exp1descriptive <- dexp1lang_prereg %>%
     )
   ) %>%
   opt_align_table_header(align = "left") 
-
 
 gtsave(tab_exp1descriptive, 'exp1-descriptive.png', path = './analysis/tables')
 
@@ -122,7 +125,7 @@ tab_exp1moneydist <- dexp1bet_prereg %>%
   cols_label(
     distribution = "Money bet"
   )
-gtsave(tab_exp1moneydist, 'exp1-moneydist.png', path = './analysis/exp1/tables')
+gtsave(tab_exp1moneydist, 'exp1-moneydist.png', path = './analysis/tables')
 
 # viz for poster presentations
 

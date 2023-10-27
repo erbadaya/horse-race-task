@@ -6,6 +6,9 @@ library(gt)
 library(gtsummary)
 library(webshot2)
 
+
+###### PRE-REGISTERED ANALYSIS ######
+
 # 1st: Explore and report behavioural data that is not directly related to our question 
 # Dimensions to compare: naturalness, accentedness, trustworthy, fluency, comprehensibility, exposure to non-native speaker
 
@@ -17,13 +20,25 @@ t.test(fluent ~ speaker, data = dexp1lang_prereg, paired = TRUE) # fluency
 t.test(exposure ~ speaker, data = dexp1lang_prereg, paired = TRUE) # exposure to native and non-native speakers in daily life
 
 # RQ: Does money bet differ depending on manner of delivery and speaker's linguistic background?
+## exp1_mdlbet runs fine, but NB it misses a random intercept by-participant, which should be included
 
-exp1_mdlbet <- lmerTest::lmer(
+
+exp1_mdlbet_issue <- lmer(
+  money ~ delivery * speaker +
+    (1 | ppt) +
+    (1 | horse),
+  data = dexp1bet_prereg, 
+  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
+)
+
+# singular fit
+# 0 variance for ppt, partially makes sense 
+
+exp1_mdlbet <- lmer(
   money ~ delivery * speaker +
     (1 | horse),
   data = dexp1bet_prereg, 
-  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5)),
-  REML = "FALSE"
+  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
 )
 
 summary(exp1_mdlbet)
@@ -56,13 +71,13 @@ solidarity_alpha = round(as.numeric(alpha(dexp1lang_prereg[,8:12])$total[1]), 2)
 
 tests_questionnaires <- list()
 
-tests_questionnaires[[1]] <- t.test(affect ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[2]] <- t.test(status ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[3]] <- t.test(solidarity ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[4]] <- t.test(easy ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[5]] <- t.test(strong ~ speaker, data = dexp1lang_prereg, paired = TRUE)
+tests_questionnaires[[1]] <- t.test(easy ~ speaker, data = dexp1lang_prereg, paired = TRUE)
+tests_questionnaires[[2]] <- t.test(strong ~ speaker, data = dexp1lang_prereg, paired = TRUE)
+tests_questionnaires[[3]] <- t.test(affect ~ speaker, data = dexp1lang_prereg, paired = TRUE)
+tests_questionnaires[[4]] <- t.test(status ~ speaker, data = dexp1lang_prereg, paired = TRUE)
+tests_questionnaires[[5]] <- t.test(solidarity ~ speaker, data = dexp1lang_prereg, paired = TRUE)
 tests_questionnaires[[6]] <- t.test(trustworthy ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-names(tests_questionnaires) <- c("Affect", "Status", "Solidarity", "Comprehensibility", "Accent", "Trustworthy")
+names(tests_questionnaires) <- c("Comprehensibility", "Accent", "Affect", "Status", "Solidarity", "Trustworthy")
 
 # table for report
 # idea from https://stackoverflow.com/questions/21840021/grabbing-certain-results-out-of-multiple-t-test-outputs-to-create-a-table
@@ -72,9 +87,10 @@ tab_ttestsexp1 <- sapply(tests_questionnaires, function(x) {
     x$parameter,
     ci.lower = x$conf.int[1],
     ci.upper = x$conf.int[2],
-    p.value = x$p.value)
+    p.value = x$p.value,
+    x$estimate)
 }) %>% t() %>% cbind(tests = dimnames(.)[[1]]) %>% as_tibble() %>%
-  mutate(across(1:5,as.numeric)) %>% mutate(across(1:5,round, 2)) %>%
+  mutate(across(1:6,as.numeric)) %>% mutate(across(1:6,round, 2)) %>% mutate(p.value = "< .001") %>%
   mutate(
     col_name = paste("t(", df, ")", sep = ""),
     `95% CI` = paste("[", ci.lower, ", ", ci.upper, "]", sep = "")
@@ -82,7 +98,7 @@ tab_ttestsexp1 <- sapply(tests_questionnaires, function(x) {
   pivot_wider(names_from = col_name, values_from = t) %>%
   select(-c(df, ci.lower, ci.upper)) %>% gt() %>%
   cols_move(
-    columns = c(p.value, `95% CI`),
+    columns = c(p.value, `95% CI`, `mean difference`),
     after = starts_with("t(")
   ) %>%
   tab_options(
@@ -118,7 +134,8 @@ tab_ttestsexp1 <- sapply(tests_questionnaires, function(x) {
   opt_align_table_header(align = "left") %>%
   cols_label(
     p.value = "p",
-    tests = ""
+    tests = "",
+    `mean difference` =  "d"
   )
   
 gtsave(tab_ttestsexp1, 'exp1-ttests_results.png', path = './analysis/tables')
@@ -126,4 +143,24 @@ gtsave(tab_ttestsexp1, 'exp1-ttests_results.png', path = './analysis/tables')
 
 # 3. Explore whether model fit improves by including the variable with significant differences.
 
+exp1_mdlbet_attitudes <- lmerTest::lmer(
+  money ~ delivery * speaker + easy + strong + status + solidarity + affect + trustworthy +
+    (1 | horse),
+  data = dexp1bet_prereg, 
+  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5)),
+  REML = "FALSE"
+)
 
+summary(exp1_mdlbet_attitudes)
+
+##### EXPLORATORY ANALYSIS ######
+
+# 4. Preference to learn
+## Do people prefer to learn from the native or from the non-native speaker?
+## chi goodness of fit
+
+obvs <- c(206, 154)
+exp <- c(.5, .5)
+
+res <- chisq.test(x=obvs, p=exp)
+res

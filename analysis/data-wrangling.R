@@ -232,20 +232,6 @@ dexp1lang_prereg <- dexp1lang %>%
 
 # check list
 
-dexp1bet %>%
-  group_by(list) %>%
-  filter(!duplicated(ppt)) %>%
-  summarise(number = n()) %>%
-  print(n = 24)  %>%
-  summarise(total = sum(number))
-
-dexp1bet_prereg %>%
-  group_by(list) %>%
-  filter(!duplicated(ppt)) %>%
-  summarise(number = n()) %>%
-  print(n = 24) %>%
-  summarise(total = sum(number))
-
 # Contrast coding
 
 dexp1bet_prereg <- dexp1bet_prereg %>%
