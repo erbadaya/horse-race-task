@@ -1,0 +1,147 @@
+---
+title: "Horse Racing Analysis"
+author: "MC"
+format:
+  html:
+    theme: flatly
+    date: last-modified
+    smooth-scroll: true
+    cap-location: top
+    code-fold: true
+execute:
+  warning: false
+---
+
+This is a quick attempt to (re-)analyse the horse-racing data from Badaya, Hartsuiker, Corley.  Prompted by the fact that Espe's original analysis (see [github.com/erbadaya/horse-race-task](https://github.com/erbadaya/horse-race-task)) produced a graph that looked like an interaction, but the analysis suggested that there were only main (or simple?) effects.
+
+## Setup, Data Wrangling
+
+All parts of this analysis are loosely based on Espe's code.  Here we load some relevant libraries, read in the experimental data, and get it broadly into shape.
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(lme4)
+library(here)
+
+rawData <- here("data/horse_race_exp1_rawdata.csv")
+df <- read_csv(rawData) |> select(-`...1`)
+
+
+# function to ensure we have up-to-date bets for all horses
+
+
+
+
+df_cond <- df |>
+  filter (overbet=="no") |>
+  select(ppt,horse,delivery,speaker) |>
+  mutate(horseN=rep(c("horse0","horse1","horse2","horse3"),max(ppt)))
+  
+df_money <- df |> select(ppt,starts_with("horse")) |>
+  group_by(ppt) |>
+  filter(row_number()==1) |> select(-horse) |>
+  pivot_longer(cols=starts_with("horse"),names_to="horseN",values_to="BET")
+
+df_ready <- left_join(df_cond,df_money)
+```
+OK, so (see code above) `df_ready` is now a simple dataframe with the betting data.
+
+We have to parse the questionnaire data, at least to take out people with dodgy audio(?) and also those highly familiar with horse-racing.  At the moment I'm not going to attempt a full analysis of the questionnaire data.  So to match Espe's criteria, we need to identify the questionnaire responses with "naturalness" in them, and extract scores for 3 values I think:  `naturalness_native`, `naturalness_nonnative`, and `P1_Q5` which is apparently betting expertise.
+
+```{r}
+
+rPatterns <- c(
+  '.*P1_Q5":',
+  gambling='\\d+',
+  '.*naturalness_native":',
+  natnat='\\d+',
+  '.*naturalness_nonnative":',
+  natnon='\\d+',
+  '.*'
+)
+
+df_q <- df |> filter(str_detect(response,"country_native")) |>
+  select(ppt,response) |>
+  separate_wider_regex(response,patterns=rPatterns)
+  
+df_q <- df_q |> mutate(
+  outAudio=ifelse(natnat<4 | natnon <4,"OUT","in"),
+  outBetting=ifelse(gambling > 3, "OUT", "in")) |>
+  select(-c(gambling,natnat,natnon))
+
+```
+
+Now we need to take out the 9 participants identified by Espe from comments:
+
+```{r}
+df_q <- df_q |> mutate(
+  outVarious=case_when(
+    ppt == 12 ~ "OUT", 
+    ppt == 23 ~ "OUT",
+    ppt == 40 ~ "OUT", 
+    ppt == 46 ~ "OUT", 
+    ppt == 279 ~ "OUT", 
+    ppt == 334 ~ "OUT", 
+    ppt == 505 ~ "OUT", 
+    ppt == 586 ~ "OUT", 
+    ppt == 617 ~ "OUT",  
+    TRUE  ~ "in"
+  )
+)
+```
+
+
+> `r sum(df_q$outAudio=='OUT')` participants were excluded from
+> the analysis because
+> they detected that the audio had been manipulated.
+> A further `r sum(df_q$outBetting=='OUT' & df_q$outAudio!='OUT')` were
+> removed due to expertise in horse racing.
+> 
+> Finally, `r sum(df_q$outVarious=='OUT' & df_q$outBetting!='OUT' & df_q$outAudio!='OUT')` additional
+> participants were removed because their feedback
+> suggested that they had responded strategically during the
+> study.
+
+Last bit of data-munging: Remove participants from the "master" dataframe, and set contrasts for the experimental conditions.
+
+```{r}
+df_ready <- left_join(df_ready,df_q)
+df_ready <- df_ready |> filter(outAudio=='in' &
+                               outBetting=='in' &
+                               outVarious=='in') |>
+  select(-starts_with("out"))
+
+df_ready <- df_ready |> mutate(delivery=factor(delivery,levels=c('fluent','disfluent')),
+       speaker=factor(speaker)) # native comes before non
+contrasts(df_ready$delivery) <- c(-.5,5)
+contrasts(df_ready$speaker) <- c(-.5,5)
+```
+
+Finally, make one more column which is a "normalised bet" column (we act as if everyone had bet out of 100).
+
+**In doing this, I noticed that (at least) one participant had bet zero on all horses, so let's remove them.**
+
+```{r}
+df_ready <- df_ready |> group_by(ppt) |>
+  mutate(sum=sum(BET)) |> ungroup()
+
+p_gone=sum(df_ready$sum==0)/4
+
+df_ready <- df_ready |> filter(sum>0) |>
+  select(-sum) |>
+  group_by(ppt) |> mutate(BET100=BET*100/sum(BET))
+```
+
+> `r p_gone` remaining participants bet no money on any horse, and were removed
+> from the analysis.
+
+## Results!
+
+Now draw a graph.  NB., we have two options here:  Either we scale up all of the bets so that they're "out of 100" or we leave as-is.  Starting with as-is:
+
+```{r}
+df_ready |> ggplot(aes(x=delivery,y=BET100,fill=speaker)) +
+  geom_bar(position="dodge",stat="summary",fun.y="mean")
+```
+
