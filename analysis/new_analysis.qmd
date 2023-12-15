@@ -116,8 +116,8 @@ df_ready <- df_ready |> filter(outAudio=='in' &
 
 df_ready <- df_ready |> mutate(delivery=factor(delivery,levels=c('fluent','disfluent')),
        speaker=factor(speaker)) # native comes before non
-contrasts(df_ready$delivery) <- c(-.5,5)
-contrasts(df_ready$speaker) <- c(-.5,5)
+contrasts(df_ready$delivery) <- c(-.5,.5)
+contrasts(df_ready$speaker) <- c(-.5,.5)
 ```
 
 Finally, make one more column which is a "normalised bet" column (we act as if everyone had bet out of 100).
