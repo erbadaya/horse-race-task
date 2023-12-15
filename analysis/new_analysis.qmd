@@ -8,6 +8,7 @@ format:
     smooth-scroll: true
     cap-location: top
     code-fold: true
+    embed-resources: true
 execute:
   warning: false
 ---
@@ -21,7 +22,8 @@ All parts of this analysis are loosely based on Espe's code.  Here we load some 
 ```{r}
 #| label: setup
 library(tidyverse)
-library(lme4)
+#library(lme4)
+library(buildmer)
 library(here)
 
 rawData <- here("data/horse_race_exp1_rawdata.csv")
@@ -138,10 +140,80 @@ df_ready <- df_ready |> filter(sum>0) |>
 
 ## Results!
 
-Now draw a graph.  NB., we have two options here:  Either we scale up all of the bets so that they're "out of 100" or we leave as-is.  Starting with as-is:
+So I'm as sure as I can be that these data are the same (or at least created to the same standards) as Espe's.  Now draw a graph.  NB., we have two options here:  Either we scale up all of the bets so that they're "out of 100" or we leave as-is.  As-is is on the left, scaled bet is on the right.
+
 
 ```{r}
-df_ready |> ggplot(aes(x=delivery,y=BET100,fill=speaker)) +
-  geom_bar(position="dodge",stat="summary",fun.y="mean")
+#| layout-ncol: 2
+
+df_plot <- df_ready |> group_by(delivery,speaker) |> summarise(mb=mean_se(BET),mb100=mean_se(BET100))
+
+df_plot |> ggplot(aes(x=delivery,y=mb$y,fill=speaker)) +
+  geom_bar(position="dodge",stat="identity") +
+  geom_errorbar(aes(ymin=mb$ymin,ymax=mb$ymax),width=.4,position=position_dodge(.9))
+df_plot |> ggplot(aes(x=delivery,y=mb100$y,fill=speaker)) +
+  geom_bar(position="dodge",stat="identity") +
+  geom_errorbar(aes(ymin=mb100$ymin,ymax=mb100$ymax),width=.4,position=position_dodge(.9))
 ```
+
+Perhaps violin plots might make the distributions a bit clearer:
+
+
+```{r}
+#| layout-ncol: 2
+df_ready |> ggplot(aes(x=delivery,y=BET,fill=speaker)) +
+  geom_violin(alpha=.5) +
+  geom_boxplot(width=.2,position=position_dodge(.9)) 
+df_ready |> ggplot(aes(x=delivery,y=BET100,fill=speaker)) +
+    geom_violin(alpha=.5) +
+    geom_boxplot(width=.2,position=position_dodge(.9))
+```
+
+### Analysis
+
+Let's fit the maximal possible model to the data:
+
+```{r}
+#| output: false
+modB <- buildmer(
+  BET ~ delivery * speaker +
+    (delivery * speaker | ppt) +
+    (delivery * speaker | horse),
+  buildmerControl=buildmerControl(direction='order',
+    args=list(control=lme4::lmerControl(optimizer='bobyqa'))),
+  data = df_ready
+)
+```
+OK, so the maximal converging model is **`r deparse1(formula(modB@model))`**.  Coefficents are shown below.
+
+```{r}
+library(gtsummary)
+tbl_regression(modB@model,intercept=TRUE)
+```
+
+Now let's repeat the analysis, using the DV in which all bets are scaled to a total of 100.
+
+```{r}
+#| output: false
+modB1 <- buildmer(
+  BET100 ~ delivery * speaker +
+    (delivery * speaker | ppt) +
+    (delivery * speaker | horse),
+  buildmerControl=buildmerControl(direction='order',
+    args=list(control=lme4::lmerControl(optimizer='bobyqa'))),
+  data = df_ready
+)
+```
+
+The maximal converging model is **`r deparse1(formula(modB1@model))`**. Coefficients:
+
+```{r}
+tbl_regression(modB1@model,intercept=TRUE)
+```
+
+---
+
+That's as far as I got, but it seems to confirm Espe's original findings.  Perhaps the violin plots above give some clues as to why there is no interaction?
+
+
 
