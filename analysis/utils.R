@@ -169,10 +169,3 @@ geom_flat_violin <- function(mapping = NULL, data = NULL, stat = "ydensity",
     )
   )
 }
-
-
-
-
-# eye tracking data
-
-# visualization eye movements

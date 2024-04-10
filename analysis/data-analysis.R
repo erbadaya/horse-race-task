@@ -1,5 +1,6 @@
 source('./analysis/data-wrangling.R')
 
+
 library(psych)
 library(optimx)
 library(gt)
@@ -12,36 +13,51 @@ library(webshot2)
 # 1st: Explore and report behavioural data that is not directly related to our question 
 # Dimensions to compare: naturalness, accentedness, trustworthy, fluency, comprehensibility, exposure to non-native speaker
 
-t.test(trustworthy ~ speaker, data = dexp1lang_prereg, paired = TRUE) # trustworthiness
-t.test(easy ~ speaker, data = dexp1lang_prereg, paired = TRUE) # comprehensibility, 'how easy is to comprehend this speaker'
-t.test(naturalness ~ speaker, data = dexp1lang_prereg, paired = TRUE) # naturalness of the audio
-t.test(strong ~ speaker, data = dexp1lang_prereg, paired = TRUE) # accent, 'how strong was this speaker's accent'
-t.test(fluent ~ speaker, data = dexp1lang_prereg, paired = TRUE) # fluency
-t.test(exposure ~ speaker, data = dexp1lang_prereg, paired = TRUE) # exposure to native and non-native speakers in daily life
+t.test(trustworthy ~ speaker, data = dexp1lang_prereg, paired = FALSE) # trustworthiness
+t.test(easy ~ speaker, data = dexp1lang_prereg, paired = FALSE) # comprehensibility, 'how easy is to comprehend this speaker'
+t.test(naturalness ~ speaker, data = dexp1lang_prereg, paired = FALSE) # naturalness of the audio
+t.test(strong ~ speaker, data = dexp1lang_prereg, paired = FALSE) # accent, 'how strong was this speaker's accent'
+t.test(fluent ~ speaker, data = dexp1lang_prereg, paired = FALSE) # fluency
+t.test(exposure ~ speaker, data = dexp1lang_prereg, paired = FALSE) # exposure to native and non-native speakers in daily life
 
 # RQ: Does money bet differ depending on manner of delivery and speaker's linguistic background?
 ## exp1_mdlbet runs fine, but NB it misses a random intercept by-participant, which should be included
+## log: 07/11/2023
+## not modelling random intercept-by participant (previous model run with variance 0) because everyone is betting the 100
+## so the average is 25
+## fix: do not include it
+## additionally: we want to model nonetheless the variance by effect
+## lme4 does not work well with sum coding, RSO stats UGent offers the following alternative:
 
 
-exp1_mdlbet_issue <- lmer(
-  money ~ delivery * speaker +
-    (1 | ppt) +
+dexp1bet_prereg$flue_nat <- 1 * (dexp1bet_prereg$delivery == "fluent" & 
+                                      dexp1bet_prereg$speaker == "native")
+dexp1bet_prereg$flue_non <- 1 * (dexp1bet_prereg$delivery == "fluent" & 
+                                      dexp1bet_prereg$speaker == "nonnative")
+dexp1bet_prereg$dis_nat <- 1 * (dexp1bet_prereg$delivery != "fluent" & 
+                                      dexp1bet_prereg$speaker == "native")
+
+exp1_mdlbet_max <- lmer(
+  raw_money ~ delivery_cont * speaker_cont +
+    (-1 + flue_nat + flue_non + dis_nat | ppt) +
     (1 | horse),
   data = dexp1bet_prereg, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
 )
+
+summary(exp1_mdlbet_max)
+hist(resid(exp1_mdlbet_max))
 
 # singular fit
-# 0 variance for ppt, partially makes sense 
 
-exp1_mdlbet <- lmer(
-  money ~ delivery * speaker +
+exp1_mdlbet_m1 <- lmer(
+  raw_money ~ delivery_cont * speaker_cont +
     (1 | horse),
   data = dexp1bet_prereg, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
 )
 
-summary(exp1_mdlbet)
+summary(exp1_mdlbet_m1)
 
 # table for report
 
@@ -57,6 +73,18 @@ tab_exp1_mdlbet <- tbl_regression(exp1_mdlbet, exponentiate = TRUE,
 
 gtsave(tab_exp1_mdlbet, 'exp1-bet_results.png', path = './analysis/tables')
 
+# let's check with all participants to ensure it is not a power issue
+
+exp1_mdlbet_m1_all <- lmerTest::lmer(
+  raw_money ~ delivery_cont * speaker_cont +
+    (1 | horse),
+  data = dexp1bet_prereg, 
+  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
+)
+
+summary(exp1_mdlbet_m1_all)
+
+
 # RQ: Do language attitudes affect money bet?
 
 # 1. Alpha
@@ -71,12 +99,12 @@ solidarity_alpha = round(as.numeric(alpha(dexp1lang_prereg[,8:12])$total[1]), 2)
 
 tests_questionnaires <- list()
 
-tests_questionnaires[[1]] <- t.test(easy ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[2]] <- t.test(strong ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[3]] <- t.test(affect ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[4]] <- t.test(status ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[5]] <- t.test(solidarity ~ speaker, data = dexp1lang_prereg, paired = TRUE)
-tests_questionnaires[[6]] <- t.test(trustworthy ~ speaker, data = dexp1lang_prereg, paired = TRUE)
+tests_questionnaires[[1]] <- t.test(easy ~ speaker, data = dexp1lang_prereg, paired = FALSE)
+tests_questionnaires[[2]] <- t.test(strong ~ speaker, data = dexp1lang_prereg, paired = FALSE)
+tests_questionnaires[[3]] <- t.test(affect ~ speaker, data = dexp1lang_prereg, paired = FALSE)
+tests_questionnaires[[4]] <- t.test(status ~ speaker, data = dexp1lang_prereg, paired = FALSE)
+tests_questionnaires[[5]] <- t.test(solidarity ~ speaker, data = dexp1lang_prereg, paired = FALSE)
+tests_questionnaires[[6]] <- t.test(trustworthy ~ speaker, data = dexp1lang_prereg, paired = FALSE)
 names(tests_questionnaires) <- c("Comprehensibility", "Accent", "Affect", "Status", "Solidarity", "Trustworthy")
 
 # table for report
@@ -143,8 +171,8 @@ gtsave(tab_ttestsexp1, 'exp1-ttests_results.png', path = './analysis/tables')
 
 # 3. Explore whether model fit improves by including the variable with significant differences.
 
-exp1_mdlbet_attitudes <- lmerTest::lmer(
-  money ~ delivery * speaker + easy + strong + status + solidarity + affect + trustworthy +
+exp1_mdlbet_attitudes <- lmer(
+  raw_money ~ (delivery_cont + easy + strong + status + solidarity + affect + trustworthy)+speaker_cont +
     (1 | horse),
   data = dexp1bet_prereg, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5)),
@@ -159,8 +187,30 @@ summary(exp1_mdlbet_attitudes)
 ## Do people prefer to learn from the native or from the non-native speaker?
 ## chi goodness of fit
 
-obvs <- c(206, 154)
-exp <- c(.5, .5)
+dexp1lang_prereg_tab <- dexp1lang_prereg %>%
+  filter(!duplicated(ppt)) %>%
+  mutate(learn_future = as.factor(learn_future)) %>%
+  group_by(learn_future) %>%
+  summarise(obvs = n()) %>%
+  mutate(expected_count = rep(360 * (1/2), 2)) %>%
+  mutate(expected_prop = rep(1/2,2))
 
-res <- chisq.test(x=obvs, p=exp)
-res
+mdl_learnpreference <- chisq.test(x = dexp1lang_prereg_tab$obvs,
+                                  p = dexp1lang_prereg_tab$expected_prop)
+
+mdl_learnpreference
+
+mdl_learneasy <- dexp1lang_prereg %>%
+  filter(!duplicated(ppt)) %>%
+  mutate(learn_bin = 1 * (learn_future == "Native speaker")) %>%
+  glm(
+    learn_bin~easy,
+    data = .,
+    family = 'binomial'
+  )
+
+summary(mdl_learneasy)
+
+# 5. Correlation linguistic and social factors
+
+

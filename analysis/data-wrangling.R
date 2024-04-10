@@ -61,8 +61,16 @@ dexp1bet <- dexp1 %>%
   group_by(ppt) %>%
   mutate(order_filter = seq_len(n()) - 1) %>% ungroup() %>%
   mutate(order_filter = paste("horse", order_filter, sep = "")) %>%
-  pivot_longer(c(8:11), names_to = "order", values_to = "money") %>%
+  pivot_longer(c(8:11), names_to = "order", values_to = "raw_money") %>%
   filter(order == order_filter)
+
+# RSO stats help UGent suggests scaling money bet (previous issue: 0 variance for participant in LME, arguably because everyone is spending 100)
+
+dexp1bet <- dexp1bet %>%
+  group_by(ppt) %>%
+  mutate(total_spent = sum(as.numeric(raw_money))) %>%
+  mutate(scaled_money = ((raw_money * 100)/total_spent))
+
 
 # LANGUAGE ATTITUDES QUESTIONNAIRE
 
@@ -114,6 +122,21 @@ dexp1lang <- dexp1lang %>%
 dexp1lang <- dexp1lang %>% 
   select(!c(horse0, horse1, horse2, horse3, trial_type, trial_index))
 
+# ppt 257 filled the questionnaire the other way around (native for non-native)
+# ppt 550 answered all questions as if for non-native (remove their data)
+
+dexp1lang <- dexp1lang %>%
+  mutate(
+    speaker = case_when(
+      ppt == 257 & speaker == 'native' ~ "nonnative",
+      ppt == 257 & speaker == 'nonnative' ~ "native",
+      TRUE  ~ speaker
+    )
+  ) %>%
+  mutate(
+    across(2:24, ~ ifelse(ppt == 550, NA, .))
+  )
+
 # CHECKS AND OPEN QUESTIONS
 
 dexp1survey <- dexp1 %>%
@@ -158,7 +181,7 @@ dexp1survey <- dexp1survey %>%
 dexp1lang <- left_join(dexp1lang, dexp1survey, by = 'ppt')
 dexp1lang <- dexp1lang %>%  filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% select(!c(speaker.x, speaker.y))
 dexp1bet <- left_join(dexp1bet, dexp1lang, by = c('ppt'))
-dexp1bet <- dexp1bet %>% filter(speaker.x == speaker.y)
+dexp1bet <- dexp1bet %>% filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% select(!c(speaker.x, speaker.y))
 
 
 # filter participants
@@ -171,9 +194,9 @@ dexp1lang_prereg <- dexp1lang %>%
 
 # LAST CHECKS
 
-dexp1lang_prereg %>%
-  filter(!duplicated(ppt)) %>%
-  write.csv(., "./analysis/horse_race_exp1_surveydata.csv")
+# dexp1lang_prereg %>%
+#   filter(!duplicated(ppt)) %>%
+#   write.csv(., "./analysis/horse_race_exp1_surveydata.csv")
 
 # additional: participants that need to be removed due to their post-experimental questionnaire answers (e.g., reported noticing the manipulation and the like)
 # source: dexp1survey
@@ -237,10 +260,21 @@ dexp1lang_prereg <- dexp1lang %>%
 dexp1bet_prereg <- dexp1bet_prereg %>%
   mutate(
     delivery = factor(delivery, levels = c("fluent", "disfluent")),
-    speaker = factor(as.factor(speaker.x), levels = c("native", "nonnative")),
-    money = as.numeric(money)
+    speaker = factor(speaker, levels = c("native", "nonnative")),
+    delivery_cont = factor(delivery, levels = c("fluent", "disfluent")),
+    speaker_cont = factor(speaker, levels = c("native", "nonnative"))
   )
 
-contrasts(dexp1bet_prereg$delivery) <- c(-0.5, +0.5)
-contrasts(dexp1bet_prereg$speaker) <- c(-0.5, +0.5)
+dexp1bet <- dexp1bet %>%
+  mutate(
+    delivery = factor(delivery, levels = c("fluent", "disfluent")),
+    speaker = factor(speaker, levels = c("native", "nonnative")),
+    delivery_cont = factor(delivery, levels = c("fluent", "disfluent")),
+    speaker_cont = factor(speaker, levels = c("native", "nonnative"))
+  )
 
+contrasts(dexp1bet_prereg$delivery_cont) <- c(-0.5, +0.5)
+contrasts(dexp1bet_prereg$speaker_cont) <- c(-0.5, +0.5)
+
+contrasts(dexp1bet$delivery_cont) <- c(-0.5, +0.5)
+contrasts(dexp1bet$speaker_cont) <- c(-0.5, +0.5)
