@@ -72,7 +72,7 @@ mdl_validation <- dval %>%
   filter(trial_status == "fluency") %>%
   lmer(
     as.numeric(response) ~ delivery * speaker +
-      (1 | participant_ID) + (1 | description),
+      (1 + delivery + speaker| participant_ID) + (1  | description),
     data = .
   )
 
@@ -103,7 +103,7 @@ mdl_validation_nat <- dval %>%
   filter(trial_status == "naturalness") %>%
   lmer(
     as.numeric(response) ~ delivery * speaker +
-      (1 | participant_ID) + (1 | description),
+      (1 + delivery | participant_ID) + (1 | description),
     data = .
   )
 

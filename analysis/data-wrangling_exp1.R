@@ -47,7 +47,7 @@ library(here)
 
 # load all anonymised data
 
-dexp1 <- read_csv("./data/horse_race_exp1_rawdata.csv") %>% select(-c(1))
+dexp1 <- read_csv("./data/exp1/horse_race_exp1_rawdata.csv") %>% select(-c(1))
 
 # wrangle separately bet data from questionnaire data
 
