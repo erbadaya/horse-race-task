@@ -67,19 +67,54 @@ Impressions of other people arise naturally and automatically [@ulemanetal2008].
 
 
 # Methods
-We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+All experimental stimuli can be found at OSF.
 
 ## Participants
 
-## Material
+We conducted a sensitivity power analysis via data simulation following []. We explored the required number of participants for a study with a power higher than .8 for the interaction between fluency and speaker identity. We conducted a 1000 simulations per different combinations of the effect size (ranging from small to medium) and the standard deviation of the residuals. In this analysis, we assumed a medium effect size of fluency and no effect of speaker identity. This analysis showed that a sample size of 360 participants ensured enough power to detect a medium or greater effect size.
+
+In our pre-registration, we set that only participants born and raised, and currently residing in the United Kingdom, with English as their first and only language, and with no auditory disorders could partake in the study. Further, we would exclude from analysis data from participants who reported the experiment's aim or manipulation, rated the naturalness of the auditory stimuli (defined as how likely they believed the audios to have been recorded in one go) lower than four, or considered themselves experts in horse races. This meant that we recruited 641 participants for a sample of 360. Participants were recruited via the online platform Prolific, and were reimbursed 1.50 pounds for a 10-minutes experiment.
+
+## Visual stimuli
+
+We selected a set of eight images of racehorses from the web. The selected images each featured only one racehorse in the foreground, in motion, ridden by a jockey, and the horses all took up approximately the same proportion of the image.  To ensure that the pictures did not bias participants' bets, we recruited ten participants on Prolific, who did not take part in the main study, and asked them to rate on a 10-point scale how likely each horse was to win a hypothetical race and to rank the horses in the order they thought they would cross the finish line, in exchange for 0.45 pounds. 
+
+A one-way repeated measures ANOVA showed that there were no differences in how likely each horse was thought to be to win a race (F(7) = 0.5, _p_ = .83). An ordinal logistic regression showed that none of the horses were more likely to be ranked differently from the others (all |t| < 2). We therefore selected four out of the eight images as visual stimuli.
+
+## Auditory stimuli
+
+We used four descriptions of racing horses from _The Racing Post_, retrieved on October 2018, originally edited and used by []. Each passage consisted of three to four sentences describing a horse and its performance in previous races. 30 British English speakers, who did not participate in the final experiment, rated these passages to ensure that all descriptions were perceived as equally likely to describe a winning horse. Participants rated on a 10-point scale how likely they thought each horse was to win a race individually, and then ranked all the horses, in exchange for 0.50 pounds. 
+
+Based on these results, we further edited the descriptions as some descriptions were more likely to be rated as winning horses. A new sample fo 30 British English speaker rated the edited passages. A one-way repeated measures ANOVA showed no differences in each horse's rated likelihood of winning a race (F(3) = 0.76, \textit{p} = .52), nor in the order in which they were ranked (all $|t|$ $<$ 2). The final set of descriptions for the experiment can be found in Table \ref{tab:Horse descriptions}. Each description was paired with one of the four visual stimuli. 
+
+We then recorded a British English native speaker and a non-native (L1: Italian) English speaker to create the auditory stimuli. Both speakers were female. Passages were recorded one at a time. To elicit naturally disfluent recordings, both speakers were instructed to read the passages silently and then were recorded as they tried to recall the passage from memory. To avoid differences between the descriptions provided by the speakers, they were allowed to look at the descriptions as they spoke if they could not remember the continuation. We edited these recordings using Audacity to ensure that the recordings of each speaker had similar numbers of disfluencies in similar locations, by cross-splicing different recordings (see \ref{tab:Horse disfluent descriptions}). To create the fluent counterpart of each description, filled and mid-utterance silent pauses were excised, and elongations and between-clause silent pauses were reduced using the `Tempo' function. The final auditory experimental stimuli consisted, for each speaker, of two descriptions of each horse (one disfluent, one fluent), resulting in sixteen recordings. Description, fluency, speaker, and order of presentation were counterbalanced in a Latin Square design, resulting in 24 lists. 
+
+To ensure that the resulting descriptions were perceived to be natural (i.e., our edited `fluent' audios were not clearly edited) and that they were perceived as differing in fluency (i.e., disfluent and `fluent' versions were distinguishable), we validated them in a sample of 48 British English participants, who did not take further part in the study. Participants were allocated to one of the 24 experimental lists, to ensure that our validation procedure was similar to how participants encountered stimuli in the actual experiment. Following [] procedure, participants were asked to rate each audio's fluency on a scale from 1 to 9 (1: not fluent at all, 9: very fluent). We instructed participants to rate fluency by considering silent and filled pauses, speed of speech, and repairs, and to ignore speakers' accents and the content of their speech. Participants additionally rated on a 9-point scale each recording's naturalness (defined as how likely it was that the audio had been recorded in one go; 1: not unlikely at all; 9: very likely), and accentedness (while ignoring the perceived speaker's proficiency in the language; 1: not accented at all, 9: very accented). We additionally asked participants to guess the speakers' country of origin. At the end of the task, participants were further asked how often they interacted with native and non-native English speakers (on a 9-point scale, 1: never, 9: always) and were allowed to report if they noticed anything odd in the auditory stimuli.
+
+Table \ref{tab:means_validation} shows the means (and standard deviations) of participants' ratings of fluency, naturalness, and accentedness. A linear mixed model for fluency ratings with fixed effects of fluency, speaker's linguistic background, and their interaction, with random intercepts by participant and by horse description showed that fluency ratings differed significantly for the fluent and disfluent conditions ($\beta$ = 1.19, SE = 0.34, t = 3.52). The non-native speaker was perceived as more disfluent than the native speaker ($\beta$ = -1.23, SE = 0.34, t = -3.64, in line with previous findings, (e.g.,{pingetetal2014, boskeretal2014b}), but the interaction between the two variables was not significant ($\beta$ = -0.15, SE = 0.48, t = -0.31). An identical model for naturalness ratings showed no significant differences by fluency ($\beta$ = -0.29, SE = 0.41, t = -0.71), speaker's linguistic background ($\beta$ = 0.10, SE = 0.41, t = 0.26) or their interaction ($\beta$ = 0.40, SE = 0.58, t = 0.69).
 
 ## Procedure
+
+Stimuli were presented using JsPsych [], hosted on MindProbe (via JATOS, []). The task began with a cover story introducing two horse racing tipsters. Participants were told the tipsters would provide information about the four most popular horses competing in an upcoming race at Musselburgh Racecourse (Edinburgh). The cover story explained that the two tipsters were well-known experts in the field, and added that one of the speakers was a non-native English speaker (without specifying the nationality of either speaker), introducing the element of the speakers' linguistic backgrounds as well as the factor of competence. 
 
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
 
 
 # Results
+
+## Pre-registered analyses
+
+### Betting behaviour
+
+
+### Language attitudes
+
+
+## Exploratory analysis
+
+### Learning preference
 
 # Discussion
 
