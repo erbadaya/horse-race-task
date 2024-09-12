@@ -47,7 +47,7 @@ library(here)
 
 # load all anonymised data
 
-dexp1 <- read_csv("./data/exp1/horse_race_exp1_rawdata.csv") %>% select(-c(1))
+dexp1 <- read_csv("../data/exp1/horse_race_exp1_rawdata.csv") %>% select(-c(1))
 
 # wrangle separately bet data from questionnaire data
 
@@ -178,9 +178,9 @@ dexp1survey <- dexp1survey %>%
 # PUT ALL INFO IN ONE DF
 # for filtering & analyses
 
-dexp1lang <- left_join(dexp1lang, dexp1survey, by = 'ppt')
+dexp1lang <- left_join(dexp1lang, dexp1survey, by = 'ppt', relationship = "many-to-many")
 dexp1lang <- dexp1lang %>%  filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% select(!c(speaker.x, speaker.y))
-dexp1bet <- left_join(dexp1bet, dexp1lang, by = c('ppt'))
+dexp1bet <- left_join(dexp1bet, dexp1lang, by = c('ppt'), relationship = "many-to-many")
 dexp1bet <- dexp1bet %>% filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% select(!c(speaker.x, speaker.y))
 
 
