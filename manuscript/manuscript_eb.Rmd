@@ -9,36 +9,25 @@ author:
     email         : "esperanza.badaya@ugent.be"
   - name          : "Robert J. Hartsuiker"
     affiliation   : "1"
-    - name          : "Martin Corley"
+  - name          : "Martin Corley"
     affiliation   : "2"
+
 affiliation:
   - id            : "1"
-    institution   : "Department of Experimental Psychology, Ghent University, Ghent, Belgium."
+    institution   : "Ghent University"
   - id            : "2"
-    institution   : "Department of Psychology, University of Edinburgh, Edinburgh, United Kingdom."
-
-authornote: |
-  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
-
-  Enter author note here.
+    institution   : "University of Edinburgh"
 
 abstract: |
-  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
-  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
-  One sentence clearly stating the **general problem** being addressed by  this particular study.
-  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
-  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
-  One or two sentences to put the results into a more **general context**.
-  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+  Whether an individual is perceived as knowledgeable by others can be biased by several, and potentially irrelevant factors, ranging from the situational (e.g, who is speaking) to the ephemeral (e.g., how they speak). Listeners are more likely to evaluate non-native speakers as less veracious, more deceiving, and evaluate the speaker as less competent. Similar judgements are elicited by how fluent speech is: Filled pauses, such as _uh_ or _um_ in English, elicit evaluations of the speaker as deceitful, less intelligent, or less confident in their knowledge. Interestingly, the co-existence of these two cues has been shown to yield, sometimes, different processes. However, whether and how speaker's language profiency affects the interpretation of hesitations and listeners' subsequent behaviour is unclear. In a horse-race betting paradigm, we show that listeners are less likely to follow advice from a speaker who is disfluent, regardless of whether they are disfluent for reasons other than low knowledge. This suggests that previous reported perceptions of knowledgeability elicited explicitly have an impact on how individuals use the information they are given, even in situations when it is not advantageous. Although there is evidence for pragmatic leniance towards non-native speakers, it may be the case that this only applies to failures in language skills that are believed to require high proficiency (e.g., irony), whilst hesitation phenomena may not be subject to such forgiveness. Overall, our results align with a broader body of literature suggesting that the interpretation of hesitation phenomena is not context-dependent.
+
   
-  <!-- https://tinyurl.com/ybremelq -->
-  
-keywords          : "keywords"
+keywords          : "filled pauses, disfluencies, non-native-accented speech, feeling of another's knowing"
 wordcount         : "X"
 
-bibliography      : "r-references.bib"
+bibliography      : "references.bib"
 
-floatsintext      : no
+floatsintext      : yes
 linenumbers       : yes
 draft             : no
 mask              : no
@@ -53,71 +42,256 @@ output            : papaja::apa6_pdf
 
 ```{r setup, include = FALSE}
 library("papaja")
-r_refs("r-references.bib")
+library("tidyverse")
+library("lme4")
+library("gt")
+library("gtsummary")
+r_refs("references.bib")
 ```
 
 ```{r analysis-preferences}
 # Seed for random number generation
 set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 ```
 
-Impressions of other people arise naturally and automatically [@ulemanetal2008]. Speakers can be evaluated not only by what they say but how they say it. For example, vocal features of speech can affect perceptions of confidence and persuasion [], status and solidarity [], and even attractiveness []. One repeately reported feature of speech said to bias listeners' evaluations is its fluency. Disfluencies, such as _uh_ or _um_ in English can lead to poorer evaluations of the speaker in terms of intelligence [], competence [], and certainty of their own knowledge []. Interestingly, speech produced with an accent different from one's own - particularly a _foreign_ accent - can also elicit negative perceptions of the speaker, including worse evaluations in terms of status, solidarity, and credibility (e.g., [], [], [], []). In this study, however, we explore a rather counterintuitive approach: That the co-presence of these two factors (i.e., (dis)fluency and foreign accents) can diminish the negative impact they have individually. 
 
+Impressions of other people arise naturally and automatically [@ulemanetal2008]. Speakers can be evaluated not only by what they say but how they say it. For example, vocal features of speech can affect perceptions of confidence and persuasion [@guyeretal2019speech], status and solidarity [@pittamgallois198], and even attractiveness [@feinbergetal2005]. One repeatedly reported feature of speech said to bias listeners' evaluations is its fluency. Disfluencies, such as _uh_ or _um_ in English can lead to poorer evaluations of the speaker in terms of intelligence [@christenfeld1995], competence [@nortonhogan1980], and certainty of their own knowledge [@brennanwilliams1995]. Interestingly, speech produced with an accent different from one's own - particularly a _foreign_ accent - can also elicit negative perceptions of the speaker, including worse evaluations in terms of status, solidarity, and credibility [@gluszeketal2011; @gluszekdovidio2010; @rakicetal2011; @levarikeysar2010]. In this study, however, we explore a rather counterintuitive idea: That the co-presence of these two factors (i.e., (dis)fluency and foreign accents) can diminish the negative impact they have individually. It is important to note that it is not our interested whether these cues correlate with a speaker's knowledge or whether listeners believe the speaker to be intentionally misleading: Rather, we are interested in whether, in scenarios where the speaker is expected to be cooperative and knowledgeable, listeners are still biased by irrelevant cues.
+
+
+There is a growing body of literature showing that listeners speech qualities are taken as reflective of a speaker's knowledgeability. Voices with a slow speech rate, low amplitude and a large F0 range are more likely to be rated as less confident, and produce distinct neural responses [@jiangpell2015; @jiangpell2016a; @jiangpell2016b]. Similarly, prosody guides listeners' evaluations of certainty and honesty cross-linguistically [@goupiletal2021]. These non-verbal qualities of speech may be accompanied by verbal markers of hesitation, such as disfluencies [@shribergetal1997; @shriberglickley1993; @grosjeandeschamps1975; @jiangpell2017]. @brennanwilliams1995 demonstrated that filled pauses (e.g., uh, mm, or um) can be perceived as indices of speakers’ confidence in their knowledge. In their study, participants listened to previously recorded answers to trivia questions (without hearing the questions) and were asked to rate how likely each speaker would be to recognise the correct answer to the question i.e., _feeling of another's knowing_, FOAK. Amongst the cues that biased participants' assessments were filled pauses:  Answers containing a disfluency were more likely to receive lower FOAK ratings, suggesting that filled pauses were taken as reflective of speakers’ reduced certainty about their knowledge. In contrast, non-answers (i.e., 'I don’t know') were more likely to receive a higher FOAK rating if preceded by a filled pause. @brennanwilliams1995 took this as evidence that listeners are sensitive to the surface form of delivery, and in particular, to the cues displayed by speakers when they do not know (or cannot remember at the moment of being asked) the answer to a question [see also @smithclark1993].
+
+
+However, certain speech qualities can yield negative evaluations without being explicitly associated with those. One consistent finding is that speakers with an accent different from that of the listeners are more likely to be negatively evaluated (e.g., [@dragojevicgiles2016; @gluszekdovidio2010] and statements produced with a foreign-accent are more likely to receive lower ratings of credibility compared to statements produced with a native accent [@levarikeysar2010]. This divide in evaluations as a function of a speaker's accent has been accounted for in terms of processing fluency [@levarikeysar2010], group membership, and a combination of both [@maihoffmann2014]. Alternatively, but not exclusively, it is possible that non-native speakers are evaluated differently from native speakers due to the expectations listeners have about their competence: Non-native speakers' accents may invoke stereotypes whereby these speakers are believed to be less competent than native speakers [@levari2015; @fairchildpapafragou2018]. This expectation-based account proposes that stereotypes of non-native speakers' low linguistic competence affect both how their speech is comprehended and interpreted. Specifically, signs that can be attributed to low linguistic competence would be interpreted as such when produced by a non-native speaker and be attributed to other factors when produced by a native speaker. In line with this hypothesis, a speaker's nativeness affects how ironic a statement is perceived to be [@caffarraetal2018; @bazzietal2022], why a statement is believed to be underinformative [@fairchildpapafragou2018; @fairchildetal2020; @lorenzonietal2022; @ippapafragou2022] and why non-native speech is processed shallower [@levarikeysar2012; @hanulikovetal2012].
+
+Thus far, the expectations-based account has explained findings pertaining how the content of speech is interpreted. However, stereotypes on linguistic competence may also affect how speech is delivered. In the case of confidence and knowledgeability, nativeness has been shown to affect how confident a speaker is perceived [@jiangetal2019; @caballeropell2020]. Given that speakers producing speech in their second language are more disfluent [@bergmannetal2015; @davies2003; @gkalitsiouwerle2023] and is perceived as such by native listenes [@pingetetal2014], it could be possible that a speaker's nativeness leads to different interpretations of disfluencies. This would align with findings in the disfluency literature whereby the effects of those in speech comprehension are dependent on who produces it [@arnoldetal2007; @helleretal2015; @barrseyfeddinipur2010], including speaker's nativeness [@boskeretal2014]. 
+
+Recently, @matzingeretal2023 explored whether listeners' perceptions of why a speaker was disfluent differed for native and non-native speakers. In their study, participants listened to native and non-native speakers answer trivial questions and requests, and were explicitly asked to rate the speaker's knowledge and confidence (for FOAK) and their willingness to grant the request. Crucially, @matzingeretal2023 manipulated speakers' fluency by having answers prefaced with either short (200 ms) or long (1200 ms) pauses. For requests, long pauses were less likely to be associated with unwillingness for non-native compared to native speakers.  However, FOAK ratings did not differ between speakers: Long pauses produced by either speaker were likely to be taken as reflecting low confidence and low knowledge. @matzingeretal2023 attribute this pattern to different conversational contexts: Requests tap into speakers' cooperativeness, and thus in this context, tuning to the interlocutor's mental state and stereotyping might be more relevant than evaluating the speaker's competence (i.e., knowledge). 
+
+To date, most experimental evaluations of manner of speech have been explicit. Participants are asked to rate particular traits of speakers on a scale. Further, these ratings are elicited in non-social contexts, where participants do not have anything at stake. Although these experiments demonstrate that listeners show sensitivity to aspects of speech such as fluency and accent when asked to make explicit judgements about the speaker, they may not explain how listeners evaluate speech implicitly, when to do so is consequential.Here, we propose an implicit measurement of listeners' assessments of the speaker's certainty, using a horse-race paradigm. In this task, participants listen to a set of speakers provide descriptions of horses and are asked to distribute virtual tokens as 'bets' on each horse's likelihood of winning a putative race.  This approach presents two advantages over previous experiments. First, in the horse-race paradigm, participants are not explicitly asked to evaluate a certain trait of the speaker (in this case, how knowledgeable they are). Instead, we take participants' allocations of `betting money' as an indirect measurement of their perceptions of speakers' knowledge. Indeed, pilot studies have shown that individuals are sensitive to this manipulation and that disfluent information leads to smaller bets [@butterworth2019]. Second, horse races provide a scenario where individuals can make decisions based on what they are told, but the content of speech itself may not be informative for many individuals (in that participants are less familiar with the world of horse racing).
+
+In a pre-registered study, we set up to explore whether and how perceptions of certainty are biased by manner of delivery in the form of fluency and the speaker's identity as conveyed by their accent. We presented participants with recordings of a native and a non-native speaker, each describing two horses, with one description produced fluently and one description produced disfluently. If listeners are sensitive to both local and global causes of hesitations when making judgements about certainty, then disfluent descriptions provided by a native speaker should result in less money bet, reflecting listeners’ lower FOAK for the speaker. However, disfluent descriptions provided by a non-native speaker may not impact listeners’ betting behaviours, to the extent that they consider the possibility of difficulties in production when assessing the speaker’s knowledge. To further control for the potential effects of (non)-nativeness on certainty on its own, we measured participants' language attitudes towards each speaker [see @dragojevicgiles2016], perceived fluency, accentedness, and comprehensibility of the native and the non-native speaker, as well as the perceived reliability of each speaker. We additionally measured participants' familiarity with and exposure to native and non-native-accented English on a daily basis, to account for the fact that exposure to non-native accents can reduce their negative effects on listeners' judgements [@boduchlevari2021]. 
 
 
 # Methods
 
-All experimental stimuli can be found at OSF.
+All experimental stimuli can be found at https://osf.io/zsut7/.
 
 ## Participants
 
-We conducted a sensitivity power analysis via data simulation following []. We explored the required number of participants for a study with a power higher than .8 for the interaction between fluency and speaker identity. We conducted a 1000 simulations per different combinations of the effect size (ranging from small to medium) and the standard deviation of the residuals. In this analysis, we assumed a medium effect size of fluency and no effect of speaker identity. This analysis showed that a sample size of 360 participants ensured enough power to detect a medium or greater effect size.
+We conducted a sensitivity power analysis via data simulation following @debruinebarr2021. We explored the required number of participants for a study with a power higher than .8 for the interaction between fluency and speaker identity. We conducted a 1000 simulations per different combinations of the effect size (ranging from small to medium) and the standard deviation of the residuals. In this analysis, we assumed a medium effect size of fluency and no effect of speaker identity. This analysis showed that a sample size of 360 participants ensured enough power to detect a medium or greater effect size.
 
-In our pre-registration, we set that only participants born and raised, and currently residing in the United Kingdom, with English as their first and only language, and with no auditory disorders could partake in the study. Further, we would exclude from analysis data from participants who reported the experiment's aim or manipulation, rated the naturalness of the auditory stimuli (defined as how likely they believed the audios to have been recorded in one go) lower than four, or considered themselves experts in horse races. This meant that we recruited 641 participants for a sample of 360. Participants were recruited via the online platform Prolific, and were reimbursed 1.50 pounds for a 10-minutes experiment.
+In our pre-registration, we set that only participants born and raised, and currently residing in the United Kingdom, with English as their first and only language, and with no auditory disorders could partake in the study. Further, we would exclude from analysis data from participants who reported the experiment's aim or manipulation, rated the naturalness of the auditory stimuli (defined as how likely they believed the audios to have been recorded in one go) lower than four, or considered themselves experts in horse races. This meant that we recruited 641 participants for a sample of 360. Participants were recruited via the online platform Prolific, and were reimbursed £1.50 for a 10-minutes experiment.
 
 ## Visual stimuli
 
-We selected a set of eight images of racehorses from the web. The selected images each featured only one racehorse in the foreground, in motion, ridden by a jockey, and the horses all took up approximately the same proportion of the image.  To ensure that the pictures did not bias participants' bets, we recruited ten participants on Prolific, who did not take part in the main study, and asked them to rate on a 10-point scale how likely each horse was to win a hypothetical race and to rank the horses in the order they thought they would cross the finish line, in exchange for 0.45 pounds. 
+We selected a set of eight images of racehorses from the web. The selected images each featured only one racehorse in the foreground, in motion, ridden by a jockey, and the horses all took up approximately the same proportion of the image.  To ensure that the pictures did not bias participants' bets, we recruited ten participants on Prolific, who did not take part in the main study, and asked them to rate on a 10-point scale how likely each horse was to win a hypothetical race and to rank the horses in the order they thought they would cross the finish line, in exchange for £0.45. 
 
 A one-way repeated measures ANOVA showed that there were no differences in how likely each horse was thought to be to win a race (F(7) = 0.5, _p_ = .83). An ordinal logistic regression showed that none of the horses were more likely to be ranked differently from the others (all |t| < 2). We therefore selected four out of the eight images as visual stimuli.
 
 ## Auditory stimuli
 
-We used four descriptions of racing horses from _The Racing Post_, retrieved on October 2018, originally edited and used by []. Each passage consisted of three to four sentences describing a horse and its performance in previous races. 30 British English speakers, who did not participate in the final experiment, rated these passages to ensure that all descriptions were perceived as equally likely to describe a winning horse. Participants rated on a 10-point scale how likely they thought each horse was to win a race individually, and then ranked all the horses, in exchange for 0.50 pounds. 
+We used four descriptions of racing horses from _The Racing Post_, retrieved on October 2018, originally edited and used by @butterworth2019. Each passage consisted of three to four sentences describing a horse and its performance in previous races. 30 British English speakers, who did not participate in the final experiment, rated these passages to ensure that all descriptions were perceived as equally likely to describe a winning horse. Participants rated on a 10-point scale how likely they thought each horse was to win a race individually, and then ranked all the horses, in exchange for £0.50. 
 
-Based on these results, we further edited the descriptions as some descriptions were more likely to be rated as winning horses. A new sample fo 30 British English speaker rated the edited passages. A one-way repeated measures ANOVA showed no differences in each horse's rated likelihood of winning a race (F(3) = 0.76, \textit{p} = .52), nor in the order in which they were ranked (all $|t|$ $<$ 2). The final set of descriptions for the experiment can be found in Table \ref{tab:Horse descriptions}. Each description was paired with one of the four visual stimuli. 
+Based on these results, we further edited the descriptions as some descriptions were more likely to be rated as winning horses. A new sample fo 30 British English speaker rated the edited passages. A one-way repeated measures ANOVA showed no differences in each horse's rated likelihood of winning a race (F(3) = 0.76, _p_ = .52), nor in the order in which they were ranked (all |t| <$ 2). The final set of descriptions for the experiment can be found in Table \@ref(tab:tab-horse-description-text). Each description was paired with one of the four visual stimuli. 
 
-We then recorded a British English native speaker and a non-native (L1: Italian) English speaker to create the auditory stimuli. Both speakers were female. Passages were recorded one at a time. To elicit naturally disfluent recordings, both speakers were instructed to read the passages silently and then were recorded as they tried to recall the passage from memory. To avoid differences between the descriptions provided by the speakers, they were allowed to look at the descriptions as they spoke if they could not remember the continuation. We edited these recordings using Audacity to ensure that the recordings of each speaker had similar numbers of disfluencies in similar locations, by cross-splicing different recordings (see \ref{tab:Horse disfluent descriptions}). To create the fluent counterpart of each description, filled and mid-utterance silent pauses were excised, and elongations and between-clause silent pauses were reduced using the `Tempo' function. The final auditory experimental stimuli consisted, for each speaker, of two descriptions of each horse (one disfluent, one fluent), resulting in sixteen recordings. Description, fluency, speaker, and order of presentation were counterbalanced in a Latin Square design, resulting in 24 lists. 
+```{r tab-horse-description-text}
 
-To ensure that the resulting descriptions were perceived to be natural (i.e., our edited `fluent' audios were not clearly edited) and that they were perceived as differing in fluency (i.e., disfluent and `fluent' versions were distinguishable), we validated them in a sample of 48 British English participants, who did not take further part in the study. Participants were allocated to one of the 24 experimental lists, to ensure that our validation procedure was similar to how participants encountered stimuli in the actual experiment. Following [] procedure, participants were asked to rate each audio's fluency on a scale from 1 to 9 (1: not fluent at all, 9: very fluent). We instructed participants to rate fluency by considering silent and filled pauses, speed of speech, and repairs, and to ignore speakers' accents and the content of their speech. Participants additionally rated on a 9-point scale each recording's naturalness (defined as how likely it was that the audio had been recorded in one go; 1: not unlikely at all; 9: very likely), and accentedness (while ignoring the perceived speaker's proficiency in the language; 1: not accented at all, 9: very accented). We additionally asked participants to guess the speakers' country of origin. At the end of the task, participants were further asked how often they interacted with native and non-native English speakers (on a 9-point scale, 1: never, 9: always) and were allowed to report if they noticed anything odd in the auditory stimuli.
+tab1A <- data.frame(
+    Horse = c("Fire Walker", "Silver Sky", "Apocalypse", "Black Blade"),
+    Description = c("Fire Walker is looking strong thanks to his come-from-behind success in the Acomb Stakes. The impression given in both runs is that Fire Walker should handle the demands of the extra furlong and Charlie Hills is looking forward to the test. The trainer said ''He's done really well for a little break, his work's been good and I couldn't be more pleased with him''.", 
+    "Silver Sky, a runner-up of a seven-furlong maiden at Naas on his debut last month, the son of Invincible Spirit ran crack French colt Persian King to a neck in the Group 3 Autumn Stakes over today's trip at Newmarket two weeks ago and his trainer believes he has done well since. O'Brien said ''Silver Sky is a fine big colt and a talented one''.",
+    "Apocalypse has put in a string of consistent performances, most recently finishing third to Norway in the Zetland. ''He's had a very solid year'' said trainer Archie Watson. ''He ran a good race in the Zetland, beaten only a length and a quarter, and I think the field here is of a similar level so I'm more than happy for him to take his chance''.",
+    "Black Blade proved the market all wrong as the complexion of the 6.5-furlong novice race changed dramatically in the final two furlongs, with the Rebel Racing premier-owned newcomer under Tom Queally collaring long-time leaded Monsieur Noir. Spencer said: ''He did it well. He's a nice horse. We always thought had a bright future''.")
+  )
 
-Table \ref{tab:means_validation} shows the means (and standard deviations) of participants' ratings of fluency, naturalness, and accentedness. A linear mixed model for fluency ratings with fixed effects of fluency, speaker's linguistic background, and their interaction, with random intercepts by participant and by horse description showed that fluency ratings differed significantly for the fluent and disfluent conditions ($\beta$ = 1.19, SE = 0.34, t = 3.52). The non-native speaker was perceived as more disfluent than the native speaker ($\beta$ = -1.23, SE = 0.34, t = -3.64, in line with previous findings, (e.g.,{pingetetal2014, boskeretal2014b}), but the interaction between the two variables was not significant ($\beta$ = -0.15, SE = 0.48, t = -0.31). An identical model for naturalness ratings showed no significant differences by fluency ($\beta$ = -0.29, SE = 0.41, t = -0.71), speaker's linguistic background ($\beta$ = 0.10, SE = 0.41, t = 0.26) or their interaction ($\beta$ = 0.40, SE = 0.58, t = 0.69).
+apa_table(
+  tab1A,
+  caption = "Original description of each horse that speakers were asked to memorise and reproduce.",
+  align = c("m{2cm}", "m{13cm}")
+)
 
-## Procedure
+```
 
-Stimuli were presented using JsPsych [], hosted on MindProbe (via JATOS, []). The task began with a cover story introducing two horse racing tipsters. Participants were told the tipsters would provide information about the four most popular horses competing in an upcoming race at Musselburgh Racecourse (Edinburgh). The cover story explained that the two tipsters were well-known experts in the field, and added that one of the speakers was a non-native English speaker (without specifying the nationality of either speaker), introducing the element of the speakers' linguistic backgrounds as well as the factor of competence. 
+We then recorded a British English native speaker and a non-native (L1: Italian) English speaker to create the auditory stimuli. Both speakers were female. Passages were recorded one at a time. To elicit naturally disfluent recordings, both speakers were instructed to read the passages silently and then were recorded as they tried to recall the passage from memory. To avoid differences between the descriptions provided by the speakers, they were allowed to look at the descriptions as they spoke if they could not remember the continuation. We edited these recordings using Audacity to ensure that the recordings of each speaker had similar numbers of disfluencies in similar locations, by cross-splicing different recordings (see Table \@ref(tab:tab-horse-description-disfluent)). To create the fluent counterpart of each description, filled and mid-utterance silent pauses were excised, and elongations and between-clause silent pauses were reduced using the 'Tempo' function. The final auditory experimental stimuli consisted, for each speaker, of two descriptions of each horse (one disfluent, one fluent), resulting in sixteen recordings. Description, fluency, speaker, and order of presentation were counterbalanced in a Latin Square design, resulting in 24 lists. 
 
-## Data analysis
-We used `r cite_r("r-references.bib")` for all our analyses.
+```{r tab-horse-description-disfluent}
+
+tab1A <- data.frame(
+    Horse = c("Fire Walker", "Silver Sky", "Apocalypse", "Black Blade"),
+    Description = c("FP-um Fire Walker is looking SP strong thanks to his (elongation) SP come-from-behind success SP FP-er in the Acomb Stakes. FP-um The (elongation) impression given SP in both runs FP-uh is that Fire Walker should SP handle the demands of SP the extra furlong and FP-uh Charlie Hills is looking forward to the test. The trainer said ''He's done (elongation) FP-um really well for a little break, FP-uh his work's been good and I couldn't be more pleased with him''.", 
+    "Silver Sky, FP-uh a runner-up of -a seven-furlong maiden at Naas on his (elongation) debut last month. FP-uh The son of Invincible Spirit SP  ran (elongation) crack French colt Persian King   to a neck in the FP-uh  Group 3 Autumn Stakes. over today's trip at Newmarket two weeks ago FP-uh and his trainer believes he has done well since. O'Brien said FP-uh ''Silver Sky is a fine big colt and a talented one''.",
+    "FP Apocalypse has put in a (elongation-ish) string SP of consistent performances, FP most recently finishing third to SP Norway in the Zetland. FP ''He's had a very solid year'' said trainer SP FP Archie Watson. ''He ran a SP good race in the Zetland, SP FP SP beaten only a length and a quarter, and I think the field here SP is of a similar level so I'm- I'm more than happy for him to (elongation-ish) take his chance''.",
+    "FP-um Black SP Blade proved SP FP-uh the market all wrong as the complexion SP of the 6.5 furlong SP novice SP race FP-um changed dramatically in SP the final two furlong. SP FP-uh with the  Rebel Racing SP premier-owned SP newcomer under Tom SP Queally FP-um SP collaring long-time leaded Monsieur Noir. FP-uh Spencer said: ''He did it well. FP-uh He's a nice horse. FP-uh We always thought he had a bright future''.")
+  )
+
+apa_table(
+  tab1A,
+  caption = "Transcription of the disfluent horse descriptions.",
+  align = c("m{2cm}", "m{13cm}")
+)
+
+```
+
+To ensure that the resulting descriptions were perceived to be natural (i.e., our edited 'fluent' audios were not clearly edited) and that they were perceived as differing in fluency (i.e., disfluent and 'fluent' versions were distinguishable), we validated them in a sample of 48 British English participants, who did not take further part in the study. Participants were allocated to one of the 24 experimental lists, to ensure that our validation procedure was similar to how participants encountered stimuli in the actual experiment. Following @boskeretal2014 procedure, participants were asked to rate each audio's fluency on a scale from 1 to 9 (1: not fluent at all, 9: very fluent). We instructed participants to rate fluency by considering silent and filled pauses, speed of speech, and repairs, and to ignore speakers' accents and the content of their speech. Participants additionally rated on a 9-point scale each recording's naturalness (defined as how likely it was that the audio had been recorded in one go; 1: not unlikely at all; 9: very likely), and accentedness (while ignoring the perceived speaker's proficiency in the language; 1: not accented at all, 9: very accented). We additionally asked participants to guess the speakers' country of origin. At the end of the task, participants were further asked how often they interacted with native and non-native English speakers (on a 9-point scale, 1: never, 9: always) and were allowed to report if they noticed anything odd in the auditory stimuli.
+
+```{r tab-results-validation}
+
+dval <- read_csv('../stimuli/auditory-stimuli/validation/dval_audio.csv')
+source('../analysis/utils.R')
+
+dval <- dval %>%
+  filter(trial_type %in% c("filler", "critical"))
+
+tab2 <- dval %>%
+  filter(trial_status %in% c("fluency", "naturalness", "accentedness")) %>%
+  mutate(speaker = ifelse(speaker=='native', 'Native Speaker', 'Non-native Speaker'), delivery = ifelse(delivery=='disfluent', 'Disfluent', 'Fluent')) %>%
+  pivot_wider(names_from = trial_status, values_from = response) %>%
+  group_by(participant_ID) %>% tidyr::fill(fluency) %>% tidyr::fill(accentedness, .direction = "up") %>% ungroup() %>%
+  filter(!is.na(naturalness)==TRUE) %>%
+  rename_with(str_to_title) %>%
+  mutate(Delivery = factor(Delivery, levels = c("Fluent", "Disfluent"))) %>%
+  group_by(Speaker, Delivery) %>%
+  dplyr::summarise(
+    avg_flu = mean(as.numeric(Fluency), na.rm = TRUE),
+    sd_flu = sd(as.numeric(Fluency), na.rm = TRUE),
+    avg_nat = mean(as.numeric(Naturalness), na.rm = TRUE),
+    sd_nat = sd(as.numeric(Naturalness), na.rm = TRUE),
+    avg_acc = mean(as.numeric(Accentedness), na.rm = TRUE),
+    sd_acc = sd(as.numeric(Accentedness), na.rm = TRUE),
+  ) %>% 
+  dplyr::mutate(
+    Fluency = paste(round(avg_flu, 2), paste("(", round(sd_flu,2), ")", sep = ""), sep = " "),
+    Naturalness = paste(round(avg_nat, 2), paste("(", round(sd_nat,2), ")", sep = ""), sep = " "),
+    Accentedness = paste(round(avg_acc, 2), paste("(", round(sd_acc,2), ")", sep = ""), sep = " ")) %>%
+  select(c(Speaker, Delivery, Fluency, Naturalness, Accentedness))
+
+tab2[c(2,4), 1] <- ""
+
+apa_table(
+  tab2,
+  caption = "Mean (standard deviation) ratings of native and non-native speakers’ fluent and disfluent
+recordings for fluency, naturalness, and accentedness, on a 9-point scale where lower values indicate
+less fluent, less natural, and less accent respectively."
+)
+
+```
+```{r dval-analysis}
+
+dval <- read_csv('../stimuli/auditory-stimuli/validation/dval_audio.csv')
+dval <- dval %>%
+  filter(trial_type %in% c("filler", "critical"))
+
+# FLUENCY ANALYSIS
+
+# descriptive stats
+# ignoring horse description for now (because we are including it as random effect in our model anyways)
+
+mdl_validation_flu <- apa_print(dval %>%
+  filter(trial_status == "fluency") %>%
+  mutate(delivery = factor(delivery, levels = c("fluent", "disfluent"))) %>%
+  lmer(
+    as.numeric(response) ~ delivery * speaker +
+      (1 + delivery + speaker| participant_ID) + (1  | description),
+    data = .
+  ))
+
+# disfluent utterances are judged lower than fluent ones
+# the non-native speaker is judged as more disfluent (which partially aligns with our experiment)
+# no interaction between the two
+
+# NATURALNESS ANALYSIS
+
+# descriptive stats
+# ignoring horse description for now (because we are including it as random effect in our model anyways)
+
+# is naturalness affected by manner of delivery and speaker?
+
+mdl_validation_nat <- apa_print(dval %>%
+  filter(trial_status == "naturalness") %>%
+  mutate(delivery = factor(delivery, levels = c("fluent", "disfluent"))) %>%
+  lmer(
+    as.numeric(response) ~ delivery * speaker +
+      (1 + delivery | participant_ID) + (1 | description),
+    data = .
+  ))
+
+# disfluent utterances are judged lower than fluent ones
+# the non-native speaker is judged as more disfluent (which partially aligns with our experiment)
+# no interaction between the two
+
+```
+
+Table \@ref(tab:tab-results-validation) shows the means (and standard deviations) of participants' ratings of fluency, naturalness, and accentedness. A linear mixed model for fluency ratings with fixed effects of fluency (treatment-coded, reference: fluent), speaker's linguistic background (treatment-coded, reference: native speaker), and their interaction, with random intercepts by participant and by horse description showed that fluency ratings differed significantly for the fluent and disfluent conditions (`r mdl_validation_flu$full_result$deliverydisfluent`). The non-native speaker was perceived as more disfluent than the native speaker (`r mdl_validation_flu$full_result$speakernonnative`), in line with previous findings [@pingetetal2014; @boskeretal2014b], but the interaction between the two variables was not significant (`r mdl_validation_flu$full_result$deliverydisfluent_speakernonnative`). An identical model for naturalness ratings showed no significant differences by fluency (`r mdl_validation_nat$full_result$deliverydisfluent`), speaker's linguistic background (`r mdl_validation_nat$full_result$speakernonnative`) or their interaction (`r mdl_validation_nat$full_result$deliverydisfluent_speakernonnative`).
 
 
-# Results
+# Procedure
+
+Stimuli were presented using JsPsych [@jspsych], hosted on MindProbe [via JATOS, @jatos]. The task began with a cover story introducing two horse racing tipsters. Participants were told the tipsters would provide information about the four most popular horses competing in an upcoming race at Musselburgh Racecourse (Edinburgh). The cover story explained that the two tipsters were well-known experts in the field, and added that one of the speakers was a non-native English speaker (without specifying the nationality of either speaker), introducing the element of the speakers' linguistic backgrounds as well as the factor of competence. 
+
+At the beginning of the experiment, participants were shown four pictures of the horses that they had been told would take part in the race, alongside their names. Participants were instructed to distribute one-hundred pounds in betting money across the four horses based on the likelihood they thought each horse had of winning: They could split the bets as they wished, and they did not have to spend all the money. Each participant was randomly assigned to one out of 24 groups, so that they would listen to each speaker twice, one in each fluency level. The order in which horses were presented was randomised. In each trial, participants listened to one speaker described a given horse's performance. Once the playback stopped, participants were asked to place a bet by typing a number on a web form. Participants could only move to the next horse's description once they had placed a bet. Participants were allowed to modify their previous bets every time they heard a new description. If the sum of bets made at any point was more than the allotted maximum, they were asked to re-distribute their bets until the total was below one-hundred pounds. 
+
+After the betting round was complete, participants completed a questionnaire similar to that of @foucartetal2020 to measure their language attitudes towards the native and the non-native speaker. For each speaker, participants answered six questions measuring affect (three questions for negative affect and three questions for positive affect), five questions measuring solidarity, five questions measuring status, and one question each for comprehensibility, accentedness, fluency, and trustworthiness.  Each question used a 9-point scale. Participants first answered questions about, at random, the native or non-native speaker, with the order of presentation of dimensions being randomised.  They then answered the same questions for the remaining speaker.  We also asked participants to guess the countries of origin of our native and non-native speakers, and from which speaker they would like to learn about horse races in the future. Additional questions included ratings on a 9-point scale of how natural the audio sounded (1: unnatural, edited; 9: natural, unedited), and two questions measuring participants' exposure to native and non-native accented English (1: never; 9: always). Likewise, we measured participants’ previous experience with betting and their perceived knowledge of horse races (two questions: Whether they had bet on horse races in the past, and to rate on a 5-point scale, from 'Strongly disagree' to 'Strongly agree', how closely they identified with the statement 'I am an expert on horse races'). Finally, we included an open-ended question for participants to report what guided their decision-making, as well as their perception of the experiment's aim. 
+
+## Results
+
+All data pre-processing and analyses were carried out in R version 4.4.1 [@R-base], using the packages _tidyverse_ version 2.0.0 [@tidyverse], _ggplot_ version 3.5.1 [@ggplot2], and _wesanderson_ version for data wrangling and visualization. _lme4_ version 1.1-35.5 [@lme4] was used for data analysis, and _papaja_ version 0.1.2 [@R-papaja] for manuscript write-up. Scripts can be found at https://osf.io/zsut7/
 
 ## Pre-registered analyses
 
 ### Betting behaviour
 
+```{r include=FALSE}
+source('../analysis/data-visualization.R')
+```
+```{r tab-dist-money}
+apa_table(
+  tab4,
+  caption = "Mean (standard deviation) of money bet by manner of delivery and speaker’s linguistic
+background."
+)
+```
+```{r fig1, out.width="90%",fig.align='center', fig.cap="Money distribution by manner of delivery (fluent/disfluent) and speaker (green: native/orange: non-native)."}
+fig1
+```
+
+Table \@ref(tab:tab-dist-money) and Figure \@ref(fig:fig1) show the mean amount of money bet per speaker and fluency condition. On average, participants bet £25 on each horse. This distribution suggests that participants followed a rational behaviour: Given their lack of expertise, they distributed the one hundred pounds equally. However, disfluent instructions seem to lower the amount of money bet. 
+
+We modelled participants' betting behaviour in a linear mixed model. We modelled money bet on each horse, taken from the final amounts submitted in the experiment, after all four descriptions had been heard and valid responses (summing to at most 100 pounds) had been recorded. The model included fixed effects of fluency (sum-coded; fluent coded as -0.5, disfluent as +0.5), speaker's linguistic background (sum-coded, native coded as -0.5; non-native coded as +0.5), and their interaction. The maximal model [@barretal2013], with random intercepts by-participant and by-item, with random slopes for fluency and speaker's linguistic background by-participant, and for fluency by-item, failed to converge. We first dropped the random intercept by-participant, as most participants used all the money and thus there was no variance in their intercept. The final model included a random intercept by-item. Results were deemed significant at |t| > 2 [@baayen2008]. 
+
+```{r model-bets, include=FALSE}
+source('../analysis/data-analysis.R')
+```
+
+Our model showed a main effect of fluency, whereby participants placed lower bets following disfluent descriptions compared to their fluent counterparts (`r mdlbet_m1$full_result$delivery_cont1`). There was no main effect of speaker (`r mdlbet_m1$full_result$speaker_cont1`) and importantly, no interaction between delivery and speaker (`r mdlbet_m1$full_result$delivery_cont1_speaker_cont1`)^[An identical model including excluded participants showed a main effect of fluency (`r mdlbet_m1_all$full_result$delivery_cont1`), and no other significances (for speaker, `r mdlbet_m1_all$full_result$speaker_cont1`; for the interaction `r mdlbet_m1_all$full_result$delivery_cont1_speaker_cont1`)]. 
 
 ### Language attitudes
+
+Table \@ref(tab:tab5) depicts the mean (and standard deviation) of ratings in each of the measures of interest by speaker's linguistic background.  Constructs measured with more than one question (affect, status, solidarity) were obtained by calculating the average score. For the _Affect_ dimension, we reverse-scored items measuring negative affect. Cronbach's alpha showed that the scores for these attitudes were reliable ($\alpha_{affect}$ = `r affect_alpha`, $\alpha_{status}$ = `r status_alpha`, $\alpha_{solidarity}$ = `r solidarity_alpha`). We explored differences between the native and the non-native speaker's evaluations in these three social dimensions as well as on Comprehensibility, Accentedness, and Trustworthiness via paired t-test using Bonferroni correction for _p_ values.
+
+```{r tab5}
+apa_table(tab5,
+          caption = "Average score (and standard deviation) in each dimension by speaker.")
+```
+```{r tab6}
+apa_table(tab6,
+          caption = "Paired t test for each dimension between speakers.")
+```
+
+Analyses showed that speakers were rared differently across all six dimensions (see Table \@ref(tab:tab6)). The largest differences were, unsurprisingly, in comprehensibility and accentedness, where the non-native speaker received lower ratings.
+
+Following our pre-registered analysis, we included these six variables in our previous model to explore whether speakers' evaluations could further explain participants' betting behaviours. This second model improved model fit ($\chi^2$(6) = 19.46, _p_ < .01). Besides a main effect of manner of delivery (`r mdlbet_attitudes$full_result$delivery_cont1`), the model showed an effect of affect, whereby higher ratings of affect were more likely to yield higher bettings (`r mdlbet_attitudes$full_result$affect`)
 
 
 ## Exploratory analysis
 
-### Learning preference
+We additionally explored participants' preferences to learn from either speaker in the future. 206 participants reported they would prefer to learn from the native spaker, and 154 preferred the non-native speaker. A $\chi^2$ test of goodness of fit showed that there was a significant difference in participants' preferences ($\chi^2$(1) = 7.51, _p_ < .01).
 
 # Discussion
 
+The pattern found aligns with the idea that listeners are sensitive to how an utterance is produced [@brennanwilliams1995]. Descriptions that included hesitation phenomena, in the form of filled pauses, led to smaller bets compared to their fluent counterparts. This aligns with @brennanwilliams1995 findings wherein listeners were less likely to attribute confidence in their knowledge to a speaker when their answers included hesitation phenomena (i.e., Feeling of Another's Knowing). Brennan and Williams (1995) attributed participants' ratings to inferences made about the speaker's mental state - specifically, inferences about the degree of confidence a speaker has in their knowledge. In our experiment, since participants have little a priori knowledge that can guide their betting behaviour, and because the utterance is semantically and acoustically identical apart from the excision of disfluencies, an inference about a speaker's confidence based on those disfluencies is an important potential determinant of participants' decisions.
 
 \newpage
 
