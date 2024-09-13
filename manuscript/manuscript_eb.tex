@@ -3,7 +3,7 @@
 \PassOptionsToPackage{hyphens}{url}
 %
 \documentclass[
-  man,floatsintext]{apa6}
+  man,floatsintext]{apa7}
 \usepackage{amsmath,amssymb}
 \usepackage{iftex}
 \ifPDFTeX
@@ -163,6 +163,19 @@
 
 \linenumbers
 \usepackage{csquotes}
+\usepackage[titles]{tocloft}
+\cftpagenumbersoff{figure}
+\renewcommand{\cftfigpresnum}{\itshape\figurename\enspace}
+\renewcommand{\cftfigaftersnum}{.\space}
+\setlength{\cftfigindent}{0pt}
+\setlength{\cftafterloftitleskip}{0pt}
+\settowidth{\cftfignumwidth}{Figure 10.\qquad}
+\cftpagenumbersoff{table}
+\renewcommand{\cfttabpresnum}{\itshape\tablename\enspace}
+\renewcommand{\cfttabaftersnum}{.\space}
+\setlength{\cfttabindent}{0pt}
+\setlength{\cftafterloftitleskip}{0pt}
+\settowidth{\cfttabnumwidth}{Table 10.\qquad}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -193,7 +206,7 @@ Correspondence concerning this article should be addressed to Esperanza Badaya. 
 \affiliation{\vspace{0.5cm}\textsuperscript{1} Ghent University\\\textsuperscript{2} University of Edinburgh}
 
 \abstract{%
-Whether an individual is perceived as knowledgeable by others can be biased by several, and potentially irrelevant factors, ranging from the situational (e.g, who is speaking) to the ephemeral (e.g., how they speak). Listeners are more likely to evaluate non-native speakers as less veracious, more deceiving, and evaluate the speaker as less competent. Similar judgements are elicited by how fluent speech is: Filled pauses, such as \emph{uh} or \emph{um} in English, elicit evaluations of the speaker as deceitful, less intelligent, or less confident in their knowledge. Interestingly, the co-existence of these two cues has been shown to yield, sometimes, different processes. However, whether and how speaker's language profiency affects the interpretation of hesitations and listeners' subsequent behaviour is unclear. In a horse-race betting paradigm, we show that listeners are less likely to follow advice from a speaker who is disfluent, regardless of whether they are disfluent for reasons other than low knowledge. This suggests that previous reported perceptions of knowledgeability elicited explicitly have an impact on how individuals use the information they are given, even in situations when it is not advantageous. Although there is evidence for pragmatic leniance towards non-native speakers, it may be the case that this only applies to failures in language skills that are believed to require high proficiency (e.g., irony), whilst hesitation phenomena may not be subject to such forgiveness. Overall, our results align with a broader body of literature suggesting that the interpretation of hesitation phenomena is not context-dependent.
+Whether an individual is perceived as knowledgeable by others can be biased by several, and potentially irrelevant factors, ranging from the ephemeral (e.g., how speech is produced) to the situational (e.g., who is speaking). The presence of disfluencies, such as filled pauses (e.g., \emph{uh} or \emph{um} in English), elicit evaluations of the speaker as deceitful, less intelligent, or less confident in their knowledge. On the other hand, listeners consider alternative explanations for the speaker to be underinformative: Specifically, non-native speakers are more likely to be forgiven when they fail to be informative. However, whether and how speaker's language profiency affects the interpretation of hesitations and listeners' subsequent behaviour is unclear. In a horse-race betting paradigm, we show that listeners are less likely to follow advice from a speaker who is disfluent, regardless of whether they are disfluent for reasons other than low knowledge. This suggests that previous reported perceptions of knowledgeability elicited explicitly have an impact on how individuals use the information they are given, even in situations when it is not advantageous. Although there is evidence for pragmatic leniance towards non-native speakers, it may be the case that this only applies to failures in language skills that are believed to require high proficiency (e.g., irony), whilst hesitation phenomena may not be subject to such forgiveness. Overall, our results align with a broader body of literature suggesting that the interpretation of hesitation phenomena is not context-dependent.
 }
 
 
@@ -207,7 +220,7 @@ There is a growing body of literature showing that listeners speech qualities ar
 
 However, certain speech qualities can yield negative evaluations without being explicitly associated with those. One consistent finding is that speakers with an accent different from that of the listeners are more likely to be negatively evaluated (e.g., (Dragojevic \& Giles, 2016; Gluszek \& Dovidio, 2010) and statements produced with a foreign-accent are more likely to receive lower ratings of credibility compared to statements produced with a native accent (Lev-Ari \& Keysar, 2010). This divide in evaluations as a function of a speaker's accent has been accounted for in terms of processing fluency (Lev-Ari \& Keysar, 2010), group membership, and a combination of both (Mai \& Hoffmann, 2013). Alternatively, but not exclusively, it is possible that non-native speakers are evaluated differently from native speakers due to the expectations listeners have about their competence: Non-native speakers' accents may invoke stereotypes whereby these speakers are believed to be less competent than native speakers (Fairchild \& Papafragou, 2018; Lev-Ari, 2015). This expectation-based account proposes that stereotypes of non-native speakers' low linguistic competence affect both how their speech is comprehended and interpreted. Specifically, signs that can be attributed to low linguistic competence would be interpreted as such when produced by a non-native speaker and be attributed to other factors when produced by a native speaker. In line with this hypothesis, a speaker's nativeness affects how ironic a statement is perceived to be (Bazzi, Brouwer, \& Foucart, 2022; Caffarra, Michell, \& Martin, 2018), why a statement is believed to be underinformative (Fairchild, Mathis, \& Papafragou, 2020; Fairchild \& Papafragou, 2018; Ip \& Papafragou, 2022; Lorenzoni, Pagliarini, Vespignani, \& Navarrete, 2022) and why non-native speech is processed shallower (Hanuíková, Alphen, Goch, \& Weber, 2012; Lev-Ari \& Keysar, 2012).
 
-Thus far, the expectations-based account has explained findings pertaining how the content of speech is interpreted. However, stereotypes on linguistic competence may also affect how speech is delivered. In the case of confidence and knowledgeability, nativeness has been shown to affect how confident a speaker is perceived (Caballero \& Pell, 2020; Jiang, Gossack-Keenan, \& Pell, 2019). Given that speakers producing speech in their second language are more disfluent (Bergmann, Sprenger, \& Schmid, 2015; Davies, 2003; Gkalitsiou \& Werle, 2023) and is perceived as such by native listenes (Pinget, Bosker, Quené, \& De Jong, 2014), it could be possible that a speaker's nativeness leads to different interpretations of disfluencies. This would align with findings in the disfluency literature whereby the effects of those in speech comprehension are dependent on who produces it (Arnold, Kam, \& Tanenhaus, 2007; Barr \& Seyfeddinipur, 2010; Heller, Arnold, Klein, \& Tanenhaus, 2015), including speaker's nativeness (Bosker, Quené, Sanders, \& De Jong, 2014).
+Thus far, the expectations-based account has explained findings pertaining how the content of speech is interpreted. However, stereotypes on linguistic competence may also affect how speech is delivered. In the case of confidence and knowledgeability, nativeness has been shown to affect how confident a speaker is perceived (Caballero \& Pell, 2020; Jiang, Gossack-Keenan, \& Pell, 2019). Given that speakers producing speech in their second language are more disfluent (Bergmann, Sprenger, \& Schmid, 2015; Davies, 2003; Gkalitsiou \& Werle, 2023) and is perceived as such by native listenes (Pinget, Bosker, Quené, \& De Jong, 2014), it could be possible that a speaker's nativeness leads to different interpretations of disfluencies. This would align with findings in the disfluency literature whereby the effects of those in speech comprehension are dependent on who produces it (Arnold, Kam, \& Tanenhaus, 2007; Barr \& Seyfeddinipur, 2010; Heller, Arnold, Klein, \& Tanenhaus, 2015), including speaker's nativeness (Bosker, Quené, Sanders, \& De Jong, 2014), allegedly because listeners are sensitive to the speaker's mental state and the reasons for them to be disfluent.
 
 Recently, Matzinger, Pleyer, and Żywiczyński (2023) explored whether listeners' perceptions of why a speaker was disfluent differed for native and non-native speakers. In their study, participants listened to native and non-native speakers answer trivial questions and requests, and were explicitly asked to rate the speaker's knowledge and confidence (for FOAK) and their willingness to grant the request. Crucially, Matzinger et al. (2023) manipulated speakers' fluency by having answers prefaced with either short (200 ms) or long (1200 ms) pauses. For requests, long pauses were less likely to be associated with unwillingness for non-native compared to native speakers. However, FOAK ratings did not differ between speakers: Long pauses produced by either speaker were likely to be taken as reflecting low confidence and low knowledge. Matzinger et al. (2023) attribute this pattern to different conversational contexts: Requests tap into speakers' cooperativeness, and thus in this context, tuning to the interlocutor's mental state and stereotyping might be more relevant than evaluating the speaker's competence (i.e., knowledge).
 
@@ -328,7 +341,7 @@ At the beginning of the experiment, participants were shown four pictures of the
 After the betting round was complete, participants completed a questionnaire similar to that of Foucart, Costa, Morís-Fernández, and Hartsuiker (2020) to measure their language attitudes towards the native and the non-native speaker. For each speaker, participants answered six questions measuring affect (three questions for negative affect and three questions for positive affect), five questions measuring solidarity, five questions measuring status, and one question each for comprehensibility, accentedness, fluency, and trustworthiness. Each question used a 9-point scale. Participants first answered questions about, at random, the native or non-native speaker, with the order of presentation of dimensions being randomised. They then answered the same questions for the remaining speaker. We also asked participants to guess the countries of origin of our native and non-native speakers, and from which speaker they would like to learn about horse races in the future. Additional questions included ratings on a 9-point scale of how natural the audio sounded (1: unnatural, edited; 9: natural, unedited), and two questions measuring participants' exposure to native and non-native accented English (1: never; 9: always). Likewise, we measured participants' previous experience with betting and their perceived knowledge of horse races (two questions: Whether they had bet on horse races in the past, and to rate on a 5-point scale, from `Strongly disagree' to `Strongly agree', how closely they identified with the statement `I am an expert on horse races'). Finally, we included an open-ended question for participants to report what guided their decision-making, as well as their perception of the experiment's aim.
 
 \hypertarget{results}{%
-\subsection{Results}\label{results}}
+\section{Results}\label{results}}
 
 All data pre-processing and analyses were carried out in R version 4.4.1 (R Core Team, 2024), using the packages \emph{tidyverse} version 2.0.0 (Wickham et al., 2019), \emph{ggplot} version 3.5.1 (Wickham, 2016), and \emph{wesanderson} version for data wrangling and visualization. \emph{lme4} version 1.1-35.5 (Bates, Mächler, Bolker, \& Walker, 2015) was used for data analysis, and \emph{papaja} version 0.1.2 (Aust \& Barth, 2023) for manuscript write-up. Scripts can be found at \url{https://osf.io/zsut7/}
 
@@ -337,6 +350,8 @@ All data pre-processing and analyses were carried out in R version 4.4.1 (R Core
 
 \hypertarget{betting-behaviour}{%
 \subsubsection{Betting behaviour}\label{betting-behaviour}}
+
+Table \ref{tab:tab-dist-money} and Figure \ref{fig:fig1} show the mean amount of money bet per speaker and fluency condition. On average, participants bet £25 on each horse. This distribution suggests that participants followed a rational behaviour: Given their lack of expertise, they distributed the one hundred pounds equally. However, disfluent instructions seem to lower the amount of money bet.
 
 \begin{table}[tbp]
 
@@ -361,6 +376,7 @@ Non-native & Fluent & 24.15 (13.61)\\
 \end{center}
 
 \end{table}
+
 \begin{figure}[H]
 
 {\centering \includegraphics[width=0.9\linewidth,]{manuscript_eb_files/figure-latex/fig1-1} 
@@ -369,8 +385,6 @@ Non-native & Fluent & 24.15 (13.61)\\
 
 \caption{Money distribution by manner of delivery (fluent/disfluent) and speaker (green: native/orange: non-native).}\label{fig:fig1}
 \end{figure}
-
-Table \ref{tab:tab-dist-money} and Figure \ref{fig:fig1} show the mean amount of money bet per speaker and fluency condition. On average, participants bet £25 on each horse. This distribution suggests that participants followed a rational behaviour: Given their lack of expertise, they distributed the one hundred pounds equally. However, disfluent instructions seem to lower the amount of money bet.
 
 We modelled participants' betting behaviour in a linear mixed model. We modelled money bet on each horse, taken from the final amounts submitted in the experiment, after all four descriptions had been heard and valid responses (summing to at most 100 pounds) had been recorded. The model included fixed effects of fluency (sum-coded; fluent coded as -0.5, disfluent as +0.5), speaker's linguistic background (sum-coded, native coded as -0.5; non-native coded as +0.5), and their interaction. The maximal model (Barr, Levy, Scheepers, \& Tily, 2013), with random intercepts by-participant and by-item, with random slopes for fluency and speaker's linguistic background by-participant, and for fluency by-item, failed to converge. We first dropped the random intercept by-participant, as most participants used all the money and thus there was no variance in their intercept. The final model included a random intercept by-item. Results were deemed significant at \textbar t\textbar{} \textgreater{} 2 (Baayen, 2008).
 
@@ -443,7 +457,13 @@ We additionally explored participants' preferences to learn from either speaker 
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
 
+Listeners can infer speaker's knowledgeability from a range of cues, such as voice pitch or amplitude. A speaker's speech fluency i.e., whether they produces disfluencies as they speak, has been previously shown to impact how confident in their knowledge a speaker is judged to be (Brennan \& Williams, 1995). However, speakers can be disfluent for reasons other than (un)confidence: For example, speaking in own's second language is also associated with an increase in disfluencies (De Jong, Groenhout, Schoonen, \& Hulstijn, 2015; Derwing, Munro, Thomson, \& Rossiter, 2009). In fact, it has been proposed that second language speakers are stereotyped and thus expected to display low linguistic performance (Lev-Ari, 2015), which consequently leads native listeners to ``forgive'' what otherwise would be lead to a negative evaluation (Fairchild et al., 2020; Lorenzoni et al., 2022). In the present experiment, we explored whether attributions of (un)knowledgeability as a function of the speaker's nativeness, and if those affected listeners' subsequent behaviours in a task where participants had to place bets on horse. Our findings suggest that manner of delivery, in the form of fluency, was the sole factor that guided participants' behavior: Disfluent descriptions yielded lower bets, regardless of who was speaking.
+
 The pattern found aligns with the idea that listeners are sensitive to how an utterance is produced (Brennan \& Williams, 1995). Descriptions that included hesitation phenomena, in the form of filled pauses, led to smaller bets compared to their fluent counterparts. This aligns with Brennan and Williams (1995) findings wherein listeners were less likely to attribute confidence in their knowledge to a speaker when their answers included hesitation phenomena (i.e., Feeling of Another's Knowing). Brennan and Williams (1995) attributed participants' ratings to inferences made about the speaker's mental state - specifically, inferences about the degree of confidence a speaker has in their knowledge. In our experiment, since participants have little a priori knowledge that can guide their betting behaviour, and because the utterance is semantically and acoustically identical apart from the excision of disfluencies, an inference about a speaker's confidence based on those disfluencies is an important potential determinant of participants' decisions.
+
+This inference explanation would predict that listeners would forgive foreign disfluencies, in line with the expectations-based account. While previous research has reported that whether a filled pause affects processes involved in speech comprehension depending on speaker identity (e.g., Bosker, Quené, Sanders, \& De Jong, 2014), recent studies have failed to find this effect when it comes to speaker's attributions (Matzinger et al., 2023). In our experiment, participants distributed money similarly when either speaker provided disfluent descriptions, suggesting that listeners did not weigh in our (non-native) speaker's identity to interpret the disfluency. This is particularly remarkable given that in our post-experimental questionnaire, the native speaker was more likely to be chosen as someone participants would like to learn from about horse races in the future. One possibility for this lack of interaction has to do with the fact that our non-native speaker was introduced as a knowledgeable tipster. This introduction of the speaker as an authoritative figure may have overridden any other features of their identity, including their non-native speaker identity. Indeed, beliefs about a speaker's expertise have been shown to guide perceptions of their certainty (Mol, Kuhlen, Van der Steen, \& Obbens, 2013). Considering the language attitudes triggered by both accents, the difference in speaker preference may more likely reflect the ease of comprehending the native speaker, rather than an implicit negative bias towards the non-native speaker, and particularly, a diminished perception of competence for non-native speakers.
+
+The experiment here also introduced a novel approach to measuring how certain the speaker is perceived. While previous studies had participants explicitly rate a speaker on different dimensions (e.g., knowledgeability, trust) in non-social contexts, the present study offers a new venue to explore how different factors bias individuals' evaluations indirectly, as well as the implications of those evaluations. However, a potential shortcoming of our design has to do with how people approached the betting system. Because of the nature of the task, in that we tested participants with no prior knowledge of horse races, our participants behaved rationally: The vast majority employed the hundred pounds allocated and distributed them fairly rationally in a way that maximizes their chances of winning (i.e., around £25 per horse). It is, therefore, possible that in situations of less uncertainty (e.g., a scenario where individuals have more knowledge) or where they are rewarded for allocating money to the winning horse, how the speaker is perceived may yield a larger effect on participants' behaviours.
 
 \newpage
 
@@ -503,8 +523,14 @@ Christenfeld, N. (1995). Does it hurt to say um? \emph{Journal of Nonverbal Beha
 \leavevmode\vadjust pre{\hypertarget{ref-davies2003}{}}%
 Davies, A. (2003). \emph{The native speaker: Myth and reality} (Vol. 38). Multilingual matters. \url{https://doi.org/10.21832/9781853596247}
 
+\leavevmode\vadjust pre{\hypertarget{ref-dejongetal2015}{}}%
+De Jong, N. H., Groenhout, R., Schoonen, R., \& Hulstijn, J. H. (2015). Second language fluency: Speaking style or proficiency? Correcting measures of second language fluency for first language behavior. \emph{Applied Psycholinguistics}, \emph{36}(2), 223--243.
+
 \leavevmode\vadjust pre{\hypertarget{ref-debruinebarr2021}{}}%
 DeBruine, L. M., \& Barr, D. J. (2021). Understanding mixed-effects models through data simulation. \emph{Advances in Methods and Practices in Psychological Science}, \emph{4}(1), 2515245920965119. \url{https://doi.org/10.1177/251524592096511}
+
+\leavevmode\vadjust pre{\hypertarget{ref-derwingetal2009}{}}%
+Derwing, T. M., Munro, M. J., Thomson, R. I., \& Rossiter, M. J. (2009). The relationship between L1 fluency and L2 fluency development. \emph{Studies in Second Language Acquisition}, \emph{31}(4), 533--557.
 
 \leavevmode\vadjust pre{\hypertarget{ref-dragojevicgiles2016}{}}%
 Dragojevic, M., \& Giles, H. (2016). I don't like you because you're hard to understand: The role of processing fluency in the language attitudes process. \emph{Human Communication Research}, \emph{42}(3), 396--420. \url{https://doi.org/10.1111/hcre.12079}
@@ -587,6 +613,9 @@ Mai, R., \& Hoffmann, S. (2013). Accents in business communication: An integrati
 \leavevmode\vadjust pre{\hypertarget{ref-matzingeretal2023}{}}%
 Matzinger, T., Pleyer, M., \& Żywiczyński, P. (2023). Pause length and differences in cognitive state attribution in native and non-native speakers. \emph{Languages}, \emph{8}(1), 26. \url{https://doi.org/10.3390/languages8010026}
 
+\leavevmode\vadjust pre{\hypertarget{ref-moletal2013}{}}%
+Mol, L., Kuhlen, A., Van der Steen, R., \& Obbens, M. (2013). Beliefs about a speaker affect feeling of another's knowing. \emph{Proceedings of the Annual Meeting of the Cognitive Science Society}, \emph{35}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-nortonhogan1980}{}}%
 Norton-Ford, J. D., \& Hogan, D. R. (1980). Role of nonverbal behaviors in social judgments of peers' assertiveness. \emph{Psychological Reports}, \emph{46}(3\_suppl), 1085--1086.
 
@@ -621,6 +650,13 @@ Wickham, H. (2016). \emph{ggplot2: Elegant graphics for data analysis}. Springer
 Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., \ldots{} Yutani, H. (2019). Welcome to the {tidyverse}. \emph{Journal of Open Source Software}, \emph{4}(43), 1686. \url{https://doi.org/10.21105/joss.01686}
 
 \end{CSLReferences}
+
+
+\clearpage
+\renewcommand{\listfigurename}{Figure captions}
+
+\clearpage
+\renewcommand{\listtablename}{Table captions}
 
 
 \end{document}
