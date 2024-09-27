@@ -19,12 +19,14 @@ library(wesanderson)
 # avg and sd of language attitudes dimensions, naturalness, accentedness, fluency, trustworthiness, ease of understanding, exposure to native and non-native speakers
 # papaja and gt are not friends
 # re doing this code to be able to use apa_table and also to refer to it in-text
+
 tab5 <- dexp1lang_prereg %>%
   select(c(18:24,38,39)) %>% mutate(speaker = ifelse(speaker=='native', 'Native Speaker', 'Non-native Speaker')) %>%
   rename_with(str_to_title) %>%
-  select(c("Speaker", "Easy", "Strong", "Affect", "Status", "Solidarity", "Trustworthy")) %>%
+  select(c("Speaker", "Easy", "Strong", "Affect", "Status", "Solidarity", "Trustworthy", "Fluent")) %>%
   rename(Comprehensibility = Easy,
-         Accentedness = Strong
+         Accentedness = Strong,
+         Fluency = Fluent
          ) %>%
   group_by(Speaker) %>%
   summarise(
@@ -32,6 +34,8 @@ tab5 <- dexp1lang_prereg %>%
     sd_easy = sd(as.numeric(Comprehensibility)),
     avg_strong = mean(as.numeric(Accentedness)),
     sd_strong = sd(as.numeric(Accentedness)),
+    avg_flu = mean(as.numeric(Fluency)),
+    sd_flu = sd(as.numeric(Fluency)),
     avg_aff = mean(as.numeric(Affect)),
     sd_aff = sd(as.numeric(Affect)),
     avg_stat = mean(as.numeric(Status)),
@@ -39,17 +43,18 @@ tab5 <- dexp1lang_prereg %>%
     avg_sol = mean(as.numeric(Solidarity)),
     sd_sol = sd(as.numeric(Solidarity)),
     avg_trust = mean(as.numeric(Trustworthy)),
-    sd_trust = sd(as.numeric(Trustworthy)),
+    sd_trust = sd(as.numeric(Trustworthy))
   ) %>% 
   dplyr::mutate(
     Comprehensibility = paste(round(avg_easy, 2), paste("(", round(sd_easy,2), ")", sep = ""), sep = " "),
     Accentedness = paste(round(avg_strong, 2), paste("(", round(sd_strong,2), ")", sep = ""), sep = " "),
+    Fluency = paste(round(avg_flu, 2), paste("(", round(sd_flu,2), ")", sep = ""), sep = " "),
     Affect = paste(round(avg_aff, 2), paste("(", round(sd_aff,2), ")", sep = ""), sep = " "),
     Status = paste(round(avg_stat, 2), paste("(", round(sd_stat,2), ")", sep = ""), sep = " "),
     Solidarity = paste(round(avg_sol, 2), paste("(", round(sd_sol,2), ")", sep = ""), sep = " "),
     Trustworthy = paste(round(avg_trust, 2), paste("(", round(sd_trust,2), ")", sep = ""), sep = " ")) %>%
-  select(Speaker, Comprehensibility, Accentedness, Affect, Status, Solidarity, Trustworthy) %>%
-  pivot_longer(c(2:7), names_to = "Dimension", values_to = "Score") %>%
+  select(Speaker, Comprehensibility, Accentedness, Fluency, Affect, Status, Solidarity, Trustworthy) %>%
+  pivot_longer(c(2:8), names_to = "Dimension", values_to = "Score") %>%
   pivot_wider(values_from = Score, names_from = Speaker)
   #   ) %>%
   # tbl_summary(

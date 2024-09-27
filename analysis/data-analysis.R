@@ -40,27 +40,27 @@ t.test(langatt_native$exposure, langatt_nonnative$exposure, paired = TRUE) # exp
 ## lme4 does not work well with sum coding, RSO stats UGent offers the following alternative:
 
 
-dexp1bet_prereg$flue_nat <- 1 * (dexp1bet_prereg$delivery == "fluent" & 
-                                      dexp1bet_prereg$speaker == "native")
-dexp1bet_prereg$flue_non <- 1 * (dexp1bet_prereg$delivery == "fluent" & 
-                                      dexp1bet_prereg$speaker == "nonnative")
-dexp1bet_prereg$dis_nat <- 1 * (dexp1bet_prereg$delivery != "fluent" & 
-                                      dexp1bet_prereg$speaker == "native")
-
-exp1_mdlbet_max <- lmer(
-  raw_money ~ delivery_cont * speaker_cont +
-    (-1 + flue_nat + flue_non + dis_nat | ppt) +
-    (1 | horse),
-  data = dexp1bet_prereg, 
-  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
-)
-
-summary(exp1_mdlbet_max)
-hist(resid(exp1_mdlbet_max))
+# dexp1bet_prereg$flue_nat <- 1 * (dexp1bet_prereg$delivery == "fluent" & 
+#                                       dexp1bet_prereg$speaker == "native")
+# dexp1bet_prereg$flue_non <- 1 * (dexp1bet_prereg$delivery == "fluent" & 
+#                                       dexp1bet_prereg$speaker == "nonnative")
+# dexp1bet_prereg$dis_nat <- 1 * (dexp1bet_prereg$delivery != "fluent" & 
+#                                       dexp1bet_prereg$speaker == "native")
+# 
+# exp1_mdlbet_max <- lmer(
+#   raw_money ~ delivery_cont * speaker_cont +
+#     (-1 + flue_nat + flue_non + dis_nat | ppt) +
+#     (1 | horse),
+#   data = dexp1bet_prereg, 
+#   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
+# )
+# 
+# summary(exp1_mdlbet_max)
+# hist(resid(exp1_mdlbet_max))
 
 # singular fit
 
-mdlbet_m1 <- lmer(
+mdlbet_m1 <- lmerTest::lmer(
   raw_money ~ delivery_cont * speaker_cont +
     (1 | horse),
   data = dexp1bet_prereg, 
@@ -70,7 +70,7 @@ mdlbet_m1 <- lmer(
 
 # for manuscript
 
-mdlbet_m1 <- apa_print(lmer(
+mdlbet_m1 <- apa_print(lmerTest::lmer(
   raw_money ~ delivery_cont * speaker_cont +
     (1 | horse),
   data = dexp1bet_prereg, 
@@ -93,20 +93,20 @@ mdlbet_m1 <- apa_print(lmer(
 
 # let's check with all participants to ensure it is not a power issue
 
-mdlbet_m1_all <- lmer(
+mdlbet_m1_all <- lmerTest::lmer(
   raw_money ~ delivery_cont * speaker_cont +
     (1 | horse),
-  data = dexp1bet_prereg, 
+  data = dexp1bet, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
 )
 
 
 # for manuscript
 
-mdlbet_m1_all <- apa_print(lmer(
+mdlbet_m1_all <- apa_print(lmerTest::lmer(
   raw_money ~ delivery_cont * speaker_cont +
     (1 | horse),
-  data = dexp1bet_prereg, 
+  data = dexp1bet, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
 ))
 
@@ -123,7 +123,7 @@ solidarity_alpha = round(as.numeric(alpha(dexp1lang_prereg[,8:12])$total[1]), 2)
 # Pass data from wide to long
 
 dexp1lang_prereg<- dexp1lang_prereg %>%
-  pivot_longer(c(easy, strong, affect, status, solidarity, trustworthy), names_to = "dimension", values_to = "score")
+  pivot_longer(c(easy, strong, affect, status, solidarity, trustworthy, fluent), names_to = "dimension", values_to = "score")
 
 
 # # Bonferroni correction 0.05/6 = 0.01
@@ -133,11 +133,12 @@ tests_questionnaires <- list()
 
 tests_questionnaires[[1]] <- t.test(langatt_native$easy, langatt_nonnative$easy, paired = TRUE)
 tests_questionnaires[[2]] <- t.test(langatt_native$strong, langatt_nonnative$strong, paired = TRUE)
-tests_questionnaires[[3]] <- t.test(langatt_native$affect, langatt_nonnative$affect, paired = TRUE)
-tests_questionnaires[[4]] <- t.test(langatt_native$status, langatt_nonnative$status, paired = TRUE)
-tests_questionnaires[[5]] <- t.test(langatt_native$solidarity, langatt_nonnative$solidarity, paired = TRUE)
-tests_questionnaires[[6]] <- t.test(langatt_native$trustworthy, langatt_nonnative$trustworthy, paired = TRUE)
-names(tests_questionnaires) <- c("Comprehensibility", "Accent", "Affect", "Status", "Solidarity", "Trustworthy")
+tests_questionnaires[[3]] <- t.test(langatt_native$fluent, langatt_nonnative$fluent, paired = TRUE)
+tests_questionnaires[[4]] <- t.test(langatt_native$affect, langatt_nonnative$affect, paired = TRUE)
+tests_questionnaires[[5]] <- t.test(langatt_native$status, langatt_nonnative$status, paired = TRUE)
+tests_questionnaires[[6]] <- t.test(langatt_native$solidarity, langatt_nonnative$solidarity, paired = TRUE)
+tests_questionnaires[[7]] <- t.test(langatt_native$trustworthy, langatt_nonnative$trustworthy, paired = TRUE)
+names(tests_questionnaires) <- c("Comprehensibility", "Accent", "Fluency", "Affect", "Status", "Solidarity", "Trustworthy")
 
 # # table for report
 # # idea from https://stackoverflow.com/questions/21840021/grabbing-certain-results-out-of-multiple-t-test-outputs-to-create-a-table
@@ -212,20 +213,20 @@ tab6 <- tab6 %>%
 # 
 # # 3. Explore whether model fit improves by including the variable with significant differences.
 # 
-mdlbet_attitudes <- lmer(
-  raw_money ~ delivery_cont * speaker_cont +easy + strong + status + solidarity + affect + trustworthy +
+mdlbet_attitudes <- lmerTest::lmer(
+  raw_money ~ delivery_cont * speaker_cont +easy + strong + status + solidarity + affect + trustworthy + fluent+
     (1 | horse),
   data = dexp1bet_prereg,
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5)),
   REML = "FALSE"
 )
 
-#anova(mdlbet_m1, mdlbet_attitudes)
+# anova(mdlbet_m1, mdlbet_attitudes) papaja doesn't like anovas
 
 # for manuscript
 
-mdlbet_attitudes <- apa_print(lmer(
-  raw_money ~ delivery_cont * speaker_cont +easy + strong + status + solidarity + affect + trustworthy +
+mdlbet_attitudes <- apa_print(lmerTest::lmer(
+  raw_money ~ delivery_cont * speaker_cont +easy + strong + status + solidarity + affect + trustworthy + fluent +
     (1 | horse),
   data = dexp1bet_prereg,
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5)),
@@ -266,5 +267,20 @@ mdl_learnpreference
 # summary(mdl_learneasy)
 
 # 5. Correlation linguistic and social factors
+# Do participants' exposure affect their betting behaviour?
 
+mdlbet_m1_exposure <- lmerTest::lmer(
+  raw_money ~ delivery_cont * speaker_cont + exposure +
+    (1 | horse),
+  data = dexp1bet_prereg, 
+  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
+)
 
+# for manuscript
+
+mdlbet_m1_exposure <- apa_print(lmerTest::lmer(
+  raw_money ~ delivery_cont * speaker_cont + exposure +
+    (1 | horse),
+  data = dexp1bet_prereg, 
+  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
+))

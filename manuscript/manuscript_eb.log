@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.9.11)  27 SEP 2024 09:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.9.27)  27 SEP 2024 10:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **manuscript_eb.tex
 (./manuscript_eb.tex
 LaTeX2e <2024-06-01> patch level 2
-L3 programming layer <2024-08-30>
+L3 programming layer <2024-09-10>
 (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/apa7/apa7.cls
 Document Class: apa7 2022/07/25 v2.16 APA formatting (7th edition)
 (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.cls
@@ -642,7 +642,7 @@ Package: parskip 2021-03-14 v2.0h non-zero parskip adjustments
 \csllabelwidth=\skip89
 \cslentryspacingunit=\skip90
 (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/babel.sty
-Package: babel 2024/08/29 v24.9 The Babel package
+Package: babel 2024/09/18 v24.10 The Babel package
 \babel@savecnt=\count337
 \U@D=\dimen299
 \l@unhyphenated=\language8
@@ -650,9 +650,9 @@ Package: babel 2024/08/29 v24.9 The Babel package
 \bbl@readstream=\read3
 \bbl@dirlevel=\count338
 Package babel Info: You haven't specified a language as a class or package
-(babel)             option. I'll load 'nil'. Reported on input line 4267.
+(babel)             option. I'll load 'nil'. Reported on input line 4282.
 (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/nil.ldf
-Language: nil 2024/08/29 v24.9 Nil language
+Language: nil 2024/09/18 v24.10 Nil language
 \l@nil=\language9
 )) (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/locale/en/babel-english.tex)
 Package babel Info: Importing data for english
@@ -721,7 +721,7 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 Failed to patch abstract.
 Failed to patch title.
 (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xpatch/xpatch.sty (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty
-Package: expl3 2024-08-30 L3 programming layer (loader) 
+Package: expl3 2024-09-10 L3 programming layer (loader) 
 (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count346
@@ -1079,9 +1079,6 @@ Underfull \vbox (badness 4752) has occurred while \output is active []
 
 
 [21]
-Underfull \vbox (badness 4752) has occurred while \output is active []
-
-
 
 [22]
 
@@ -1101,7 +1098,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [26]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 585.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 586.
 (c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -1128,18 +1125,18 @@ L3 programming layer <2020/03/25>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 29345 strings out of 475477
- 547802 string characters out of 5773432
- 959288 words of memory out of 5000000
- 51155 multiletter control sequences out of 15000+600000
- 643215 words of font info for 183 fonts, out of 8000000 for 9000
+ 29354 strings out of 475477
+ 547952 string characters out of 5773432
+ 959563 words of memory out of 5000000
+ 51165 multiletter control sequences out of 15000+600000
+ 643123 words of font info for 183 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  99i,12n,107p,1878b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss8.pfb><c:/Users/eramosba/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
-Output written on manuscript_eb.pdf (30 pages, 304994 bytes).
+Output written on manuscript_eb.pdf (30 pages, 306763 bytes).
 PDF statistics:
- 433 PDF objects out of 1000 (max. 8388607)
- 367 compressed objects within 4 object streams
- 137 named destinations out of 1000 (max. 500000)
+ 431 PDF objects out of 1000 (max. 8388607)
+ 365 compressed objects within 4 object streams
+ 136 named destinations out of 1000 (max. 500000)
  45170 words of extra memory for PDF output out of 51595 (max. 10000000)
 
