@@ -10,7 +10,6 @@ The organisation is as follows:
   * tables
   * figures
 * data/exp1: pre-processed data (i.e., anonymised data) in .csv. 
-  * data-description-exp1.md: data dictionary.
   * horse_race_exp1_rawdata: pre-processed, anonymsed data for analysis.
   * horse_race_exp1_surveydata and _reviewed: data from survey to check whether participants noticed the manipulation and feedback on the task.
 * experimental-script: scripts used to run the experiment on jsPsych.
