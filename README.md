@@ -9,15 +9,16 @@ The organisation is as follows:
   * simulation: .R script for power analysis for experiment 1.
   * tables
   * figures
-* data: pre-processed data (i.e., anonymised data) in .csv. 
+* data/exp1: pre-processed data (i.e., anonymised data) in .csv. 
   * data-description-exp1.md: data dictionary.
+  * horse_race_exp1_rawdata: pre-processed, anonymsed data for analysis.
+  * horse_race_exp1_surveydata and _reviewed: data from survey to check whether participants noticed the manipulation and feedback on the task.
+* experimental-script: scripts used to run the experiment on jsPsych.
   * combinations-latin-square-design.csv: all combinations of horse description, speaker, and manner of delivery, resulting in 24 lists.
-* experimental-script: scripts used to run the experiment in Testable (.csv format).
-  * bet-code.csv: .csv file for experiment 1.
-  * variables-description-experiment.md: dictionary for bet-code.csv
-* manuscript: .pdf files for write up.
-  * horse-race-foak.pdf: .pdf for pre-registration.
-* stimuli: stimuli for experiment 1.
+  * test_your_luck_exp1.jzip: file to upload to MindProbe to run the experiment, as coded on jsPsych.
+  * jspsych-trials-exp1: directory with .html files (one per list) to run the experiment on jsPsych.
+* manuscript: .rmd file for manuscript write-up.
+* stimuli: stimuli for experiment, divided into auditory, descriptions and visual stimuli.
   * visual stimuli: files associated with the visual stimuli used in experiment 1.
     * /experimental-images: four .jpg files used in experiment 1.
     * /validation: eight .jpg files used for validation & one .csv with validation data (validation-images.csv) & .R script for data analysis (validation-images.R).
