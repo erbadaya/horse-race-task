@@ -138,7 +138,7 @@ tests_questionnaires[[4]] <- t.test(langatt_native$affect, langatt_nonnative$aff
 tests_questionnaires[[5]] <- t.test(langatt_native$status, langatt_nonnative$status, paired = TRUE)
 tests_questionnaires[[6]] <- t.test(langatt_native$solidarity, langatt_nonnative$solidarity, paired = TRUE)
 tests_questionnaires[[7]] <- t.test(langatt_native$trustworthy, langatt_nonnative$trustworthy, paired = TRUE)
-names(tests_questionnaires) <- c("Comprehensibility", "Accent", "Fluency", "Affect", "Status", "Solidarity", "Trustworthy")
+names(tests_questionnaires) <- c("Comprehensibility", "Accentedness", "Fluency", "Affect", "Status", "Solidarity", "Trustworthiness")
 
 # # table for report
 # # idea from https://stackoverflow.com/questions/21840021/grabbing-certain-results-out-of-multiple-t-test-outputs-to-create-a-table
@@ -151,13 +151,15 @@ tab6 <- sapply(tests_questionnaires, function(x) {
     p.value = x$p.value,
     x$estimate)
 }) %>% t() %>% cbind(tests = dimnames(.)[[1]]) %>% as_tibble() %>%
-  mutate(across(1:6,as.numeric)) %>% mutate(across(1:6,round, 2)) %>% mutate(p.value = "< .001") %>%
+  mutate(across(1:6,as.numeric))  %>% mutate(p.value = as.numeric(p.value*7)) %>% 
+  mutate(across(c(1:4,6),~round(.,2) %>% format(., nsmall=2))) %>%  mutate(across(5,~round(.,3))) %>%
+  mutate(p.value = ifelse(p.value==0, "<.001", paste0("= ", p.value))) %>%                                                                                 
   mutate(
     col_name = paste("t(", df, ")", sep = ""),
     `95% CI` = paste("[", ci.lower, ", ", ci.upper, "]", sep = "")
   ) %>%
   pivot_wider(names_from = col_name, values_from = t) %>%
-  select(-c(df, ci.lower, ci.upper)) %>% gt() %>%
+  dplyr::select(-c(df, ci.lower, ci.upper)) %>% gt() %>%
   cols_move(
     columns = c(p.value, `95% CI`, `mean difference`),
     after = starts_with("t(")
@@ -165,11 +167,12 @@ tab6 <- sapply(tests_questionnaires, function(x) {
 
 tab6 <- tab6[[1]]
 
-tab6 <- tab6[,c(3, 5, 4, 2)]
+tab6 <- tab6[,- c(4)]
 
 tab6 <- tab6 %>%
   rename(d = `mean difference`,
-         Dimension = tests)
+         Dimension = tests,
+         `p-value` = p.value)
 
 #   tab_options(
 #     table.border.top.color = "white",
@@ -214,25 +217,25 @@ tab6 <- tab6 %>%
 # # 3. Explore whether model fit improves by including the variable with significant differences.
 # 
 mdlbet_attitudes <- lmerTest::lmer(
-  raw_money ~ delivery_cont * speaker_cont +easy + strong + status + solidarity + affect + trustworthy + fluent+
+  raw_money ~ delivery_cont * speaker_cont + (easy + strong + status + solidarity + affect + trustworthy + fluent)*speaker_cont+
     (1 | horse),
   data = dexp1bet_prereg,
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5)),
   REML = "FALSE"
 )
 
-# anova(mdlbet_m1, mdlbet_attitudes) papaja doesn't like anovas
+# anova(mdlbet_m1, mdlbet_attitudes) # papaja doesn't like anovas
 
 # for manuscript
 
 mdlbet_attitudes <- apa_print(lmerTest::lmer(
-  raw_money ~ delivery_cont * speaker_cont +easy + strong + status + solidarity + affect + trustworthy + fluent +
+  raw_money ~ delivery_cont * speaker_cont + (easy + strong + status + solidarity + affect + trustworthy + fluent)*speaker_cont+
     (1 | horse),
   data = dexp1bet_prereg,
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5)),
   REML = "FALSE"
-))
-
+)
+)
 # 
 # summary(exp1_mdlbet_attitudes)
 # 
@@ -270,7 +273,7 @@ mdl_learnpreference
 # Do participants' exposure affect their betting behaviour?
 
 mdlbet_m1_exposure <- lmerTest::lmer(
-  raw_money ~ delivery_cont * speaker_cont + exposure +
+  raw_money ~ delivery_cont * speaker_cont + exposure + exposure:speaker_cont +
     (1 | horse),
   data = dexp1bet_prereg, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
@@ -279,7 +282,7 @@ mdlbet_m1_exposure <- lmerTest::lmer(
 # for manuscript
 
 mdlbet_m1_exposure <- apa_print(lmerTest::lmer(
-  raw_money ~ delivery_cont * speaker_cont + exposure +
+  raw_money ~ delivery_cont * speaker_cont + exposure + exposure:speaker_cont +
     (1 | horse),
   data = dexp1bet_prereg, 
   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))

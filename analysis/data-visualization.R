@@ -21,9 +21,10 @@ library(wesanderson)
 # re doing this code to be able to use apa_table and also to refer to it in-text
 
 tab5 <- dexp1lang_prereg %>%
-  select(c(18:24,38,39)) %>% mutate(speaker = ifelse(speaker=='native', 'Native Speaker', 'Non-native Speaker')) %>%
+  dplyr::select(c(18:24,38,39)) %>% mutate(speaker = ifelse(speaker=='native', 'Native Speaker', 'Non-native Speaker')) %>%
+  rename(trustworthiness = trustworthy) %>%
   rename_with(str_to_title) %>%
-  select(c("Speaker", "Easy", "Strong", "Affect", "Status", "Solidarity", "Trustworthy", "Fluent")) %>%
+  dplyr::select(c("Speaker", "Easy", "Strong", "Affect", "Status", "Solidarity", "Trustworthiness", "Fluent")) %>%
   rename(Comprehensibility = Easy,
          Accentedness = Strong,
          Fluency = Fluent
@@ -42,8 +43,8 @@ tab5 <- dexp1lang_prereg %>%
     sd_stat = sd(as.numeric(Status)),
     avg_sol = mean(as.numeric(Solidarity)),
     sd_sol = sd(as.numeric(Solidarity)),
-    avg_trust = mean(as.numeric(Trustworthy)),
-    sd_trust = sd(as.numeric(Trustworthy))
+    avg_trust = mean(as.numeric(Trustworthiness)),
+    sd_trust = sd(as.numeric(Trustworthiness))
   ) %>% 
   dplyr::mutate(
     Comprehensibility = paste(round(avg_easy, 2), paste("(", round(sd_easy,2), ")", sep = ""), sep = " "),
@@ -52,8 +53,8 @@ tab5 <- dexp1lang_prereg %>%
     Affect = paste(round(avg_aff, 2), paste("(", round(sd_aff,2), ")", sep = ""), sep = " "),
     Status = paste(round(avg_stat, 2), paste("(", round(sd_stat,2), ")", sep = ""), sep = " "),
     Solidarity = paste(round(avg_sol, 2), paste("(", round(sd_sol,2), ")", sep = ""), sep = " "),
-    Trustworthy = paste(round(avg_trust, 2), paste("(", round(sd_trust,2), ")", sep = ""), sep = " ")) %>%
-  select(Speaker, Comprehensibility, Accentedness, Fluency, Affect, Status, Solidarity, Trustworthy) %>%
+    Trustworthiness = paste(format(round(avg_trust, 2),nsmall=2), paste("(", round(sd_trust,2), ")", sep = ""), sep = " ")) %>%
+  dplyr::select(Speaker, Comprehensibility, Accentedness, Fluency, Affect, Status, Solidarity, Trustworthiness) %>%
   pivot_longer(c(2:8), names_to = "Dimension", values_to = "Score") %>%
   pivot_wider(values_from = Score, names_from = Speaker)
   #   ) %>%
@@ -87,9 +88,10 @@ tab5 <- dexp1lang_prereg %>%
 # figure for the descriptive statistics
 
 dexp1lang_prereg %>%
-  select(c(18:24,38,39)) %>% mutate(speaker = ifelse(speaker=='native', 'Native Speaker', 'Non-native Speaker')) %>%
+  dplyr::select(c(18:24,38,39)) %>% mutate(speaker = ifelse(speaker=='native', 'Native Speaker', 'Non-native Speaker')) %>%
+rename(trustworthiness = trustworthy) %>%
   rename_with(str_to_title) %>%
-  select(c("Speaker", "Easy", "Strong", "Affect", "Status", "Solidarity", "Trustworthy")) %>%
+  dplyr::select(c("Speaker", "Easy", "Strong", "Affect", "Status", "Solidarity", "Trustworthiness")) %>%
   rename(Comprehensibility = Easy,
          Accentedness = Strong
   ) %>%
@@ -127,7 +129,7 @@ dexp1lang_prereg %>%
 # proportion money distributed
 
 tab4 <- dexp1bet_prereg %>%
-  select(c(4,11,51)) %>%
+  dplyr::select(c(4,11,51)) %>%
   rename_with(str_to_title) %>%
   rename(Money = Raw_money) %>%
   mutate(Delivery = factor(Delivery, levels = c("fluent", "disfluent"))) %>%
@@ -139,7 +141,7 @@ tab4 <- dexp1bet_prereg %>%
   dplyr::mutate(
     distribution = paste(round(avg_money, 2), paste("(", round(sd_money,2), ")", sep = ""), sep = " ")) %>%
   mutate(Delivery = ifelse(Delivery == 'fluent', 'Fluent', 'Disfluent'), Speaker = ifelse(Speaker == 'native', 'Native', 'Non-native')) %>%
-  select(c(Speaker, Delivery, distribution)) %>%
+  dplyr::select(c(Speaker, Delivery, distribution)) %>%
   rename("Money bet" = distribution)
 
 tab4[c(2,4), 1] <- ""

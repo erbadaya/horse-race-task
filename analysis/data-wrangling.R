@@ -47,7 +47,7 @@ library(here)
 
 # load all anonymised data
 
-dexp1 <- read_csv("../data/exp1/horse_race_exp1_rawdata.csv") %>% select(-c(1))
+dexp1 <- read_csv("../data/exp1/horse_race_exp1_rawdata.csv") %>% dplyr::select(-c(1))
 
 # wrangle separately bet data from questionnaire data
 
@@ -96,7 +96,7 @@ dexp1lang <- dexp1lang %>%
   pivot_longer(c(3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49), names_to = 'column', values_to = 'item') %>%
   pivot_longer(c(3:26), names_to = 'blah', values_to = 'score') %>%
   mutate(column = gsub('_question','',column), blah = gsub('_answer','',blah)) %>%
-  filter(column == blah) %>% filter(!score== 'null') %>% select(!c(column, blah)) %>%
+  filter(column == blah) %>% filter(!score== 'null') %>% dplyr::select(!c(column, blah)) %>%
   pivot_wider(names_from = item, values_from = score) %>%
   mutate(across(c(9:28), as.numeric)) %>%
   mutate(speaker = ifelse(speaker == 'native', 'native', 'nonnative'))
@@ -120,7 +120,7 @@ dexp1lang <- dexp1lang %>%
   )
 
 dexp1lang <- dexp1lang %>% 
-  select(!c(horse0, horse1, horse2, horse3, trial_type, trial_index))
+  dplyr::select(!c(horse0, horse1, horse2, horse3, trial_type, trial_index))
 
 # ppt 257 filled the questionnaire the other way around (native for non-native)
 # ppt 550 answered all questions as if for non-native (remove their data)
@@ -155,7 +155,7 @@ dexp1survey <- dexp1survey %>%
   pivot_longer(c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32), names_to = 'column', values_to = 'item') %>%
   pivot_longer(c(2:17), names_to = 'blah', values_to = 'score') %>%
   mutate(column = gsub('_question','',column), blah = gsub('_answer','',blah)) %>%
-  filter(column == blah) %>% filter(!score== 'null') %>% select(!c(column, blah)) %>%
+  filter(column == blah) %>% filter(!score== 'null') %>% dplyr::select(!c(column, blah)) %>%
   mutate(item =  gsub('"','',item)) %>%
   mutate(score =  gsub('"','',score)) %>%
   pivot_wider(names_from = item, values_from = score) %>%
@@ -166,22 +166,22 @@ dexp1survey <- dexp1survey %>%
     IN_ANALYSIS_AUDIO = ifelse(naturalness_native < 4 | naturalness_nonnative < 4, "No", "Yes"),
     IN_ANALYSIS_EXPERTISE = ifelse(expertise_betting > 3, "No", "Yes")
   ) %>%
-  select(!c(horse0, horse1, horse2, horse3, trial_type, trial_index)) %>%
+  dplyr::select(!c(horse0, horse1, horse2, horse3, trial_type, trial_index)) %>%
   pivot_longer(c(9,10), names_to = 'question', values_to = 'naturalness') %>%
   separate_wider_delim(question, delim = '_', names = c("rly", "speaker")) %>%
   pivot_longer(c(5,6), names_to = 'question', values_to = 'exposure') %>%
   separate_wider_delim(question, delim = '_', names = c("opsi", "sp")) %>%
   mutate(sp = ifelse(sp == 'nn', 'nonnative', 'native')) %>%
   filter(sp == speaker) %>%
-  select(!c(sp, rly, opsi))
+  dplyr::select(!c(sp, rly, opsi))
 
 # PUT ALL INFO IN ONE DF
 # for filtering & analyses
 
 dexp1lang <- left_join(dexp1lang, dexp1survey, by = 'ppt', relationship = "many-to-many")
-dexp1lang <- dexp1lang %>%  filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% select(!c(speaker.x, speaker.y))
+dexp1lang <- dexp1lang %>%  filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% dplyr::select(!c(speaker.x, speaker.y))
 dexp1bet <- left_join(dexp1bet, dexp1lang, by = c('ppt'), relationship = "many-to-many")
-dexp1bet <- dexp1bet %>% filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% select(!c(speaker.x, speaker.y))
+dexp1bet <- dexp1bet %>% filter(speaker.x == speaker.y) %>% mutate(speaker = speaker.x) %>% dplyr::select(!c(speaker.x, speaker.y))
 
 
 # filter participants
