@@ -129,7 +129,7 @@ dexp1lang_prereg %>%
 # proportion money distributed
 
 tab4 <- dexp1bet_prereg %>%
-  dplyr::select(c(4,11,51)) %>%
+  dplyr::select(c(4,11,49)) %>%
   rename_with(str_to_title) %>%
   rename(Money = Raw_money) %>%
   mutate(Delivery = factor(Delivery, levels = c("fluent", "disfluent"))) %>%
