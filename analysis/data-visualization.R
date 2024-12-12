@@ -1,7 +1,7 @@
 # Note: if running on its own, remove one period
 # Otherwise, it is set for running on the manuscript
 source('../analysis/data-wrangling.R')
-source('../analysis/utils.R') # for violin plot graphs
+source('../analysis/utils.R') # for violin plot graphs, from Glasgow TeachR team
 
 library(psych)
 library(optimx)
@@ -187,55 +187,39 @@ tab4[c(2,4), 1] <- ""
 
 # viz for poster presentations
 
-fig1 <- dexp1bet_prereg %>%
-  mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native', 'Non-native'))%>%
-  ggplot(., aes (x = delivery, y = as.numeric(scaled_money), fill = speaker)) +
-  geom_split_violin(alpha = .4, trim = FALSE)  +
-  geom_boxplot(width = .2, alpha = .6, fatten = NULL, show.legend = FALSE) +
-  stat_summary(fun.data = "mean_se", geom = "pointrange", show.legend = F, 
-               position = position_dodge(.175))  +
-  scale_x_discrete(name = "Manner of Delivery", labels = c("Disfluent", "Fluent")) +
-  scale_y_continuous(name = "Money bet",
-                     breaks = seq(0, 100, 20), 
-                     limits = c(0, 100)) +
-  scale_fill_brewer(palette = "Dark2", name = "Speaker's linguistic background") + # need to decide color palette based on poster palette
-  theme_minimal()
+# fig1 <- dexp1bet_prereg %>%
+#   mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native', 'Non-native'))%>%
+#   ggplot(., aes (x = delivery, y = as.numeric(scaled_money), fill = speaker)) +
+#   geom_split_violin(alpha = .4, trim = FALSE)  +
+#   geom_boxplot(width = .2, alpha = .6, fatten = NULL, show.legend = FALSE) +
+#   stat_summary(fun.data = "mean_se", geom = "pointrange", show.legend = F, 
+#                position = position_dodge(.175))  +
+#   scale_x_discrete(name = "Manner of Delivery", labels = c("Disfluent", "Fluent")) +
+#   scale_y_continuous(name = "Money bet",
+#                      breaks = seq(0, 100, 20), 
+#                      limits = c(0, 100)) +
+#   scale_fill_brewer(palette = "Dark2", name = "Speaker's linguistic background") + # need to decide color palette based on poster palette
+#   theme_minimal()
 
 # 
 # ggsave('exp1-money-violin.png', path = './analysis/figures')
 
 # bar chart
 
-dexp1bet_prereg%>%
-  group_by(delivery, speaker)%>%
-  summarise(mean_money = mean(raw_money, na.rm = TRUE), sd_money = sd(raw_money)) %>% ungroup() %>%
-  mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native Speaker', 'Non-native Speaker'))%>%
-  mutate(delivery = factor(delivery, levels = c("Fluent", "Disfluent"))) %>%
-  ggplot(., aes(x=delivery,y=as.numeric(mean_money), fill = speaker)) +
-  geom_bar(stat="identity", color="black", 
-           position=position_dodge()) +
-  geom_errorbar(aes(ymin=mean_money-sd_money, ymax=mean_money+sd_money), width=.2,
-                position=position_dodge(.9)) +
-  scale_x_discrete(name = "Manner of Delivery", labels = c("Fluent", "Disfluent")) +
-  scale_y_continuous(name = "Money bet") + # need to decide color palette based on poster palette
-  theme_minimal() +
-  scale_fill_manual(values = c("Native Speaker" = "#00A08A",
-                               "Non-native Speaker" = "#F2AD00"), name = "Speaker's linguistic background") + theme(legend.position="top")
+# dexp1bet_prereg%>%
+#   group_by(delivery, speaker)%>%
+#   summarise(mean_money = mean(raw_money, na.rm = TRUE), sd_money = sd(raw_money)) %>% ungroup() %>%
+#   mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native Speaker', 'Non-native Speaker'))%>%
+#   mutate(delivery = factor(delivery, levels = c("Fluent", "Disfluent"))) %>%
+#   ggplot(., aes(x=delivery,y=as.numeric(mean_money), fill = speaker)) +
+#   geom_bar(stat="identity", color="black", 
+#            position=position_dodge()) +
+#   geom_errorbar(aes(ymin=mean_money-sd_money, ymax=mean_money+sd_money), width=.2,
+#                 position=position_dodge(.9)) +
+#   scale_x_discrete(name = "Manner of Delivery", labels = c("Fluent", "Disfluent")) +
+#   scale_y_continuous(name = "Money bet") + # need to decide color palette based on poster palette
+#   theme_minimal() +
+#   scale_fill_manual(values = c("Native Speaker" = "#00A08A",
+#                                "Non-native Speaker" = "#F2AD00"), name = "Speaker's linguistic background") + theme(legend.position="top")
 # 
 # ggsave('exp1-money-barchart.png', path = './analysis/figures')
-
-
-dexp1bet_prereg%>%
-  #group_by(delivery, speaker, status)%>%
-  #summarise(mean_money = mean(raw_money, na.rm = TRUE), sd_money = std.error(raw_money)) %>% ungroup() %>%
-  mutate(delivery = ifelse(delivery == 'fluent', 'Fluent', 'Disfluent'), speaker = ifelse(speaker == 'native', 'Native Speaker', 'Non-native Speaker'))%>%
-  mutate(delivery = factor(delivery, levels = c("Fluent", "Disfluent"))) %>%
-  ggplot(., aes(x=status,y=as.numeric(raw_money), fill = delivery)) + facet_grid(~speaker) +
-  geom_smooth() +
-  #geom_errorbar(aes(ymin=mean_money-sd_money, ymax=mean_money+sd_money), width=.2,
-  #              position=position_dodge(.9)) +
-  #scale_x_discrete(name = "Manner of Delivery", labels = c("Fluent", "Disfluent")) +
-  scale_y_continuous(name = "Money bet") + # need to decide color palette based on poster palette
-  theme_minimal() +
-  scale_fill_manual(values = c("Fluent" = "#00A08A",
-                               "Disfluent" = "#F2AD00"), name = "Speaker's linguistic background") + theme(legend.position="top")

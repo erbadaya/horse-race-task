@@ -64,14 +64,6 @@ dexp1bet <- dexp1 %>%
   pivot_longer(c(8:11), names_to = "order", values_to = "raw_money") %>%
   filter(order == order_filter)
 
-# RSO stats help UGent suggests scaling money bet (previous issue: 0 variance for participant in LME, arguably because everyone is spending 100)
-
-dexp1bet <- dexp1bet %>%
-  group_by(ppt) %>%
-  mutate(total_spent = sum(as.numeric(raw_money))) %>%
-  mutate(scaled_money = ((raw_money * 100)/total_spent))
-
-
 # LANGUAGE ATTITUDES QUESTIONNAIRE
 
 

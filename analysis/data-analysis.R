@@ -37,28 +37,6 @@ t.test(langatt_native$exposure, langatt_nonnative$exposure, paired = TRUE) # exp
 ## so the average is 25
 ## fix: do not include it
 ## additionally: we want to model nonetheless the variance by effect
-## lme4 does not work well with sum coding, RSO stats UGent offers the following alternative:
-
-
-# dexp1bet_prereg$flue_nat <- 1 * (dexp1bet_prereg$delivery == "fluent" & 
-#                                       dexp1bet_prereg$speaker == "native")
-# dexp1bet_prereg$flue_non <- 1 * (dexp1bet_prereg$delivery == "fluent" & 
-#                                       dexp1bet_prereg$speaker == "nonnative")
-# dexp1bet_prereg$dis_nat <- 1 * (dexp1bet_prereg$delivery != "fluent" & 
-#                                       dexp1bet_prereg$speaker == "native")
-# 
-# exp1_mdlbet_max <- lmer(
-#   raw_money ~ delivery_cont * speaker_cont +
-#     (-1 + flue_nat + flue_non + dis_nat | ppt) +
-#     (1 | horse),
-#   data = dexp1bet_prereg, 
-#   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun=2e5))
-# )
-# 
-# summary(exp1_mdlbet_max)
-# hist(resid(exp1_mdlbet_max))
-
-# singular fit
 
 mdlbet_m1 <- lmerTest::lmer(
   raw_money ~ delivery_cont * speaker_cont +
@@ -151,8 +129,8 @@ tab6 <- sapply(tests_questionnaires, function(x) {
     p.value = x$p.value,
     x$estimate)
 }) %>% t() %>% cbind(tests = dimnames(.)[[1]]) %>% as_tibble() %>%
-  mutate(across(1:6,as.numeric))  %>% mutate(p.value = as.numeric(p.value*7)) %>% 
-  mutate(across(c(1:4,6),~round(.,2) %>% format(., nsmall=2))) %>%  mutate(across(5,~round(.,3))) %>%
+  mutate(across(1:6,as.numeric))  %>% mutate(p.value = as.numeric(p.value*7)) %>%  # p-value correction
+  mutate(across(c(1:4,6),~round(.,2) %>% format(., nsmall=2))) %>%  mutate(across(5,~round(.,3))) %>% 
   mutate(p.value = ifelse(p.value==0, "<.001", paste0("= ", p.value))) %>%                                                                                 
   mutate(
     col_name = paste("t(", df, ")", sep = ""),
