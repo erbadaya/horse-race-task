@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Correct encoding -->
+    <meta charset="UTF-8">
+    <!-- FOR JSPSYCH -->
+    <script src="https://unpkg.com/jspsych@7.3.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.2"></script>
+    <!-- Preload -->
+    <script src="https://unpkg.com/@jspsych/plugin-preload"></script>
+    <!-- Check browser -->
+    <script src="https://unpkg.com/@jspsych/plugin-browser-check@1.0.1"></script>
+    <!-- Full screen -->
+    <script src="https://unpkg.com/@jspsych/plugin-fullscreen@1.1.1"></script>
+    <!-- Button response -->
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.2"></script>
+    <!-- Microphone -->
+    <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.3"></script>
+    <!-- Instructions -->
+    <script src="https://unpkg.com/@jspsych/plugin-instructions@1.1.4"></script>
+    <!-- Audio keyboard -->
+    <script src="https://unpkg.com/@jspsych/plugin-audio-keyboard-response@1.1.3"></script>
+    <!-- Record audio -->
+    <script src="https://unpkg.com/@jspsych/plugin-html-audio-response@1.0.3"></script>
+    <!-- Style JSPSYCH -->
+    <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <!-- Style Survey -->
+    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.2.1/css/survey.css">
+    <!-- Survey -->
+    <script src="https://unpkg.com/@jspsych/plugin-survey@1.0.1"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@1.0.1/css/survey.css">
+    <!-- Bring in the stims -->
+    <script src="stimsRecord.js"></script>
+    <!-- To allow line breaks in the survey -->
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+    <script src="https://unpkg.com/survey-core@2.5.19/survey.core.min.js"></script>
+    <script src="https://unpkg.com/survey-core@2.5.19/survey.i18n.min.js"></script>
+    <script src="https://unpkg.com/survey-core@2.5.19/themes/index.min.js"></script>
+    <script src="https://unpkg.com/survey-js-ui@2.5.19/survey-js-ui.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/survey-core@2.5.19/survey-core.min.css" />
+    <!-- use jatos -->
+    <script src="jatos.js"></script>
+  <style>
+    .sv-ranking-item {
+        margin-bottom: 10px !important; /* Reduces vertical gap */
+        padding: 20px !important;       /* Reduces internal item spacing */
+    }
+
+  </style>
+  </head>
+  <body>
+    <div id="surveyElement" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; min-height: 100%; height:100%"></div>
+  </body>
+  <script>
+
+    const jsPsych = initJsPsych({
+            show_progress_bar: false,
+            auto_update_progress_bar: false,
+            on_trial_finish: function(data){
+                var subjectNumber = jatos.workerId;
+                var filedata = jsPsych.data.get().ignore('stimulus').csv();
+                var filename = "ID_"+subjectNumber+".csv";
+                jatos.appendResultData(JSON.stringify(data) + ",");
+                jatos.submitResultData(filedata)
+                jatos.uploadResultFile(filedata, filename)
+            },
+            on_finish: function() {
+            var subjectNumber = jatos.workerId;
+            var filedata = jsPsych.data.get().ignore('stimulus').csv();
+            var filename = "ID_"+subjectNumber+".csv";
+            jatos.submitResultData(filedata)
+            jatos.uploadResultFile(filedata, filename)
+            jatos.endStudy(jsPsych.data.get().json())
+            }
+    });
+
+    timeline = []
+
+    // For recording audios, since these are massive files, it's better to keep saving them after each trial and then delete them immediately from the jsPsych data
+    var mic_allow = {
+        type: jsPsychInitializeMicrophone
+    };
+
+    timeline.push(mic_allow);
+
+    var informedConsent1 = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: 
+         `<div style="max-width: 900px; margin: 0 auto; text-align: left;">  
+          <p style="text-align:center;">
+          
+            <h2>Information Sheet</h2></p>\
+            <p>You are invited to participate in a study conducted by dr. Esperanza Badaya (UGent), prof. dr. Rob Hartsuiker (UGent) and prof. dr. Martin Corley (University of Edinburgh). \
+            Please take enough time to read this information letter carefully before you decide to participate in this study. Do not hesitate to ask questions to the researchers if there are any confusions or if you would like additional information. \
+          
+            <h2> What is the purpose of this study? </h2>
+            In this study, we are creating stimuli for an upcoming experiment. \
+            
+            <h3> Ethical approval </h3>
+            This study is conducted according to the guidelines set out in the General Ethical Protocol of the Faculty of Psychology and Educational Sciences (Ghent University). The researchers conduct this study in accordance with accepted standards of scientific and ethical conduct. In doing so, they apply good research practices and adhere to the principles of research ethics as described in "Ethics in Social Science and Humanities" (EU, 2018).\
+            <h3> Information about privacy and personal data </h3> \
+            No personal data are collected in this study. All data collected are anonymous from the outset. This means that neither we nor others can infer your identity from the data collected or link this data to your identity.\
+            
+            <h2> What will happen if you decide to participate? </h2>
+            <h3> What does taking part in this study involve? </h3>
+            In this study, we are creating stimuli for an upcoming experiment. In that experiment, we want to investigate whether people are less likely to follow advice if it is said with an accent different from their own e.g., would an English speaker be more likely to rate a statement as true when it is produced by another English speaker compared to when it is produced by a non-native English speaker?  </p>\
+            In that study, we are going to compare how speech produced by native and non-native English speakers is perceived and interpreted. Therefore, we first need to record a series of native and non-native speakers of English saying a series of sentences that our next participants will rate. </p>\
+            In this study, you will be shown a series of sentences, one at the time, and your task will be to read it aloud while it is recorded. You will have the chance to re-record yourself. We ask you to first read the sentence to yourself and then produce it aloud, to ensure that you do not commit a mistake. </p>\
+            We will later use these recordings in the second experiment.
+
+            The entire study will take approximately 45 minutes to complete. </p>\
+            In order to participate in the study, you have to be either a native English speaker (born in the United Kingdom), or a non-native English speaker.</p>\
+            
+            Participation in this study is completely voluntary and there can be no coercion in any way. You may refuse to participate in the study and you may withdraw from the study at any time without having to give a reason. If you refuse to participate, or if you decide to withdraw from an ongoing study \
+            you will not be penalized in any way. If you decide to withdraw from the study, the data collected up to that point will be deleted and will not be used for research purposes. </p>\
+            If you wish, you can get a summary of the study findings after the study is completed and the results are known. To get a summary, you can request this from the researchers involved by emailing them in the addressed provided at the end of this information sheet. </p>\
+           
+            Non-identifiable data is uploaded to an online database. This is done to ensure transparency. The data is uploaded under a CC-BY 4.0 International License (allowing other researchers to use the data).\
+            You can also request the destruction of your data up to 14 days after your participation, without having to give a reason. To do so, you can contact the researchers involved by emailing them in the addressed provided at the end of this information sheet. After 14 days, your data will have been uploaded to an online database, and it will no longer be possible to delete your data. However, since the data is anonymous, it will not be possible to link it to your identity in any way. </p>\
+            
+            <h3> What are the risks and benefits of participating in this study? </h3>\
+            There are no known risks or benefits associated in this study. \
+
+            <h3> What will happen to the data collected in this study? </h3>
+            The research data collected here may also still be useful in answering other research questions. Therefore, there is a possibility that the anonymous research data may be reused at a later date for another research. The reuse of the anonymous research data can be done both within the own research team, and by external researchers within and outside the European Union, e.g. via a dedicated research data sharing platform. \
+          </div>`,
+          choices: ['Continue to consent form']
+    };
+
+    var informedConsent2 = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<div style="max-width: 900px; margin: 0 auto; text-align: left;">  
+            <p style="text-align:center;">
+              <h3> Consent to participate in the study </h3></p>
+            By clicking on the "I consent to participate" button below, you indicate that you have read and understood the information provided in the information sheet and agree to the following. If you do not consent to participate, please click on the "I do not consent to participate" button below. \
+            <ul>\
+            <li>You have read the information form and received sufficient explanation about the nature, purpose, duration, and anticipated effects of the study.</li>\
+            <li>You have had the opportunity to ask questions.</li>\
+            <li>You voluntarily agree to participate in this study.</li>\
+            <li> You know that you may withdraw from the study at any time without having to give a reason, and without being penalized in any way.</li>\
+            <li> You know that you have rights to safeguard your privacy (including access, correction, deletion) and to whom you should turn to exercise these rights.
+            <li> You give permission to the researchers to collect, process, store, analyse and report on your (anonymised) data for the purposes of this study.</li>\
+            <li> You consent for your data to be included in scientific articles and conferences as part of this study.</li>\
+            <li> You give permission to researchers of the research group to reuse you data for further similar scientific research. </li>\
+            <li> You give permission to the researchers to share your data for further similar scientific research and this within and outside the European Economic Area. In doing so, all necessary measures will be taken to protect the confidentiality of you personal data. </li>\
+            <li> You give your consent for your anonymous data to be shared in a public data repository (e.g., OpenScience Framework). This data is shared to increase the transparency of the study, and will be shared under a CC-By Attribution 4.0 international (other people can use the data as long as the give credit to the authors that acquired it).</li>\
+            </ul>\
+            <p> If you have any further questions about the study, please contact Dr. Esperanza Badaya at Esperanza.Badaya@ugent.be.</p>\
+            </div>`,
+      choices: ['I consent to participate', 'I do not consent to participate'],
+      on_finish: function(data){
+        if(data.response == 1){
+          jsPsych.endExperiment('Thank you for your interest in our study. However, since you do not consent to participate, you will not be able to take part in the study. Please return your submission on Prolific to avoid being penalized; if you wish to retry the experiment, please let us know on the platform.');
+        }
+      }
+    }
+
+    timeline.push(informedConsent1);
+    timeline.push(informedConsent2);
+
+    const introduce_SpeakerInfo = {
+      type: jsPsychSurvey,
+      survey_json: {
+        pages: [
+          {
+            elements: [{type: 'text', title: 'Please enter your speaker ID. Ask the researcher if you do not know this value. If your first language is English, it start with "N", else it starts with "NN".', placeholder: '', name: 'speakerID', isRequired: true},
+              {type: 'radiogroup', title: 'Please enter your group. Ask the researcher if you do not know this value.', choices: ['Critical', 'Distractor horse', 'Distractor race'], name: 'group', isRequired: true},
+              {type: 'text', title: 'What is your prolific ID? If you do not have one, enter your speaker ID.', placeholder: '', name: 'prolificID', isRequired: true}
+            ]
+          },{
+            elements: [{type: 'radiogroup', title: 'Please select your gender', name: 'gender', choices: ['Female', 'Male'], isRequired: true, correct_response: 'Yes'}]
+          },{
+            elements: [{type: 'radiogroup', title: 'Are you a native or a non-native English speaker?', name: 'nativeness', choices: ['Native','Non-native'], isRequired: true, correct_response: 'Yes'}]
+          },{
+            elements: [{type: 'text', title: 'Please enter your age:', placeholder: '', name: 'age', isRequired: true}]
+          },{
+            elements: [{type: 'radiogroup', title: 'Please enter your proficiency in English', name: 'englishProficiency', choices: ['Native', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1'], isRequired: true, correct_response: 'Yes'}]
+          }
+        ]
+      },
+      allow_backward: false,
+      on_finish: function(data){
+        jsPsych.data.addProperties({
+          speakerID: data.response.speakerID,
+          nativeness: data.response.nativeness,
+          age: data.response.age,
+          gender: data.response.gender,
+          group: data.response.group
+        })
+      }
+    };
+
+    timeline.push(introduce_SpeakerInfo); 
+
+    const instructionsCheck = {
+      type: jsPsychInstructions,
+      pages: [
+         `<div style="max-width: 900px; margin: 0 auto; text-align: left;">  
+          <p style="text-align:center;">
+            The experiment is about to start! </p>
+            <p style='text-align:left'> In this study, you will be asked to read a series of statements aloud. Each trial will start with a screen showing you the statement that you will have to say aloud. Once you have read it and you are ready, you will be allowed to continue to the next screen. In the second screen, you will be able to read the statement aloud while you are recorded (the microphone will start recording automatically).</p>\
+            <p style='text-align:left'> Once you have read the statement aloud, click on 'Save' to upload the recording in our server. If you wish, you can listen to the recording. If you are satified with it, you can save it. Else, you can re-record yourself. Do not worry if there is a pause at the beginning or end of the recording, we will be able to edit those afterwards. </p>\
+            <p style='text-align:left'> Please read the statement as fluently as possible: Make sure that you have a normal tone, and that you do not hesitate when reading it. If you do so, please re-record yourself. </p>\
+            <p style='text-align:left'> If you are ready, click on 'Start' to begin the experiment. 
+            </p>\
+            </div>`],
+      show_clickable_nav: true,
+      allow_backward: false,
+      button_label_next: 'Start'
+    }; 
+
+    timeline.push(instructionsCheck);
+
+    const trial_ReadText = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function() {
+             const statement = jsPsych.timelineVariable('description');
+             const record_trial_show_text_text = "Read the following statement and click on 'I am ready' once you are ready to record yourself. Remember that the microphone will start recording automatically in the next screen. </p>"
+             return record_trial_show_text_text + `<p><b>${statement}</b></p>` 
+        },
+        choices: ['I\'m ready']
+    }
+
+    const trial_recording = {
+      type: jsPsychHtmlAudioResponse,
+      stimulus: function(){
+        var record_statement_text = `
+                  <div style="text-align:center;">\
+                  <img src="attentionCheckStims/microphone.png" \
+                  alt="Stimulus Image" \
+                  style="max-width:200px; width:80%; height:auto; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">\
+                  </div>\
+                  <div style="max-width:700px; margin:40px auto; text-align:center;">\
+                  <p><b>The microphone is now recording! </b></p>
+                  <p>Please, read aloud the following statement and click on 'Save' once you are done. You will be allowed to listen to it in the next screen, and to re-record it if you are not satisfied with it.</p>
+                 </div>`
+        const statement = jsPsych.timelineVariable('description');
+        return record_statement_text + `<p><b>${statement}</b></p>`},
+        recording_duration: 150000,
+        done_button_label: 'Save',
+        allow_playback: true,
+        accept_button_label: 'Save',
+        on_finish: async function(data){
+          const base64Audio = data.response;
+          const filename = `READ_${jsPsych.timelineVariable('horse')}_${data.speakerID}_base64.txt`;
+          // Save base64 directly as text file in JATOS
+          await jatos.uploadResultFile(
+            base64Audio,
+            filename,
+            "text/plain"
+          );
+          // Replace huge base64 in jsPsych data with filename
+          data.response = filename;
+          data.horseRecorded = jsPsych.timelineVariable('horse')
+          await jatos.appendResultData(
+            JSON.stringify({
+              trial: data.trial_index,
+              audio_file: filename
+            }) + "\n"
+          )
+          }
+    }
+
+    var trials_Record = {
+      timeline: [trial_ReadText, trial_recording],
+      timeline_variables: fillerRacesHorses,
+      randomize_order: true,
+      repetitions: 2
+    };
+
+    timeline.push(trials_Record);
+
+    var endStudy = {
+      type: jsPsychInstructions,
+      pages: [
+        `<div style="max-width: 900px; margin: 0 auto; text-align: left;">  
+          <p style="text-align:center;">
+            That was the end of the study1! </p>
+            <p style='text-align:left'> Thank you for your participation. The researcher will now give you the code for Prolific. </p>
+            <p style='text-align:left'> Click on 'Submit' to end the experiment once the experimenter tells you to do so.</p> 
+            </p>\
+            </div>`
+      ],
+      show_clickable_nav: true,
+      allow_backward: false,
+      button_label_next: 'Submit'
+    };
+
+    timeline.push(endStudy)
+
+    jatos.onLoad(function () {
+      jsPsych.run(timeline)}
+    )
+    </script>
+</html>
